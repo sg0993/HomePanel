@@ -5,4 +5,6 @@
     <color name="mainpage_noselect_bkg">#E5E5E5</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="blue">#0000FF</color>
+
 </resources>

@@ -1,6 +1,5 @@
-package com.honeywell.homepanel;
+package com.honeywell.homepanel.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -11,11 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.common.CommonData;
+
 import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity{
     public static final int DOT_WIDTH = 30;
     public static final int DOT_HEIGHT = DOT_WIDTH;
     private int mCurPageIndex = 0;
@@ -30,12 +32,25 @@ public class MainActivity extends Activity {
     //包裹小圆点的LinearLayout
     private ViewGroup viewPoints;
 
+    @Override
+    protected int getContent() {
+        return R.layout.layout_home;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.layout_home);
+        //setContentView(R.layout.layout_home);
+
+        setLeft(CommonData.LEFT_SELECT_HOME);
+
+        setTop();
 
         //将要分页显示的View装入数组中
         LayoutInflater inflater = getLayoutInflater();
@@ -76,6 +91,18 @@ public class MainActivity extends Activity {
         viewPager.setOnPageChangeListener(new GuidePageChangeListener());
     }
 
+    @Override
+    protected void initViewAndListener() {
+        super.initViewAndListener();
+
+
+    }
+
+    /*@Override
+    protected void initIntentValue() {
+        super.initIntentValue();
+    }
+*/
     class GuidePageAdapter extends PagerAdapter {
         //销毁position位置的界面
         @Override
@@ -111,23 +138,25 @@ public class MainActivity extends Activity {
             return null;
         }
     }
-    class GuidePageChangeListener implements ViewPager.OnPageChangeListener{
+    class GuidePageChangeListener implements ViewPager.OnPageChangeListener {
         @Override
         public void onPageScrollStateChanged(int arg0) {
         }
+
         @Override
         public void onPageScrolled(int arg0, float arg1, int arg2) {
         }
+
         @Override
         public void onPageSelected(int position) {
-            for(int i=0;i<imageViews.length;i++){
+            for (int i = 0; i < imageViews.length; i++) {
                 imageViews[position].setBackgroundResource(R.drawable.page_indicator_focused);
                 //不是当前选中的page，其小圆点设置为未选中的状态
-                if(position !=i){
+                if (position != i) {
                     imageViews[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
                 }
             }
-            Log.d(TAG, "onPageSelected() position="+position);
+            Log.d(TAG, "onPageSelected() position=" + position);
             mCurPageIndex = position;
         }
     }

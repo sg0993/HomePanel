@@ -13,6 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/timeTv"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:text="8/30 10:53"
@@ -24,10 +25,13 @@
                 android:layout_gravity="center_vertical"
                 style="@style/top_linerlayout">
                 <ImageView
+                    android:id="@+id/weatherImage"
                     android:src="@mipmap/top_weather_sunny"
                     style="@style/top_imageview"/>
                 <TextView
+                    android:id="@+id/temperatureTv"
                     android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
                     android:text="26°"
                     style="@style/top_textview" />
             </LinearLayout>
@@ -38,9 +42,11 @@
                 android:layout_gravity="center_vertical"
                 style="@style/top_linerlayout">
                 <ImageView
+                    android:id="@+id/healthyImage"
                     android:src="@mipmap/top_heathy_unheathy"
                     style="@style/top_imageview"/>
                 <TextView
+                    android:id="@+id/healthyTv"
                     android:layout_marginLeft="10dp"
                     android:text="unheathy"
                     style="@style/top_textview"/>
@@ -48,6 +54,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/armTv"
             android:layout_centerInParent="true"
             android:text="System Disarmed"
             style="@style/top_textview"/>
@@ -58,6 +65,7 @@
             android:layout_height="match_parent"
             android:layout_width="wrap_content">
             <ImageView
+                android:id="@+id/wifiImage"
                 android:src="@mipmap/top_wifi_connect"
                 style="@style/top_imageview"/>
             <ImageView

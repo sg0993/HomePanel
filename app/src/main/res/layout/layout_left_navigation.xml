@@ -7,51 +7,57 @@
         android:background="@android:color/white"
         android:layout_height="match_parent">
         <RelativeLayout
-            android:id="@+id/home"
+            android:id="@+id/home_layout"
             android:layout_weight="1"
             style="@style/left_view">
             <ImageView
+                android:id="@+id/home_image"
                 style="@style/left_image"
                 android:src="@mipmap/home" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/arm"
+            android:id="@+id/scenario_layout"
             android:layout_weight="1"
             style="@style/left_view">
             <ImageView
+                android:id="@+id/scenario_image"
                 style="@style/left_image"
-                android:src="@mipmap/arm" />
+                android:src="@mipmap/scenario" />
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/ipcp"
+            android:id="@+id/device_layout"
             android:layout_weight="1"
             style="@style/left_view">
             <ImageView
+                android:id="@+id/device_image"
                 style="@style/left_image"
-                android:src="@mipmap/ipcp" />
+                android:src="@mipmap/device" />
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/message"
+            android:id="@+id/message_layout"
             android:layout_weight="1"
             style="@style/left_view">
             <ImageView
+                android:id="@+id/message_image"
                 style="@style/left_image"
                 android:src="@mipmap/message" />
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/dial"
+            android:id="@+id/dial_layout"
             android:layout_weight="1"
             style="@style/left_view">
             <ImageView
+                android:id="@+id/dial_image"
                 style="@style/left_image"
                 android:src="@mipmap/dial" />
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/setting"
+            android:id="@+id/setting_layout"
             android:layout_weight="1"
             style="@style/left_view">
             <ImageView
+                android:id="@+id/setting_image"
                 style="@style/left_image"
                 android:src="@mipmap/setting" />
         </RelativeLayout>
