@@ -25,7 +25,7 @@
             android:layout_marginLeft="60dp"
             android:orientation="vertical"
             android:background="@android:color/white"
-            android:id="@+id/framelayout1" >
+            android:id="@+id/pagerRootId" >
 
             <LinearLayout
                 android:id="@+id/linearLayout1"
@@ -34,7 +34,7 @@
                 android:layout_gravity="center"
                 android:orientation="vertical">
                 <android.support.v4.view.ViewPager
-                    android:id="@+id/guidePages"
+                    android:id="@+id/pageView"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
@@ -51,7 +51,7 @@
                     android:orientation="vertical">
                     <LinearLayout
                         android:layout_marginTop="5dp"
-                        android:id="@+id/viewGroup"
+                        android:id="@+id/dotViewRoot"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/white"

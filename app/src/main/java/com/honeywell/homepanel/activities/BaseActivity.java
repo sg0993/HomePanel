@@ -27,7 +27,7 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 
     private static final int TIME_FRESH = 60 * 1000;
     public static final int WHAT_TIME_FRESH = 100;
-    private int mLeftSelect = CommonData.LEFT_SELECT_HOME;
+    private int mLeftCurPage = CommonData.LEFT_SELECT_HOME;
     private List<View>mLeftViews = new ArrayList<View>();
     private List<ImageView>mLeftImages = new ArrayList<ImageView>();
 
@@ -121,9 +121,9 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
     }
 
 
-    protected  void setLeft(int leftSelect) {
-        mLeftSelect = leftSelect;
-        initLeftSelect();
+    protected  void setLeftNavifation(int curPage) {
+        mLeftCurPage = curPage;
+        initLeftPage();
     }
 
     protected  void setTop(){
@@ -148,11 +148,11 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 
     protected abstract int getContent();
 
-    private void initLeftSelect() {
+    private void initLeftPage() {
         int selectColor = getResources().getColor(R.color.blue);
         int unselectColor = getResources().getColor(R.color.mainpage_noselect_bkg);
         for (int i = 0; i <= CommonData.LEFT_SELECT_SETTING; i++) {
-            if(i == mLeftSelect){
+            if(i == mLeftCurPage){
                 mLeftViews.get(i).setBackgroundColor(selectColor);
             }
             else {
@@ -164,7 +164,7 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
     public void onClick(View view) {
         for (int i = 0; i <=  CommonData.LEFT_SELECT_SETTING; i++) {
             if(mLeftViews.get(i).getId() == view.getId()){
-                setLeft(i);
+                setLeftNavifation(i);
                 break;
             }
         }
