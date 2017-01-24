@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="@dimen/left_button_size"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/home"
+            android:layout_weight="1"
+            style="@style/left_view">
+            <ImageView
+                style="@style/left_image"
+                android:src="@mipmap/home" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/arm"
+            android:layout_weight="1"
+            style="@style/left_view">
+            <ImageView
+                style="@style/left_image"
+                android:src="@mipmap/arm" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/ipcp"
+            android:layout_weight="1"
+            style="@style/left_view">
+            <ImageView
+                style="@style/left_image"
+                android:src="@mipmap/ipcp" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/message"
+            android:layout_weight="1"
+            style="@style/left_view">
+            <ImageView
+                style="@style/left_image"
+                android:src="@mipmap/message" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/dial"
+            android:layout_weight="1"
+            style="@style/left_view">
+            <ImageView
+                style="@style/left_image"
+                android:src="@mipmap/dial" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/setting"
+            android:layout_weight="1"
+            style="@style/left_view">
+            <ImageView
+                style="@style/left_image"
+                android:src="@mipmap/setting" />
+        </RelativeLayout>
+    </LinearLayout>

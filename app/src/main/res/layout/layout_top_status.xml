@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:background="@android:color/black"
+        android:layout_height="@dimen/top_status_high">
+
+        <LinearLayout
+            android:layout_alignParentLeft="true"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:text="8/30 10:53"
+                style="@style/top_textview"/>
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_marginLeft="30dp"
+                android:layout_gravity="center_vertical"
+                style="@style/top_linerlayout">
+                <ImageView
+                    android:src="@mipmap/top_weather_sunny"
+                    style="@style/top_imageview"/>
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:text="26°"
+                    style="@style/top_textview" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginLeft="30dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                style="@style/top_linerlayout">
+                <ImageView
+                    android:src="@mipmap/top_heathy_unheathy"
+                    style="@style/top_imageview"/>
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:text="unheathy"
+                    style="@style/top_textview"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:text="System Disarmed"
+            style="@style/top_textview"/>
+
+        <LinearLayout
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content">
+            <ImageView
+                android:src="@mipmap/top_wifi_connect"
+                style="@style/top_imageview"/>
+            <ImageView
+                android:src="@mipmap/top_arm_arm"
+                style="@style/top_imageview"/>
+            <ImageView
+                android:src="@mipmap/top_usb_connect"
+                style="@style/top_imageview"/>
+        </LinearLayout>
+
+    </RelativeLayout>
