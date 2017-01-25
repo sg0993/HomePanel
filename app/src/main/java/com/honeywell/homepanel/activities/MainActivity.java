@@ -22,11 +22,7 @@ public class MainActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setLeftNavifation(CommonData.LEFT_SELECT_HOME);
-
-
-        //setTop();
     }
 
 
@@ -34,15 +30,5 @@ public class MainActivity extends BaseActivity{
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-
-       /* mPageAdaper = new PageViewAdapter(this,R.layout.mainpage01,R.layout.mainpage02,
-                R.id.pagerRootId,R.id.dotViewRoot,R.id.pageView);*/
     }
-
-    /*@Override
-    protected void initIntentValue() {
-        super.initIntentValue();
-    }
-*/
-
 }

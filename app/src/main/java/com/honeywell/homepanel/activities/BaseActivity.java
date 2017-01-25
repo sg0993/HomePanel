@@ -11,7 +11,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.domain.TopStaus;
@@ -21,7 +20,6 @@ import com.honeywell.homepanel.fragment.HomeFragment;
 import com.honeywell.homepanel.fragment.MessageFragment;
 import com.honeywell.homepanel.fragment.ScenarioEditFragment;
 import com.honeywell.homepanel.fragment.SettingFragment;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,7 +40,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     private static int mLeftCurPage = CommonData.LEFT_SELECT_HOME;
     private List<View>mLeftViews = new ArrayList<View>();
     private List<ImageView>mLeftImages = new ArrayList<ImageView>();
-    private List<Class> mActivities = new ArrayList<Class>();
+    private Map<Integer,Fragment> mFragments = new HashMap<Integer, Fragment>();
 
     private TextView mTimeTv = null;
     private ImageView mWeatherImage = null;
@@ -78,7 +76,6 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //initIntentValue();
         setContentView(getContent());
         initViewAndListener();
         setTop();
@@ -86,7 +83,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         fragmentAdd(true,CommonData.LEFT_SELECT_HOME);
     }
 
-    private Map<Integer,Fragment> mFragments = new HashMap<Integer, Fragment>();
+
     private void fragmentAdd(boolean bAdd, int position)  {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -140,7 +137,6 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         setLeftNavifation(mLeftCurPage);
     }
 
-    //for sub class init self control and listener
     protected void initViewAndListener() {
         initLeftViews();
         initTopViews();
@@ -191,7 +187,6 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 
     protected  void setTop(){
         TopStaus topStatus = TopStaus.getInstance(getApplicationContext());
-        //mTimeTv.setText("");
         if(topStatus.getWeather().equals(CommonData.WEATHER_SUNNY)){
             mWeatherImage.setImageResource(R.mipmap.top_weather_sunny);
         }
@@ -205,9 +200,6 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
             mWifiImage.setImageResource(R.mipmap.top_wifi_connect);
         }
     }
-
-    //protected void initIntentValue() {}
-
 
     protected abstract int getContent();
 
@@ -237,11 +229,6 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            setLeftNavifation(CommonData.LEFT_SELECT_HOME);
-            finish();
-            return  true;
-        }
         return super.onKeyDown(keyCode,event);
     }
 }
