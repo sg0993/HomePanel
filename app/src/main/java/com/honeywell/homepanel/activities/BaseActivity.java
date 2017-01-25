@@ -1,10 +1,12 @@
 package com.honeywell.homepanel.activities;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,11 +15,19 @@ import android.widget.TextView;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.domain.TopStaus;
+import com.honeywell.homepanel.fragment.DeviceEditFragment;
+import com.honeywell.homepanel.fragment.DialFragment;
+import com.honeywell.homepanel.fragment.HomeFragment;
+import com.honeywell.homepanel.fragment.MessageFragment;
+import com.honeywell.homepanel.fragment.ScenarioEditFragment;
+import com.honeywell.homepanel.fragment.SettingFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,7 +35,7 @@ import java.util.TimerTask;
  * Created by H135901 on 1/24/2017.
  */
 
-public abstract class BaseActivity extends Activity implements View.OnClickListener{
+public abstract class BaseActivity extends FragmentActivity implements View.OnClickListener{
 
     private static final int TIME_FRESH = 60 * 1000;
     public static final int WHAT_TIME_FRESH = 100;
@@ -73,18 +83,50 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
         initViewAndListener();
         setTop();
 
-        initClasses();
+        fragmentAdd(true,CommonData.LEFT_SELECT_HOME);
     }
 
-    private void initClasses() {
-        mActivities.add(MainActivity.class);
-        mActivities.add(ScenarioEditActivity.class);
-        mActivities.add(DeviceEditActivity.class);
-        mActivities.add(MessageActivity.class);
-        mActivities.add(DialActivity.class);
-        mActivities.add(SettinglActivity.class);
+    private Map<Integer,Fragment> mFragments = new HashMap<Integer, Fragment>();
+    private void fragmentAdd(boolean bAdd, int position)  {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        Fragment fragment = mFragments.get(position);
+        if(null == fragment){
+            fragment = getNewFragMent(position);
+        }
+        if(bAdd){
+            transaction.add(R.id.main_frameLayout, fragment);
+        }
+        else {
+            transaction.replace(R.id.main_frameLayout, fragment);
+        }
+        transaction.commit();
     }
-
+    private Fragment getNewFragMent(int position) {
+        Fragment fragment = null;
+        switch (position){
+            case CommonData.LEFT_SELECT_HOME:
+                fragment = new HomeFragment("" + position);
+                break;
+            case CommonData.LEFT_SELECT_SCENARIOEDIT:
+                fragment = new ScenarioEditFragment("" + position);
+                break;
+            case CommonData.LEFT_SELECT_DEVICEEDIT:
+                fragment = new DeviceEditFragment("" + position);
+                break;
+            case CommonData.LEFT_SELECT_MESSAGE:
+                fragment = new MessageFragment("" + position);
+                break;
+            case CommonData.LEFT_SELECT_DIAL:
+                fragment = new DialFragment("" + position);
+                break;
+            case CommonData.LEFT_SELECT_SETTING:
+                fragment = new SettingFragment("" + position);
+                break;
+        }
+        mFragments.put(position, fragment);
+        return fragment;
+    }
 
     @Override
     protected void onDestroy() {
@@ -185,21 +227,12 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         for (int i = 0; i <=  CommonData.LEFT_SELECT_SETTING; i++) {
-            if(mLeftViews.get(i).getId() == view.getId()){
-                if(mLeftCurPage != CommonData.LEFT_SELECT_HOME){
-                    finish();
-                }
+            if(mLeftViews.get(i).getId() == view.getId()) {
                 setLeftNavifation(i);
-                launchActivity(i);
+                fragmentAdd(false, i);
                 break;
             }
         }
-    }
-
-    private void launchActivity(int i) {
-        Intent intent = new Intent();
-        intent.setClass(getApplicationContext(),mActivities.get(i));
-        startActivity(intent);
     }
 
     @Override

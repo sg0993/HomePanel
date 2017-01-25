@@ -18,35 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.notAnimation"
-            android:screenOrientation="landscape"
-            android:name=".activities.ScenarioEditActivity"></activity>
 
-        <activity
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.notAnimation"
-            android:screenOrientation="landscape"
-            android:name=".activities.DeviceEditActivity"></activity>
-
-        <activity
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.notAnimation"
-            android:screenOrientation="landscape"
-            android:name=".activities.MessageActivity"></activity>
-
-        <activity
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.notAnimation"
-            android:screenOrientation="landscape"
-            android:name=".activities.DialActivity"></activity>
-
-        <activity
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.notAnimation"
-            android:screenOrientation="landscape"
-            android:name=".activities.SettinglActivity"></activity>
     </application>
 
 </manifest>

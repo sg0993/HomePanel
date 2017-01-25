@@ -39,12 +39,12 @@ public class PageViewAdapter {
 
 
 
-    public PageViewAdapter(Activity activity,int page1ResId, int page2ResId,
+    public PageViewAdapter(View view,Activity activity,int page1ResId, int page2ResId,
                            int frameLayoutId, int dotId, int pageViewId) {
-        init(activity,page1ResId,page2ResId,frameLayoutId,dotId,pageViewId);
+        init(view,activity,page1ResId,page2ResId,frameLayoutId,dotId,pageViewId);
     }
 
-    public void init(Activity activity,int page1ResId,int page2ResId,int frameLayoutId,int dotId,int pageViewId) {
+    public void init(View view,Activity activity,int page1ResId,int page2ResId,int frameLayoutId,int dotId,int pageViewId) {
         //将要分页显示的View装入数组中
         pageViews = new ArrayList<View>();
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -57,7 +57,8 @@ public class PageViewAdapter {
         imageViews = new ImageView[pageViews.size()];
         //从指定的XML文件加载视图
         //viewPics = (ViewGroup) inflater.inflate(R.layout.main, null);
-        viewPics = (ViewGroup) activity.findViewById(frameLayoutId);
+        viewPics = (ViewGroup) view.findViewById(frameLayoutId);
+
         //实例化小圆点的linearLayout和viewpager
         viewPoints = (ViewGroup) viewPics.findViewById(dotId);
         viewPager = (ViewPager) viewPics.findViewById(pageViewId);
