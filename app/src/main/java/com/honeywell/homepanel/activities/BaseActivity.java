@@ -1,9 +1,11 @@
 package com.honeywell.homepanel.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,9 +29,10 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 
     private static final int TIME_FRESH = 60 * 1000;
     public static final int WHAT_TIME_FRESH = 100;
-    private int mLeftCurPage = CommonData.LEFT_SELECT_HOME;
+    private static int mLeftCurPage = CommonData.LEFT_SELECT_HOME;
     private List<View>mLeftViews = new ArrayList<View>();
     private List<ImageView>mLeftImages = new ArrayList<ImageView>();
+    private List<Class> mActivities = new ArrayList<Class>();
 
     private TextView mTimeTv = null;
     private ImageView mWeatherImage = null;
@@ -69,12 +72,30 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
         setContentView(getContent());
         initViewAndListener();
         setTop();
+
+        initClasses();
     }
+
+    private void initClasses() {
+        mActivities.add(MainActivity.class);
+        mActivities.add(ScenarioEditActivity.class);
+        mActivities.add(DeviceEditActivity.class);
+        mActivities.add(MessageActivity.class);
+        mActivities.add(DialActivity.class);
+        mActivities.add(SettinglActivity.class);
+    }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mTimer.cancel();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setLeftNavifation(mLeftCurPage);
     }
 
     //for sub class init self control and listener
@@ -160,13 +181,34 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
             }
         }
     }
+
     @Override
     public void onClick(View view) {
         for (int i = 0; i <=  CommonData.LEFT_SELECT_SETTING; i++) {
             if(mLeftViews.get(i).getId() == view.getId()){
+                if(mLeftCurPage != CommonData.LEFT_SELECT_HOME){
+                    finish();
+                }
                 setLeftNavifation(i);
+                launchActivity(i);
                 break;
             }
         }
+    }
+
+    private void launchActivity(int i) {
+        Intent intent = new Intent();
+        intent.setClass(getApplicationContext(),mActivities.get(i));
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            setLeftNavifation(CommonData.LEFT_SELECT_HOME);
+            finish();
+            return  true;
+        }
+        return super.onKeyDown(keyCode,event);
     }
 }

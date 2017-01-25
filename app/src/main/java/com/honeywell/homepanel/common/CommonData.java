@@ -22,4 +22,5 @@ public class CommonData {
 
     public static final  int WIFI_CONNECTED = 0;
     public static final  int WIFI_DISCONNECT = 1;
+
 }

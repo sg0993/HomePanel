@@ -27,6 +27,8 @@ public class MainActivity extends BaseActivity{
         //setTop();
     }
 
+
+
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
