@@ -14,6 +14,8 @@ public class MainActivity extends BaseActivity{
         return R.layout.layout_home;
     }
 
+
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
