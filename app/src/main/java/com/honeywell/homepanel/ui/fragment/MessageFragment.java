@@ -1,4 +1,4 @@
-package com.honeywell.homepanel.fragment;
+package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -23,6 +23,7 @@ public class MessageFragment extends Fragment {
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_message, null);
+
         return view;
     }
 

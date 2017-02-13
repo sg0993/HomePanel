@@ -1,4 +1,4 @@
-package com.honeywell.homepanel.activities;
+package com.honeywell.homepanel.ui.activities;
 
 import android.os.Bundle;
 
@@ -15,7 +15,7 @@ public class MainActivity extends BaseActivity{
     }
 
 
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

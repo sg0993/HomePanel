@@ -1,4 +1,4 @@
-package com.honeywell.homepanel.uicomponent;
+package com.honeywell.homepanel.ui.uicomponent;
 
 import android.app.Activity;
 import android.os.Parcelable;

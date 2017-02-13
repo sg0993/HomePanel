@@ -1,4 +1,4 @@
-package com.honeywell.homepanel.domain;
+package com.honeywell.homepanel.ui.domain;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package com.honeywell.homepanel.fragment;
+package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.honeywell.homepanel.R;
-import com.honeywell.homepanel.uicomponent.PageViewAdapter;
+import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
 
 /**
  * Created by H135901 on 1/25/2017.

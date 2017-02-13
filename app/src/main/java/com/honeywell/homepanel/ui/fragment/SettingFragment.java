@@ -1,4 +1,4 @@
-package com.honeywell.homepanel.fragment;
+package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

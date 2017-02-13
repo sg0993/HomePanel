@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:background="@android:color/white"
-    tools:context="com.honeywell.homepanel.activities.MainActivity">
+    tools:context=".ui.activities.MainActivity">
 
     <TextView
         android:text="Setting!"
