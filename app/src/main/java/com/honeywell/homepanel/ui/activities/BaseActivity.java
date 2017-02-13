@@ -1,4 +1,4 @@
-package com.honeywell.homepanel.activities;
+package com.honeywell.homepanel.ui.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,15 +11,17 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
-import com.honeywell.homepanel.domain.TopStaus;
-import com.honeywell.homepanel.fragment.DeviceEditFragment;
-import com.honeywell.homepanel.fragment.DialFragment;
-import com.honeywell.homepanel.fragment.HomeFragment;
-import com.honeywell.homepanel.fragment.MessageFragment;
-import com.honeywell.homepanel.fragment.ScenarioEditFragment;
-import com.honeywell.homepanel.fragment.SettingFragment;
+import com.honeywell.homepanel.ui.domain.TopStaus;
+import com.honeywell.homepanel.ui.fragment.DeviceEditFragment;
+import com.honeywell.homepanel.ui.fragment.DialFragment;
+import com.honeywell.homepanel.ui.fragment.HomeFragment;
+import com.honeywell.homepanel.ui.fragment.MessageFragment;
+import com.honeywell.homepanel.ui.fragment.ScenarioEditFragment;
+import com.honeywell.homepanel.ui.fragment.SettingFragment;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
