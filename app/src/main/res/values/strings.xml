@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">HomePanel</string>
+
+    <string name="scenario_home">Home</string>
+    <string name="scenario_away">Away</string>
+    <string name="scenario_sleep">Sleep</string>
+    <string name="scenario_wakeup">Wakeup</string>
 </resources>

@@ -26,36 +26,4 @@ public class DeviceEditFragment extends Fragment {
         return view;
     }
 
-    /**
-     * Created by H135901 on 1/25/2017.
-     */
-
-    @SuppressLint("ValidFragment")
-    public static class DialFragment extends Fragment {
-        /*@Bind(R.id.dialTv)
-        TextView dialTv;*/
-        private String title = "";
-
-        public DialFragment(String title) {
-            super();
-            this.title = title;
-
-        }
-
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_dial, null);
-            
-
-           /* ButterKnife.bind(this, view);
-
-            dialTv.setText("Butter knift Test!!!");*/
-            return view;
-        }
-
-        @Override
-        public void onDestroyView() {
-            super.onDestroyView();
-    //        ButterKnife.unbind(this);
-        }
-    }
 }

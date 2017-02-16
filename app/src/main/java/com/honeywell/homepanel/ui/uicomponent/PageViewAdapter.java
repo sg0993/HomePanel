@@ -28,7 +28,7 @@ public class PageViewAdapter {
     private int mCurPageIndex = 0;
     private ViewPager viewPager;
     /**装分页显示的view的数组*/
-    private ArrayList<View> pageViews;
+    public ArrayList<View> pageViews;
     private ImageView imageView;
     /**将小圆点的图片用数组表示*/
     private ImageView[] imageViews;
