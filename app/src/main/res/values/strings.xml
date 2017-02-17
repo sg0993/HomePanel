@@ -5,6 +5,15 @@
     <string name="scenario_away">Away</string>
     <string name="scenario_sleep">Sleep</string>
     <string name="scenario_wakeup">Wakeup</string>
-
+    <string name="device_air">Air Purifer</string>
+    <string name="device_camera">Camera</string>
+    <string name="device_elevator">Elevator</string>
+    <string name="secnario_arm">Arm</string>
+    <string name="secnario_disarm">Disarm</string>
+    <string name="secnario_sleep">Sleep</string>
+    <string name="secnario_wakeup">Wake up</string>
+    <string name="Speeddial">Speed dial</string>
+    <string name="Subphone">Subphone</string>
+    <string name="Keypad">Keypad</string>
     <string name="welcomehome">Welcome Home</string>
 </resources>

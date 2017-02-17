@@ -45,12 +45,23 @@
             android:launchMode="singleInstance"
             android:screenOrientation="landscape">
         </activity>
-        <activity
+	 <activity
             android:name=".ui.activities.PasswordEnterActivity"
             android:theme="@style/Theme.notAnimation"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape">
         </activity>
+        <service
+            android:name="com.honeywell.homepanel.cloud.CloudConnService"
+            android:exported="false"
+            android:process=":discovery" >
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.cubebase.discoveryadapter.DiscoveryService"
+                    android:exported="false" >
+                </action>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

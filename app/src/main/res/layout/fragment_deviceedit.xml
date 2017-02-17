@@ -4,8 +4,8 @@
     android:id="@+id/content_scrolling"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:background="@android:color/white"
+    android:orientation="horizontal"
     tools:context=".ui.activities.MainActivity">
 
     <FrameLayout
@@ -18,11 +18,11 @@
             android:layout_width="match_parent"
             android:layout_height="68dp"
             android:background="@color/mainpage_noselect_bkg"
-            android:text="Devices"
-            tools:ignore="HardcodedText"
             android:gravity="center"
+            android:text="Devices"
+            android:textAllCaps="false"
             android:textSize="24sp"
-            android:textAllCaps="false"/>
+            tools:ignore="HardcodedText" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,97 +30,17 @@
             android:orientation="vertical"
             android:paddingTop="68dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    style="@style/scenario_view"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/device_elevator_image"
-                        style="@style/scenario_layout_imge"
-                        android:src="@mipmap/device_elevator3x" />
-
-                    <TextView
-                        android:id="@+id/device_elevator_text"
-                        style="@style/scenario_layout_text"
-                        android:text="Elevator" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    style="@style/scenario_view"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/device_camera_image"
-                        style="@style/scenario_layout_imge"
-                        android:src="@mipmap/device_camera3x" />
-
-                    <TextView
-                        android:id="@+id/scenario_camera_text"
-                        style="@style/scenario_layout_text"
-                        android:text="Camera" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    style="@style/scenario_view"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/device_air_image"
-                        style="@style/scenario_layout_imge"
-                        android:src="@mipmap/device_air3x" />
-
-                    <TextView
-                        android:id="@+id/device_air_text"
-                        style="@style/scenario_layout_text"
-                        android:text="Air Purifer"/>
-                </RelativeLayout>
-
-                <RelativeLayout
-                    style="@style/scenario_view"
-                    android:layout_weight="1">
-                </RelativeLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:id="@+id/home_layout"
-                    style="@style/scenario_view"
-                    android:layout_weight="1">
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/scenario_layout"
-                    style="@style/scenario_view"
-                    android:layout_weight="1">
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/device_layout"
-                    style="@style/scenario_view"
-                    android:layout_weight="1">
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/message_layout"
-                    style="@style/scenario_view"
-                    android:layout_weight="1">
-
-                </RelativeLayout>
-            </LinearLayout>
+            <GridView
+                android:id="@+id/gridView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="100dip"
+                android:columnWidth="82dip"
+                android:gravity="center"
+                android:horizontalSpacing="55dip"
+                android:numColumns="4"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="55dip"></GridView>
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

@@ -4,14 +4,18 @@
     android:id="@+id/content_scrolling"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="@android:color/white"
     tools:context=".ui.activities.MainActivity">
-
-    <TextView
-        android:text="Setting!"
+    <GridView
+        android:id="@+id/gridview_setting"
+        android:numColumns="4"
+        android:columnWidth="220dp"
         android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"/>
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content">
+    </GridView>
 </LinearLayout>
