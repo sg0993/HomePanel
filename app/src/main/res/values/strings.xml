@@ -5,4 +5,6 @@
     <string name="scenario_away">Away</string>
     <string name="scenario_sleep">Sleep</string>
     <string name="scenario_wakeup">Wakeup</string>
+
+    <string name="welcomehome">Welcome Home</string>
 </resources>

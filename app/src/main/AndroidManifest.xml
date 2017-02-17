@@ -45,6 +45,12 @@
             android:launchMode="singleInstance"
             android:screenOrientation="landscape">
         </activity>
+        <activity
+            android:name=".ui.activities.PasswordEnterActivity"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>

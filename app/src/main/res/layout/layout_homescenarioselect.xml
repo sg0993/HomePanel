@@ -2,20 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="500dp"
-    android:padding="50dp"
     android:background="@android:color/white"
     android:layout_height="wrap_content">
-    <!--
-        属性说明android:numColumns="auto_fit" GridView的列数设置为自动 也可以直接设置数字
-        android:columnWidth="90dip" 每列的宽度，也就是Item的宽度
-        android:stretchMode="columnWidth" 缩放与列宽度大小同步
-        android:verticalSpacing="10dip" 两行直接按的间距
-        android:horizontalSpacing="10dip" 两列之间的间距
-    -->
     <GridView
-        android:id="@+id/gridView" android:layout_width="fill_parent"
-        android:layout_height="fill_parent" android:numColumns="2"
-        android:verticalSpacing="50dip" android:horizontalSpacing="50dip"
-        android:columnWidth="200dip" android:stretchMode="columnWidth"
-        android:gravity="center"></GridView>
+        android:id="@+id/gridView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:numColumns="2"
+        android:verticalSpacing="1dp"
+        android:horizontalSpacing="1dp"
+        android:columnWidth="200dip"
+        android:stretchMode="columnWidth"
+        android:background="#C6C6C6"
+        android:gravity="center">
+    </GridView>
 </LinearLayout>

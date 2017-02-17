@@ -27,7 +27,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     public HomeFragment(String title) {
         super();
         this.title = title;
-
+    }
+    public HomeFragment() {
+        super();
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = getActivity();
@@ -56,12 +58,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 break;
         }
     }
-
-    private int[] mImages = {R.mipmap.home,R.mipmap.away,R.mipmap.sleep,R.mipmap.wakeup};
-    private int [] mTextes = {R.string.scenario_home,
-            R.string.scenario_away,
-            R.string.scenario_sleep,
-            R.string.scenario_wakeup};
     private void showScenarioSelect() {
         startActivity(new Intent(mContext, ScenarioSelectActivity.class));
     }

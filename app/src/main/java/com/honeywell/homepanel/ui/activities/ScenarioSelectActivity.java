@@ -2,11 +2,11 @@ package com.honeywell.homepanel.ui.activities;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.ui.uicomponent.ImageAdapter;
@@ -36,8 +36,10 @@ public class ScenarioSelectActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position,
                                     long id) {
-                // TODO Auto-generated method stub
-                Toast.makeText(ScenarioSelectActivity.this, "你选择了"+(position+1)+"号图片", Toast.LENGTH_SHORT).show();
+                if(1 == position){
+                    startActivity(new Intent(ScenarioSelectActivity.this,PasswordEnterActivity.class));
+                    finish();
+                }
             }
         });
     }
