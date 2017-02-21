@@ -4,23 +4,24 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+
+import com.honeywell.homepanel.R;
 
 /**
  * Created by H135901 on 2/17/2017.
  */
-public class PasswordAdapter extends BaseAdapter {
+public class PasswordAdapter extends BaseAdapter{
 
-    public static final int WIDTH = 150;
+    private AdapterCallback mAdapterCallback = null;
     private Context mContext;
     private LayoutInflater inflater = null;
-
-    private int[] mImages = null;
-
-    public PasswordAdapter(Context c, int[] images) {
-        mImages = images;
+    int [] mImages = null;
+    public PasswordAdapter(Context c,AdapterCallback adapterCallbacks,int[] images) {
+        mAdapterCallback = adapterCallbacks;
+        this.mImages = images;
         mContext = c;
         inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -44,16 +45,43 @@ public class PasswordAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView view;
+        View view;
+        ViewHolder viewHolder = null;
         if (convertView == null) {
-            //给ImageView设置资源
-            view = new ImageView(mContext);
-            view.setLayoutParams(new AbsListView.LayoutParams(WIDTH,WIDTH));
+            view = inflater.inflate(R.layout.item_passwordnumber, null);
+            viewHolder = new ViewHolder(position,(Button) view.findViewById(R.id.backgroundimage),
+                    (ImageView)view.findViewById(R.id.centerimage));
+            view.setTag(viewHolder);
         } else {
-            view = (ImageView) convertView;
+            view =  convertView;
+            viewHolder = (ViewHolder)view.getTag();
         }
-        view.setImageResource(mImages[position]);
+        if(position == 9){
+            viewHolder.mBackgroundBtn.setBackgroundResource(R.mipmap.clear_background);
+        }
+        else if(position == 11){
+            viewHolder.mBackgroundBtn.setBackgroundResource(R.mipmap.delete_background);
+        }
+        viewHolder.mImageView.setImageResource(mImages[position]);
+
         return view;
     }
 
+    class ViewHolder{
+        private Button mBackgroundBtn = null;
+        private ImageView mImageView = null;
+        private int mPostion = 0;
+
+        public ViewHolder(final int postion, Button mBackgroundBtn, ImageView mImageView) {
+            mPostion = postion;
+            this.mBackgroundBtn = mBackgroundBtn;
+            this.mImageView = mImageView;
+            mBackgroundBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                   mAdapterCallback.subviewOnclick(postion,"");
+                }
+            });
+        }
+    }
 }

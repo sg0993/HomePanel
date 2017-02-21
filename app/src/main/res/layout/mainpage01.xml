@@ -91,6 +91,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:text="Current:Home"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Tap to choose a scene"
                 android:textColor="@android:color/black" />
         </LinearLayout>

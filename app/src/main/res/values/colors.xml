@@ -6,5 +6,10 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="blue">#0000FF</color>
+    <color name="transparent">#00000000</color>
+    <color name="welcome_white">#ffffff</color>
+
+    <color name="normal_grey">#9b9b9b</color>
+    <color name="left_navigation_background">#f5f5f5</color>
 
 </resources>

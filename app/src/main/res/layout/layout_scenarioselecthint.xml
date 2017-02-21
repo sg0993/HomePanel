@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="30dp"
+    android:background="@android:color/black">
+
+    <RelativeLayout
+        android:id="@+id/relative"
+        android:layout_marginTop="@dimen/top_status_high"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView android:background="@drawable/welcome_background"
+            android:layout_width="160.0dip"
+            android:layout_height="160.0dip"
+            android:layout_centerInParent="true" />
+        <com.honeywell.homepanel.ui.uicomponent.CustomProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="200.0dip"
+            android:layout_height="200.0dip"
+            android:progress="10"
+            style="?android:attr/progressBarStyleHorizontal" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:layout_width="100dp"
+            android:layout_height="70dp">
+            <ImageView
+                android:layout_gravity="center_horizontal"
+                android:background="@mipmap/protecting"
+                android:layout_width="60dp"
+                android:layout_height="50dp" />
+            <TextView
+                android:text="Protecting"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_one"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/relative"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/normal_front_size"
+        android:text="You can exit freely within the next 30 seconds."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_two"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/tv_one"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/normal_front_size"
+        android:text="If you decide not protect,your home will return to Home Mode."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/cancel"
+        android:layout_marginBottom="50dp"
+        android:textSize="@dimen/normal_front_size"
+        android:textColor="@android:color/white"
+        android:text="Cancel"
+        android:background="#1792e5"
+        android:layout_width="260dp"
+        android:layout_height="60dp" />
+
+
+</RelativeLayout>

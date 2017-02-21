@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,6 +40,8 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     private static final int TIME_FRESH = 60 * 1000;
     public static final int WHAT_TIME_FRESH = 100;
     private static int mLeftCurPage = CommonData.LEFT_SELECT_HOME;
+
+    private static int mLeftPrePage = CommonData.LEFT_SELECT_HOME;
     private List<View>mLeftViews = new ArrayList<View>();
     private List<ImageView>mLeftImages = new ArrayList<ImageView>();
     private Map<Integer,Fragment> mFragments = new HashMap<Integer, Fragment>();
@@ -184,6 +185,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 
 
     protected  void setLeftNavifation(int curPage) {
+        mLeftPrePage = mLeftCurPage;
         mLeftCurPage = curPage;
         initLeftPage();
     }
@@ -207,7 +209,8 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     protected abstract int getContent();
 
     private void initLeftPage() {
-        int selectColor = getResources().getColor(R.color.blue);
+        //int selectColor = getResources().getColor(R.color.transparent);
+        /*int selectColor = getResources().getColor(R.color.blue);
         int unselectColor = getResources().getColor(R.color.mainpage_noselect_bkg);
         for (int i = 0; i <= CommonData.LEFT_SELECT_SETTING; i++) {
             if(i == mLeftCurPage){
@@ -215,6 +218,50 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
             }
             else {
                 mLeftViews.get(i).setBackgroundColor(unselectColor);
+            }
+        }*/
+        //mLeftViews.get(mLeftCurPage).setBackgroundColor(selectColor);
+
+        switch (mLeftCurPage){
+            case CommonData.LEFT_SELECT_HOME:
+                mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.home_select);
+                break;
+            case CommonData.LEFT_SELECT_SCENARIOEDIT:
+                mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.scenario_select);
+                break;
+            case CommonData.LEFT_SELECT_DEVICEEDIT:
+                mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.device_select);
+                break;
+            case CommonData.LEFT_SELECT_MESSAGE:
+                mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.message);
+                break;
+            case CommonData.LEFT_SELECT_DIAL:
+                mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.dial_select);
+                break;
+            case CommonData.LEFT_SELECT_SETTING:
+                mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.setting);
+                break;
+        }
+        if(mLeftCurPage != mLeftPrePage){
+            switch (mLeftPrePage){
+                case CommonData.LEFT_SELECT_HOME:
+                    mLeftImages.get(mLeftPrePage).setImageResource(R.mipmap.home);
+                    break;
+                case CommonData.LEFT_SELECT_SCENARIOEDIT:
+                    mLeftImages.get(mLeftPrePage).setImageResource(R.mipmap.scenario);
+                    break;
+                case CommonData.LEFT_SELECT_DEVICEEDIT:
+                    mLeftImages.get(mLeftPrePage).setImageResource(R.mipmap.device);
+                    break;
+                case CommonData.LEFT_SELECT_MESSAGE:
+                    mLeftImages.get(mLeftPrePage).setImageResource(R.mipmap.message);
+                    break;
+                case CommonData.LEFT_SELECT_DIAL:
+                    mLeftImages.get(mLeftPrePage).setImageResource(R.mipmap.dial);
+                    break;
+                case CommonData.LEFT_SELECT_SETTING:
+                    mLeftImages.get(mLeftPrePage).setImageResource(R.mipmap.setting);
+                    break;
             }
         }
     }
