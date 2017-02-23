@@ -13,32 +13,21 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 
 import com.honeywell.homepanel.R;
-
-import com.honeywell.homepanel.ui.activities.IndicatorBoardActivity;
-import com.honeywell.homepanel.ui.activities.PasswordEnterActivity;
-import com.honeywell.homepanel.ui.activities.ScenarioSelectActivity;
-
 import com.honeywell.homepanel.common.Message.MessageEvent;
-
+import com.honeywell.homepanel.ui.activities.PasswordEnterActivity;
 import com.honeywell.homepanel.ui.uicomponent.ImageAdapter;
 import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
-
-
-import butterknife.OnLongClick;
-
-import static android.R.attr.bottom;
-import static android.R.attr.onClick;
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static android.widget.AdapterView.*;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import static android.widget.AdapterView.LayoutParams;
+import static android.widget.AdapterView.OnClickListener;
+import static android.widget.AdapterView.OnItemLongClickListener;
 
 /**
  * Created by H135901 on 1/25/2017.

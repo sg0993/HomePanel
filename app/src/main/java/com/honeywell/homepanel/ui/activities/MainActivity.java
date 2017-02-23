@@ -19,7 +19,7 @@ public class MainActivity extends BaseActivity{
 
     //private PageViewAdapter mPageAdaper = null;
 
-    private View mTopView = null;
+    //private View mTopView = null;
     private View mCenterView = null;
 
     @Override
@@ -30,7 +30,7 @@ public class MainActivity extends BaseActivity{
         // start watch dog
         startService(new Intent(this, WatchDogService.class));
 
-        mTopView = findViewById(R.id.top_status);
+        //mTopView = findViewById(R.id.top_status);
         mCenterView = findViewById(R.id.main_frameLayout);
     }
 
@@ -39,14 +39,14 @@ public class MainActivity extends BaseActivity{
         super.onStop();
     }
 
-    private void setTopViewBackground(int curScenario){
+    /*private void setTopViewBackground(int curScenario){
         if(curScenario == CommonData.SCENARIO_HOME || curScenario == CommonData.SCENARIO_WAKEUP){
             mTopView.setBackgroundColor(getResources().getColor(R.color.topbackground_disarm));
         }
         else if(curScenario == CommonData.SCENARIO_AWAY || curScenario == CommonData.SCENARIO_SLEEP){
             mTopView.setBackgroundColor(getResources().getColor(R.color.topbackground_arm));
         }
-    }
+    }*/
 
     private void setCenterViewBackground(int curScenario){
         if(curScenario == CommonData.SCENARIO_HOME || curScenario == CommonData.SCENARIO_WAKEUP){
@@ -60,15 +60,16 @@ public class MainActivity extends BaseActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        setBackgroundByScenario(TopStaus.getInstance(this).mCurScenario);
+        //setBackgroundByScenario(TopStaus.getInstance(this).mCurScenario);
+        setCenterViewBackground(TopStaus.getInstance(this).mCurScenario);
         Log.d(TAG,"onResume() mCurScenario:"+ TopStaus.getInstance(this).mCurScenario);
     }
 
-    private void setBackgroundByScenario(int scenario) {
+   /* private void setBackgroundByScenario(int scenario) {
         setTopViewBackground(scenario);
         setCenterViewBackground(scenario);
     }
-
+*/
 
     @Override
     protected void onDestroy() {

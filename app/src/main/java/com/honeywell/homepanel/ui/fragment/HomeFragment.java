@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.activities.ScenarioSelectActivity;
 import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
@@ -156,6 +157,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         mArmHintHasEventTv = (TextView)mainPage1.findViewById(R.id.arm_hint_hasevent);
         mArmHintNoEventTv = (TextView)mainPage1.findViewById(R.id.arm_hint_noevent);
         mCurrentScenarioTv = (TextView)mainPage1.findViewById(R.id.currentscenario);
+
+        mGoodWhatHasEventTv.setOnClickListener(this);// for test call
     }
 
     @Override
@@ -164,6 +167,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         switch (viewId){
             case R.id.choose_scenarioImage:
                 showScenarioSelect();
+                break;
+            case R.id.goodwhat_hasevent:// for test call
+                Intent intent = new Intent(mContext, CallActivity.class);
+                //
+                startActivity(intent);
                 break;
             default:
                 break;

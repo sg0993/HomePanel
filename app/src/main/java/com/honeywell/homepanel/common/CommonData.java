@@ -32,4 +32,10 @@ public class CommonData {
     public static final  int SCENARIO_WAKEUP = 4;
 
     public static final  String INTENT_KEY_SCENARIO = "cur_scenario";
+
+    public static  final int CALL_OUTGOING_NEIGHBOR = 0;
+    public static  final int call_CONNECTED_AUDIO_NETGHBOR = 1;
+    public static  final int call_CONNECTED_VIDEO_NETGHBOR = 2;
+    public static  final int CALL_LOBBY_INCOMMING = 3;
+    public static  final int CALL_LOBBY_CONNECTED = 4;
 }

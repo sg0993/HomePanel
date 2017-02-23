@@ -14,8 +14,6 @@ import android.widget.ImageView;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.ui.activities.IndicatorBoardActivity;
-import com.honeywell.homepanel.ui.activities.PasswordEnterActivity;
-import com.honeywell.homepanel.ui.activities.ScenarioSelectActivity;
 import com.honeywell.homepanel.ui.uicomponent.ImageAdapter;
 import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
 

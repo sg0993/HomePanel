@@ -1,8 +1,6 @@
 package com.honeywell.homepanel.ui.activities;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -10,65 +8,38 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
-import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.fragment.DeviceEditFragment;
 import com.honeywell.homepanel.ui.fragment.DialFragment;
 import com.honeywell.homepanel.ui.fragment.HomeFragment;
 import com.honeywell.homepanel.ui.fragment.MessageFragment;
 import com.honeywell.homepanel.ui.fragment.ScenarioEditFragment;
 import com.honeywell.homepanel.ui.fragment.SettingFragment;
+import com.honeywell.homepanel.ui.uicomponent.TopViewBrusher;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by H135901 on 1/24/2017.
  */
 
 public abstract class BaseActivity extends FragmentActivity implements View.OnClickListener{
-
-    private static final int TIME_FRESH = 60 * 1000;
-    public static final int WHAT_TIME_FRESH = 100;
     private static int mLeftCurPage = CommonData.LEFT_SELECT_HOME;
-
     private static int mLeftPrePage = CommonData.LEFT_SELECT_HOME;
     private List<View>mLeftViews = new ArrayList<View>();
     private List<ImageView>mLeftImages = new ArrayList<ImageView>();
     private Map<Integer,Fragment> mFragments = new HashMap<Integer, Fragment>();
-
-    private TextView mTimeTv = null;
-    private ImageView mWeatherImage = null;
-    private TextView mTemperatureTv = null;
-    private ImageView mHealthyImage = null;
-    private TextView mHealthyTv = null;
-    private TextView mArmTv = null;
-    private ImageView mWifiImage = null;
-
-    private Timer mTimer = new Timer();
-    private Handler mHandler = new Handler(){
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case  WHAT_TIME_FRESH:
-                    setTime();
-                    break;
-            }
-        }
-    };
+    private TopViewBrusher mTopViewBrusher = new TopViewBrusher();
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +48,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 
         setContentView(getContent());
         initViewAndListener();
-        setTop();
+        mTopViewBrusher.initTop(this);
 
         fragmentAdd(true,CommonData.LEFT_SELECT_HOME);
     }
@@ -85,28 +56,15 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     protected void onResume() {
         super.onResume();
         setLeftNavifation(mLeftCurPage);
+
+        mTopViewBrusher.setTop(getApplicationContext());
     }
-@Override
+    @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
-        mTimer.cancel();
+        mTopViewBrusher.destory();
     }
-
-   
-    private void setTime() {
-        String time = getCurrentTimeString();
-        mTimeTv.setText(time);
-    }
-
-    public String getCurrentTimeString() {
-        SimpleDateFormat sDateFormat = new SimpleDateFormat("MM/dd HH:mm");
-        String time = sDateFormat.format(new Date());
-        return time;
-    }
-
-    
-
 
     private void fragmentAdd(boolean bAdd, int position)  {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -149,28 +107,8 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         return fragment;
     }
 
-    
-
     protected void initViewAndListener() {
         initLeftViews();
-        initTopViews();
-    }
-
-    private void initTopViews() {
-        mTimeTv = (TextView)findViewById(R.id.timeTv);
-        mWeatherImage = (ImageView) findViewById(R.id.weatherImage);
-        mTemperatureTv = (TextView)findViewById(R.id.temperatureTv);
-        mHealthyImage = (ImageView) findViewById(R.id.healthyImage);
-        mHealthyTv = (TextView)findViewById(R.id.healthyTv);
-        mArmTv = (TextView)findViewById(R.id.armTv);
-        mWifiImage = (ImageView) findViewById(R.id.wifiImage);;
-
-        mTimeTv.setText(getCurrentTimeString());
-        mTimer.schedule(new TimerTask() {
-            public void run() {
-                mHandler.sendEmptyMessage(WHAT_TIME_FRESH);
-            }
-        },TIME_FRESH,TIME_FRESH);
     }
 
     private void initLeftViews() {
@@ -200,38 +138,9 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         initLeftPage();
     }
 
-    protected  void setTop(){
-        TopStaus topStatus = TopStaus.getInstance(getApplicationContext());
-        if(topStatus.getWeather().equals(CommonData.WEATHER_SUNNY)){
-            mWeatherImage.setImageResource(R.mipmap.top_weather_sunny);
-        }
-        mTemperatureTv.setText(topStatus.getTemperature() + CommonData.TEMPERATURE_DUSTR);
-        if(topStatus.getHealthy().equals(CommonData.UNHEALTHY)){
-            mHealthyImage.setImageResource(R.mipmap.top_heathy_unheathy);
-        }
-        mHealthyTv.setText(topStatus.getHealthy());
-        mArmTv.setText(topStatus.getArmStatus());
-        if(topStatus.getWifiStatus() == CommonData.WIFI_CONNECTED){
-            mWifiImage.setImageResource(R.mipmap.top_wifi_connect);
-        }
-    }
-
     protected abstract int getContent();
 
     private void initLeftPage() {
-        //int selectColor = getResources().getColor(R.color.transparent);
-        /*int selectColor = getResources().getColor(R.color.blue);
-        int unselectColor = getResources().getColor(R.color.mainpage_noselect_bkg);
-        for (int i = 0; i <= CommonData.LEFT_SELECT_SETTING; i++) {
-            if(i == mLeftCurPage){
-                mLeftViews.get(i).setBackgroundColor(selectColor);
-            }
-            else {
-                mLeftViews.get(i).setBackgroundColor(unselectColor);
-            }
-        }*/
-        //mLeftViews.get(mLeftCurPage).setBackgroundColor(selectColor);
-
         switch (mLeftCurPage){
             case CommonData.LEFT_SELECT_HOME:
                 mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.home_select);

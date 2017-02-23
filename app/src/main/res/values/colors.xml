@@ -22,4 +22,6 @@
     <color name="centerbackground_arm">#ffa35c</color>
 
     <color name="home_text_transparent">#7fffffff</color>
+
+    <color name="call_text_transparent">#cfffffff</color>
 </resources>
