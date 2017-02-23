@@ -19,7 +19,8 @@
         <include
             android:id="@+id/top_status"
             layout="@layout/layout_top_status"/>
-        <FrameLayout android:layout_height="match_parent"
+        <FrameLayout
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:id="@+id/main_frameLayout">
         </FrameLayout>

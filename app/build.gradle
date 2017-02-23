@@ -34,4 +34,5 @@ dependencies {
     compile 'com.android.support:support-v4:24.1.0'
     apt 'com.jakewharton:butterknife:7.0.1'
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
 }

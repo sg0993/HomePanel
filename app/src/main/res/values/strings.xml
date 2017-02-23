@@ -10,10 +10,33 @@
     <string name="device_elevator">Elevator</string>
     <string name="secnario_arm">Arm</string>
     <string name="secnario_disarm">Disarm</string>
+    <string name="secnario_home">Home</string>
     <string name="secnario_sleep">Sleep</string>
     <string name="secnario_wakeup">Wake up</string>
+    <string name="secnario_away">Away</string>
     <string name="Speeddial">Speed dial</string>
     <string name="Subphone">Subphone</string>
     <string name="Keypad">Keypad</string>
     <string name="welcomehome">Welcome Home</string>
+    <string name="msg_tab1">Event</string>
+    <string name="lowbattery">Front door lock has low battery, tap to learn how to change your door lock.</string>
+    <string name="temp_hot">The inside temperature is too hot, tap to control air condition."</string>
+    <string name="newvisitor">You have a new visitor, tap to check.</string>
+
+    <string name="goodmoring">Good morning!</string>
+    <string name="goodafternoon">Good afternoon!</string>
+    <string name="goodevening">Good evening!</string>
+
+    <string name="armhint">Everything looks good, your home is secure while you’re away.</string>
+    <string name="disarmhint">Everything looks good, your home is ready to arm.</string>
+    <string name="currnt">Current:</string>
+
+    <string name="password_hint_disarm">Please enter your password to disarm.</string>
+    <string name="password_hint_arm">Please enter your password to arm.</string>
+    <string name="password_hint_passworderror">Your password is incorrect,please try again.</string>
+    <string name="msg_tab2">Alarm History</string>
+    <string name="msg_tab3">Notification</string>
+    <string name="msg_tab4">Voice Message</string>
+    <string name="indicator_board_cancel">Cancel</string>
+    <string name="indicator_board_tap">Tap to Call lift</string>
 </resources>

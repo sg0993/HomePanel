@@ -2,7 +2,7 @@
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="@dimen/left_button_size"
+        android:layout_width="80dp"
         android:orientation="vertical"
         android:background="@color/left_navigation_background"
         android:layout_height="match_parent">

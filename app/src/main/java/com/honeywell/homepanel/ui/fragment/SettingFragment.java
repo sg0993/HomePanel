@@ -2,6 +2,7 @@ package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,11 @@ import android.widget.GridView;
 import android.widget.SimpleAdapter;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.common.Message.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,12 +36,14 @@ public class SettingFragment extends Fragment {
             R.mipmap.setting_volume, R.mipmap.setting_date,R.mipmap.setting_account,
             R.mipmap.setting_advanced, R.mipmap.setting_cleaning,R.mipmap.setting_upgrade};
     private String[] iconName = {"WIFI","Location","Brightness","Date&Time",
-            "Account Settings","Advanced Setting","Cleaning","Upgrade"};
-    public SettingFragment(String title) {
-        super();
-        this.title = title;
+            "Account Settings","Advanced Settings","Cleaning","Upgrade"};
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
     }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setting, null);
         gridView = (GridView) view.findViewById(R.id.gridview_setting);
@@ -46,15 +54,32 @@ public class SettingFragment extends Fragment {
         gridView.setAdapter(simpleAdapter);
         return view;
     }
-public List<Map<String, Object>> getData(){
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    public SettingFragment(String title) {
+        super();
+        this.title = title;
+
+    }
+
+    public List<Map<String, Object>> getData(){
         for(int i=0;i<icon.length;i++){
             Map<String,Object> map = new HashMap<String, Object>();
             map.put("image",icon[i]);
             map.put("text",iconName[i]);
             data_list.add(map);
         }
-    return data_list;
-}
+        return data_list;
+    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(MessageEvent event)
+    {
 
+    }
 }

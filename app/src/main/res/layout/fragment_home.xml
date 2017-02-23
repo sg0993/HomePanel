@@ -5,7 +5,7 @@
     android:layout_height="fill_parent"
     android:layout_marginLeft="60dp"
     android:orientation="vertical"
-    android:background="@android:color/white"
+
     android:id="@+id/pagerRootId" >
 
     <LinearLayout
@@ -31,14 +31,28 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
+                android:visibility="gone"
                 android:layout_marginTop="5dp"
                 android:id="@+id/dotViewRoot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
+                android:background="@color/centerbackground_disarm"
                 android:layout_alignParentBottom="true"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/left_view"
+                    android:layout_width="7dp"
+                    android:layout_gravity="center"
+
+                    android:layout_height="7dp" />
+                <ImageView
+                    android:layout_marginLeft="5dp"
+                    android:layout_gravity="center"
+                    android:id="@+id/right_view"
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    />
             </LinearLayout>
         </RelativeLayout>
 

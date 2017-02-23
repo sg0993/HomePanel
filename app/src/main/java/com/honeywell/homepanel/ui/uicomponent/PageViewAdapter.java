@@ -20,8 +20,10 @@ import java.util.ArrayList;
 
 public class PageViewAdapter {
 
-    public static final int DOT_WIDTH = 30;
+    public static final int DOT_WIDTH = 20;
     public static final int DOT_HEIGHT = DOT_WIDTH;
+
+    public static final int DOT_UNFOCUES = DOT_WIDTH-2;
 
     private static  final  String TAG = "PageViewAdapter";
 
@@ -50,8 +52,8 @@ public class PageViewAdapter {
         LayoutInflater inflater = activity.getLayoutInflater();
         View pageView1 = inflater.inflate(page1ResId,null);
         pageViews.add(pageView1);
-        View pageView2 = inflater.inflate(page2ResId,null);
-        pageViews.add(pageView2);
+        /*View pageView2 = inflater.inflate(page2ResId,null);
+        pageViews.add(pageView2);*/
 
         //创建imageviews数组，大小是要显示的图片的数量
         imageViews = new ImageView[pageViews.size()];
@@ -65,21 +67,29 @@ public class PageViewAdapter {
 
         //添加小圆点的图片
         for(int i = 0;i < pageViews.size();  i++){
-            imageView = new ImageView(activity);
+            /*imageView = new ImageView(activity);
             //设置小圆点imageview的参数
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(DOT_WIDTH,DOT_HEIGHT));//创建一个宽高均为20 的布局
-            imageView.setPadding(DOT_WIDTH, 0, DOT_HEIGHT, 0);
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(DOT_WIDTH,DOT_HEIGHT));//创建一个宽高均为20 的布局*/
+            //imageView.setPadding(DOT_WIDTH, 0, DOT_HEIGHT, 0);
+            if(i == 0){
+                imageView = (ImageView) viewPoints.findViewById(R.id.left_view);
+            }
+            else{
+                imageView = (ImageView) viewPoints.findViewById(R.id.right_view);
+            }
             //将小圆点layout添加到数组中
             imageViews[i] = imageView;
 
             //默认选中的是第一张图片，此时第一个小圆点是选中状态，其他不是
             if(i==0){
-                imageViews[i].setBackgroundResource(R.drawable.page_indicator_focused);
+                //imageViews[i].setBackgroundResource(R.drawable.page_indicator_focused);
+                imageViews[i].setImageResource(R.mipmap.dot_focus);
             }else{
-                imageViews[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+                //imageViews[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+                imageViews[i].setImageResource(R.mipmap.dot_unfocus);
             }
             //将imageviews添加到小圆点视图组
-            viewPoints.addView(imageViews[i]);
+            //viewPoints.addView(imageViews[i]);
         }
         viewPager.setAdapter(new GuidePageAdapter());
         viewPager.setOnPageChangeListener(new GuidePageChangeListener());
@@ -132,10 +142,13 @@ public class PageViewAdapter {
         @Override
         public void onPageSelected(int position) {
             for (int i = 0; i < imageViews.length; i++) {
-                imageViews[position].setBackgroundResource(R.drawable.page_indicator_focused);
+                //imageViews[position].setBackgroundResource(R.drawable.page_indicator_focused);
+                imageViews[i].setImageResource(R.mipmap.dot_focus);
                 //不是当前选中的page，其小圆点设置为未选中的状态
                 if (position != i) {
-                    imageViews[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+                    //imageViews[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+                    imageViews[i].setImageResource(R.mipmap.dot_unfocus);
+                    //imageView.setLayoutParams(new android.widget.LinearLayout.LayoutParams(DOT_UNFOCUES,DOT_UNFOCUES));//创建一个宽高均为20 的布
                 }
             }
             Log.d(TAG, "onPageSelected() position=" + position);

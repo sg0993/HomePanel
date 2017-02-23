@@ -26,5 +26,10 @@ public class CommonData {
     public static final int SRCURITY_PASSWORD_LENGTH = 6;
 
 
+    public static final  int SCENARIO_HOME = 1;
+    public static final  int SCENARIO_AWAY = 2;
+    public static final  int SCENARIO_SLEEP = 3;
+    public static final  int SCENARIO_WAKEUP = 4;
 
+    public static final  String INTENT_KEY_SCENARIO = "cur_scenario";
 }

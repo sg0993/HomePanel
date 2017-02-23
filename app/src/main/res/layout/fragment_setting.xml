@@ -10,12 +10,12 @@
     <GridView
         android:id="@+id/gridview_setting"
         android:numColumns="4"
-        android:columnWidth="220dp"
-        android:gravity="center"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="50dp"
-        android:layout_marginTop="20dp"
-        android:layout_width="500dp"
+        android:columnWidth="@dimen/activity_horizontal_margin"
+        android:gravity="center_horizontal"
+        android:verticalSpacing="20dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="40dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </GridView>
 </LinearLayout>

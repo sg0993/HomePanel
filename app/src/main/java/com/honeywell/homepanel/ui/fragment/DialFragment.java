@@ -3,18 +3,39 @@ package com.honeywell.homepanel.ui.fragment;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.ui.activities.MainActivity;
+import com.honeywell.homepanel.ui.fragment.SpeedDialFragment;
+import com.honeywell.homepanel.ui.fragment.SubphoneFragment;
+import com.honeywell.homepanel.ui.fragment.KeypadFragment;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -33,10 +54,11 @@ public class DialFragment extends Fragment implements View.OnClickListener{
     private List<Button> btnList = new ArrayList<Button>();
     private FragmentManager fm;
     private FragmentTransaction ft;
-    public DialFragment(String title) {
-        super();
-        this.title = title;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +70,6 @@ public class DialFragment extends Fragment implements View.OnClickListener{
         initViews(view);
         initEvents();
 
-        // 進入系統默認為speedDial
         fm = getFragmentManager();
         ft = fm.beginTransaction();
         setBackgroundColorById(R.id.speed_dial);
@@ -56,6 +77,24 @@ public class DialFragment extends Fragment implements View.OnClickListener{
         ft.replace(R.id.fragment_content, new SpeedDialFragment());
         ft.commit();
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        //ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    public DialFragment(String title) {
+        super();
+        this.title = title;
+
     }
 
     private void initViews(View view) {
@@ -110,10 +149,11 @@ public class DialFragment extends Fragment implements View.OnClickListener{
         }
         ft.commit();
     }
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        //ButterKnife.unbind(this);
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(MessageEvent event)
+    {
+
     }
 }
 

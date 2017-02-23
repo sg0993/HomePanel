@@ -9,20 +9,19 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_OWNER_DATA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" >
-    </uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" >
-    </uses-permission>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
-    <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="android.permission.SET_TIME_ZONE"/>
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SET_TIME_ZONE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RESTART_PACKAGES"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/homepanel"
@@ -60,12 +59,160 @@
         <service
             android:name="com.honeywell.homepanel.cloud.CloudConnService"
             android:exported="false"
-            android:process=":discovery" >
+            android:process=":cloudservice">
             <intent-filter>
                 <action
-                    android:name="com.honeywell.cubebase.discoveryadapter.DiscoveryService"
-                    android:exported="false" >
-                </action>
+                    android:name="com.honeywell.homepanel.cloud.CloudConnService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.community.CommunityService"
+            android:exported="false"
+            android:process=":communityservice">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.community.CommunityService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.configcenter.ConfigService"
+            android:exported="false"
+            android:process=":configservice">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.configcenter.ConfigService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.control.ControlService"
+            android:exported="false"
+            android:process=":controlservice">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.control.ControlService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.deviceadapter.DeviceManageService"
+            android:exported="false"
+            android:process=":devicemanage">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.deviceadapter.DeviceManageService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.ipc.IPCService"
+            android:exported="false"
+            android:process=":ipcservice">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.ipc.IPCService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.ipdc.IPDCService"
+            android:exported="false"
+            android:process=":ipdcservice">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.ipdc.IPDCService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.logserver.LogService"
+            android:exported="false"
+            android:process=":logservice">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.logserver.LogService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.pbx.PBXService"
+            android:exported="false"
+            android:process=":pbxservice">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.pbx.PBXService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.security.SecurityService"
+            android:exported="false"
+            android:process=":security">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.security.SecurityService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.sip.SipService"
+            android:exported="false"
+            android:process=":sipservice">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.sip.SipService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.subphoneservice.SubPhoneClientService"
+            android:exported="false"
+            android:process=":subphoneclient">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.subphoneservice.SubPhoneClientService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.subphoneservice.SubPhoneServerService"
+            android:exported="false"
+            android:process=":subphoneserver">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.subphoneservice.SubPhoneServerService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.subphoneuiservice.SubPhoneUIService"
+            android:exported="false">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.subphoneuiservice.SubPhoneUIService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.upgrade.UpgradeService"
+            android:exported="false"
+            android:process=":upgrade">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.upgrade.UpgradeService"
+                    android:exported="false"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.honeywell.homepanel.watchdog.WatchDogService"
+            android:exported="false"
+            android:process=":watchdog">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.watchdog.WatchDogService"
+                    android:exported="false"></action>
             </intent-filter>
         </service>
     </application>

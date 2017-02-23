@@ -17,7 +17,7 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="68dp"
-            android:background="@color/mainpage_noselect_bkg"
+            android:background="@color/pressblue"
             android:gravity="center"
             android:text="Scences"
             android:textAllCaps="false"
@@ -27,21 +27,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingTop="68dp">
+            android:orientation="vertical">
 
             <GridView
                 android:id="@+id/gridView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_margin="100dip"
-                android:columnWidth="82dip"
+                android:layout_marginTop="100dip"
+                android:columnWidth="20dip"
                 android:gravity="center"
-                android:horizontalSpacing="132dip"
-                android:verticalSpacing="132dip"
+                android:horizontalSpacing="20dip"
                 android:numColumns="2"
-                android:stretchMode="columnWidth">
-                </GridView>
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="20dip"
+                android:longClickable="true"/>
 
         </LinearLayout>
     </FrameLayout>

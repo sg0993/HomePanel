@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.fragment.DeviceEditFragment;
 import com.honeywell.homepanel.ui.fragment.DialFragment;
@@ -21,6 +22,10 @@ import com.honeywell.homepanel.ui.fragment.HomeFragment;
 import com.honeywell.homepanel.ui.fragment.MessageFragment;
 import com.honeywell.homepanel.ui.fragment.ScenarioEditFragment;
 import com.honeywell.homepanel.ui.fragment.SettingFragment;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,6 +70,30 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         }
     };
 
+	@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+
+        setContentView(getContent());
+        initViewAndListener();
+        setTop();
+
+        fragmentAdd(true,CommonData.LEFT_SELECT_HOME);
+    }
+ 	@Override
+    protected void onResume() {
+        super.onResume();
+        setLeftNavifation(mLeftCurPage);
+    }
+@Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+        mTimer.cancel();
+    }
+
+   
     private void setTime() {
         String time = getCurrentTimeString();
         mTimeTv.setText(time);
@@ -76,16 +105,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         return time;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(getContent());
-        initViewAndListener();
-        setTop();
-
-        fragmentAdd(true,CommonData.LEFT_SELECT_HOME);
-    }
+    
 
 
     private void fragmentAdd(boolean bAdd, int position)  {
@@ -129,17 +149,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         return fragment;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mTimer.cancel();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setLeftNavifation(mLeftCurPage);
-    }
+    
 
     protected void initViewAndListener() {
         initLeftViews();
@@ -233,7 +243,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
                 mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.device_select);
                 break;
             case CommonData.LEFT_SELECT_MESSAGE:
-                mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.message);
+                mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.message_select);
                 break;
             case CommonData.LEFT_SELECT_DIAL:
                 mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.dial_select);
@@ -280,5 +290,11 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return super.onKeyDown(keyCode,event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(MessageEvent event)
+    {
+
     }
 }

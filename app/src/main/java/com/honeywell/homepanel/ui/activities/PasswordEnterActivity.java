@@ -8,15 +8,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.ui.uicomponent.AdapterCallback;
 import com.honeywell.homepanel.ui.uicomponent.PasswordAdapter;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * Created by H135901 on 2/16/2017.
@@ -31,6 +36,8 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
 
     private List<ImageView>mImageViews = new ArrayList<ImageView>();
 
+    private TextView mPasswordHint = null;
+
     private static final int IMAGES[] = {
         R.mipmap.one,R.mipmap.two,R.mipmap.three,
             R.mipmap.four,R.mipmap.five,R.mipmap.six,
@@ -38,11 +45,14 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
             R.mipmap.clear,R.mipmap.zero,R.mipmap.delete,
     };
 
+    private int mSelect_Scenario = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		EventBus.getDefault().register(this);
         setContentView(R.layout.layout_passwordenter);
 
+        mSelect_Scenario = getIntent().getIntExtra(CommonData.INTENT_KEY_SCENARIO,1);
         initGridView();
         initViews();
     }
@@ -59,7 +69,9 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
 
     private void comparePassword(StringBuffer password ) {
         if(password.length() == CommonData.SRCURITY_PASSWORD_LENGTH){
-            startActivity(new Intent(this,ScenarioSelectHintActivity.class));
+            Intent intent = new Intent(this,ScenarioSelectHintActivity.class);
+            intent.putExtra(CommonData.INTENT_KEY_SCENARIO,mSelect_Scenario);
+            startActivity(intent);
             finish();
         }
     }
@@ -84,6 +96,15 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
         mImageViews.add((ImageView)findViewById(R.id.fourImage));
         mImageViews.add((ImageView)findViewById(R.id.fiveImage));
         mImageViews.add((ImageView)findViewById(R.id.sixImage));
+
+        mPasswordHint = (TextView)findViewById(R.id.tv_enterhint);
+        if(mSelect_Scenario == CommonData.SCENARIO_HOME || mSelect_Scenario == CommonData.SCENARIO_WAKEUP){
+            mPasswordHint.setText(getString(R.string.password_hint_disarm));
+        }
+        else if(mSelect_Scenario == CommonData.SCENARIO_AWAY || mSelect_Scenario == CommonData.SCENARIO_SLEEP){
+            mPasswordHint.setText(getString(R.string.password_hint_arm));
+        }
+
     }
 
     @Override
@@ -120,5 +141,16 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
         }
         setPasswordImages(mPasswordStr.length());
         comparePassword(mPasswordStr);
+    }
+	@Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(MessageEvent event)
+    {
+
     }
 }

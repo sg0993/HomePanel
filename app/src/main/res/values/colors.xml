@@ -4,12 +4,22 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="mainpage_noselect_bkg">#E5E5E5</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
     <color name="blue">#0000FF</color>
+    <color name="pressblue">#1792e5</color>
     <color name="transparent">#00000000</color>
     <color name="welcome_white">#ffffff</color>
 
     <color name="normal_grey">#9b9b9b</color>
     <color name="left_navigation_background">#f5f5f5</color>
 
+    <color name="topbackground_disarm">#157c65</color>
+    <color name="topbackground_arm">#a44700</color>
+
+    <color name="centerbackground_disarm">#3dbca0</color>
+    <color name="centerbackground_arm">#ffa35c</color>
+
+    <color name="home_text_transparent">#7fffffff</color>
 </resources>

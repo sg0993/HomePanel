@@ -8,10 +8,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.ui.activities.IndicatorBoardActivity;
+import com.honeywell.homepanel.ui.activities.PasswordEnterActivity;
+import com.honeywell.homepanel.ui.activities.ScenarioSelectActivity;
 import com.honeywell.homepanel.ui.uicomponent.ImageAdapter;
 import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
 
@@ -26,27 +30,34 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
     private ImageView choose_scenarioImageView = null;
     private Context mContext = null;
     GridView gridView;
-    private static final int[] IMAGES = {R.mipmap.device_elevator3x, R.mipmap.device_camera3x, R.mipmap.device_air3x};
-    private static final int[] TEXTES = {R.string.device_elevator, R.string.device_camera, R.string.device_air};
+    private static final int[] IMAGES = {R.mipmap.device_elevator3x,
+            R.mipmap.device_camera3x, R.mipmap.device_air3x};
+    private static final int[] TEXTES = {R.string.device_elevator,
+            R.string.device_camera, R.string.device_air};
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mContext = getActivity();
+        View view = inflater.inflate(R.layout.fragment_deviceedit, null);
+        gridView = (GridView) view.findViewById(R.id.gridView);
+        gridView.setAdapter(new ImageAdapter(getActivity(), IMAGES, TEXTES));
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view, int position,
+                                    long id) {
+                if (position == 0) {
+                    startActivity(new Intent(mContext, IndicatorBoardActivity.class));
+                }
+            }
+        });
+        return view;
+    }
 
     public DeviceEditFragment(String title) {
         super();
         this.title = title;
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_deviceedit, null);
-        gridView= (GridView) view.findViewById(R.id.gridView);
-        gridView.setAdapter(new ImageAdapter(getActivity(), IMAGES, TEXTES));
-
-        return view;
-    }
-
-    private void initViews() {
-        View deviceedit = mPageAdaper.pageViews.get(0);
-        choose_scenarioImageView = (ImageView) deviceedit.findViewById(R.id.choose_scenarioImage);
-        choose_scenarioImageView.setOnClickListener(this);
     }
 
     @Override

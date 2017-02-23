@@ -19,6 +19,9 @@ public class TopStaus {
     private  int mWifiStatus = CommonData.WIFI_CONNECTED;
 
 
+    public int mCurScenario = CommonData.SCENARIO_AWAY;//CommonData.SCENARIO_HOME;
+
+
     public static synchronized TopStaus getInstance(Context context) {
         if (instance == null){
             instance = new TopStaus(context);

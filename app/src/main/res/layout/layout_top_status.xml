@@ -2,12 +2,13 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:background="@android:color/black"
         android:layout_height="@dimen/top_status_high">
 
         <LinearLayout
+            android:id="@+id/left_1"
             android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
             android:layout_width="wrap_content"
@@ -21,7 +22,7 @@
 
             <LinearLayout
                 android:layout_weight="1"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="10dp"
                 android:layout_gravity="center_vertical"
                 style="@style/top_linerlayout">
                 <ImageView
@@ -37,7 +38,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 style="@style/top_linerlayout">
@@ -54,6 +55,7 @@
         </LinearLayout>
 
         <TextView
+            android:layout_marginLeft="10dp"
             android:id="@+id/armTv"
             android:layout_centerInParent="true"
             android:text="System Disarmed"

@@ -6,4 +6,7 @@
     <dimen name="left_button_size">100dp</dimen>
 
     <dimen name="top_status_high">40dp</dimen>
+
+
+    <dimen name="left_event_width">400dp</dimen>
 </resources>
