@@ -9,10 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
 
@@ -85,10 +86,10 @@ public class CallIncomingNeighbor extends Fragment implements View.OnClickListen
         int viewId = view.getId();
         switch (viewId){
             case R.id.left_btn:
-                Toast.makeText(mContext,"call_left",Toast.LENGTH_SHORT).show();
+                CallActivity.switchFragmentInFragment(this,CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
                 break;
             case R.id.right_btn:
-                Toast.makeText(mContext,"call_right",Toast.LENGTH_SHORT).show();
+                getActivity().finish();
                 break;
             default:
                 break;

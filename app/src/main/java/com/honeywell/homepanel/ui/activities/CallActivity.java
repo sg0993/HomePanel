@@ -14,8 +14,7 @@ import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.ui.fragment.CallIncomingNeighbor;
 import com.honeywell.homepanel.ui.fragment.CallLobbyIncomingAndConnected;
-import com.honeywell.homepanel.ui.fragment.CallNeighborAudioConnected;
-import com.honeywell.homepanel.ui.fragment.CallNeighborVideoConnected;
+import com.honeywell.homepanel.ui.fragment.CallNeighborAndioAndVideoConnected;
 import com.honeywell.homepanel.ui.fragment.CallOutgoingNeighborFragment;
 import com.honeywell.homepanel.ui.uicomponent.TopViewBrusher;
 
@@ -97,16 +96,16 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
                 fragment = new CallIncomingNeighbor("" + position);
                 break;
             case CommonData.CALL_CONNECTED_AUDIO_NETGHBOR:
-                fragment = new CallNeighborAudioConnected("" + position);
+                fragment = new CallNeighborAndioAndVideoConnected("" + position);/**********/
                 break;
             case CommonData.CALL_CONNECTED_VIDEO_NETGHBOR:
-                fragment = new CallNeighborVideoConnected("" + position);
+                fragment = new CallNeighborAndioAndVideoConnected("" + position);/**********/
                 break;
             case CommonData.CALL_LOBBY_INCOMMING:
-                fragment = new CallLobbyIncomingAndConnected("" + position);
+                fragment = new CallLobbyIncomingAndConnected("" + position);////
                 break;
             case CommonData.CALL_LOBBY_CONNECTED:
-                fragment = new CallLobbyIncomingAndConnected("" + position);
+                fragment = new CallLobbyIncomingAndConnected("" + position);////
                 break;
             default:
                 break;
@@ -130,8 +129,12 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
 
     }
 
-    public int getCurFragment(){
+    public int getCurFragmentStatus(){
         return mCurCallStatus;
+    }
+
+    public void setCurFragmentStatus(int status ){
+         mCurCallStatus = status;
     }
 
 }

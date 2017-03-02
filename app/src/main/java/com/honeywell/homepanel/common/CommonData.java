@@ -1,9 +1,11 @@
 package com.honeywell.homepanel.common;
 /**
- * Created by H135901 on 1/24/2017.
+ * Created by ellen on 1/24/2017.
  */
 
 public class CommonData {
+    /*****************************added by ellen start ************************/
+    /***********************left navigation page********************/
     public static final  int LEFT_SELECT_HOME = 0;
     public static final  int LEFT_SELECT_SCENARIOEDIT = 1;
     public static final  int LEFT_SELECT_DEVICEEDIT = 2;
@@ -11,38 +13,42 @@ public class CommonData {
     public static final  int LEFT_SELECT_DIAL = 4;
     public static final  int LEFT_SELECT_SETTING = 5;
 
+    /********************For Top signal ************************/
     public static final String WEATHER_SUNNY = "sunny";
-
     public static final String TEMPERATURE_DUSTR = "°";
-
     public static final  String UNHEALTHY = "unhealthy";
     public static final  String ARMSTATUS_ARM = "System Armed";
     public static final  String ARMSTATUS_DISARM = "System Disarmed";
 
     public static final  int WIFI_CONNECTED = 0;
     public static final  int WIFI_DISCONNECT = 1;
-
     public static final int SRCURITY_PASSWORD_LENGTH = 6;
 
-
+    /**********************default scenario******************************/
     public static final  int SCENARIO_HOME = 1;
     public static final  int SCENARIO_AWAY = 2;
     public static final  int SCENARIO_SLEEP = 3;
     public static final  int SCENARIO_WAKEUP = 4;
-	public static final  int SENCES_EDIT = 5;
 
+    /**********************parameter for call******************************/
     public static final  String INTENT_KEY_SCENARIO = "cur_scenario";
     public static final  String INTENT_KEY_CALL_TYPE = "call_type";
     public static final  String INTENT_KEY_UNIT = "unit";
 
-    public static  final int CALL_OUTGOING_NEIGHBOR = 0;
-    public static  final int CALL_INCOMING_NEIGHBOR = 1;
-    public static  final int CALL_CONNECTED_AUDIO_NETGHBOR = 2;
-    public static  final int CALL_CONNECTED_VIDEO_NETGHBOR = 3;
-    public static  final int CALL_LOBBY_INCOMMING = 4;
-    public static  final int CALL_LOBBY_CONNECTED = 5;
-	
+     /******************any call status************************************/
+    public static  final int CALL_OUTGOING_NEIGHBOR = 0;/*邻里呼出*/
+    public static  final int CALL_INCOMING_NEIGHBOR = 1;/*邻里呼入*/
+    public static  final int CALL_CONNECTED_AUDIO_NETGHBOR = 2;/*邻里音频通话*/
+    public static  final int CALL_CONNECTED_VIDEO_NETGHBOR = 3;/*邻里视频通话*/
+    public static  final int CALL_LOBBY_INCOMMING = 4;/*lobby呼入*/
+    public static  final int CALL_LOBBY_CONNECTED = 5;/*lobby接通*/
+    /************************added by ellen end**********************************/
+
+
+
+
 	// Standard Call
+    public static final  int SENCES_EDIT = 5;
     public static final String CALL_PHONE_MAIN="0";
     public static final String CALL_PHONE_SUB1="1";
     public static final String CALL_PHONE_SUB2="2";

@@ -14,18 +14,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:id="@+id/call_top"
+            android:layout_width="match_parent"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true">
+            <include
+                layout="@layout/layout_call_top_textview" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/call_animation"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+            <include
+                layout="@layout/layout_call_animarion"/>
             <TextView
                 android:id="@+id/unit_tv"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:text="20-1002"
-                style="@style/call_textview"/>
+                style="@style/call_textview"
+                android:textStyle="bold"/>
             <TextView
                 android:id="@+id/call_time"
                 android:gravity="center"
@@ -34,8 +48,8 @@
                 android:text="02:59"
                 style="@style/call_textview"/>
         </LinearLayout>
-
         <LinearLayout
+            android:id="@+id/call_bottom"
             android:background="@android:color/transparent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
@@ -43,11 +57,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <include
-                android:id="@+id/call_bottom"
                 layout="@layout/layout_call_bottom_button" />
         </LinearLayout>
-
         <LinearLayout
+            android:id="@+id/call_right"
             android:layout_alignParentRight="true"
             android:gravity="center_vertical"
             android:paddingRight="30dp"
@@ -55,7 +68,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
             <include
-                android:id="@+id/call_right"
                 layout="@layout/layout_call_right_button"/>
         </LinearLayout>
     </RelativeLayout>

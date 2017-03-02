@@ -43,4 +43,6 @@
     <string name="msg_tab4">Voice Message</string>
     <string name="indicator_board_cancel">Cancel</string>
     <string name="indicator_board_tap">Tap to Call lift</string>
+
+    <string name="dialing">Dialing...</string>
 </resources>

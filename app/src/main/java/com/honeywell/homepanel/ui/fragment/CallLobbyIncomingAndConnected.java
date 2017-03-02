@@ -12,9 +12,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.uicomponent.CalRightBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
+import com.honeywell.homepanel.ui.uicomponent.CallTopBrusher;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -27,19 +30,20 @@ import org.greenrobot.eventbus.ThreadMode;
 @SuppressLint("ValidFragment")
 public class CallLobbyIncomingAndConnected extends Fragment implements View.OnClickListener{
     private String mTitle = "";
-    private static  final  String TAG = "CallNeighborVideoConnected";
+    private static  final  String TAG = "CallNeighborAndioAndVideoConnected";
     private Context mContext = null;
-
-
-
     private CallBottomBrusher mCallBottomBrusher = new CallBottomBrusher
             (this,R.mipmap.call_incoming_background,R.mipmap.call_incoming_call,"Answer",
                     R.mipmap.call_red_background,R.mipmap.call_end_image,"End",
                     R.mipmap.call_blue_background,R.mipmap.call_dooropen,"Open");
-
     private CalRightBrusher mCallRightBrusher = new CalRightBrusher(
             this,R.mipmap.call_right_background,R.mipmap.call_microphone,
             R.mipmap.call_right_background,R.mipmap.call_speaker);
+
+    private CallTopBrusher mCallTopBrusher = new CallTopBrusher(
+            "Incomming call.","Lobby"
+    );
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d(TAG,"CallLobbyIncomingAndConnected.onCreate() 11111111");
@@ -53,10 +57,12 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
         View view = inflater.inflate(R.layout.fragment_neighbor_lobby_incommingconnected, null);
         initViews(view);
         mCallBottomBrusher.init(view);
-        mCallRightBrusher.init(view);
         mCallBottomBrusher.setVisible(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,View.GONE);
+        mCallRightBrusher.init(view);
+        mCallTopBrusher.init(view);
         return view;
     }
+
     @Override
     public void onResume() {
         Log.d(TAG,"CallLobbyIncomingAndConnected.onResume() 11111111");
@@ -79,15 +85,14 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
     }
 
     private void initViews(View view) {
-
     }
-
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
         switch (viewId){
             case R.id.left_btn:
                 Toast.makeText(mContext,"call_left",Toast.LENGTH_SHORT).show();
+                switchToLobbyConnected();
                 break;
             case R.id.right_btn:
                 Toast.makeText(mContext,"call_right",Toast.LENGTH_SHORT).show();
@@ -100,6 +105,15 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
                 break;
             default:
                 break;
+        }
+    }
+
+    private void switchToLobbyConnected() {
+        if(getActivity() instanceof CallActivity){
+            ((CallActivity)getActivity()).setCurFragmentStatus(CommonData.CALL_LOBBY_CONNECTED);
+            mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_LEFT,R.mipmap.call_red_background,R.mipmap.call_end_image);
+            mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_LEFT,"End");
+            mCallTopBrusher.setResText(CallTopBrusher.POSITION_TOP,"Calling");
         }
     }
 

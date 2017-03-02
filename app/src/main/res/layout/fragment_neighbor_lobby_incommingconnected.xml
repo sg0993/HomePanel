@@ -14,25 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true">
-            <TextView
-                android:id="@+id/unit_tv"
-                android:gravity="center"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:text="Incomming call."
-                style="@style/call_textview"/>
-            <TextView
-                android:id="@+id/call_time"
-                android:gravity="center"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:text="Lobby"
-                style="@style/call_textview"/>
+            <include
+                android:id="@+id/call_top"
+                layout="@layout/layout_call_top_textview" />
         </LinearLayout>
 
         <LinearLayout

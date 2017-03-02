@@ -35,6 +35,7 @@ public class CallOutgoingNeighborFragment extends Fragment implements View.OnCli
     private TextView mUnitTv = null;
     private Button mCancelBtn = null;
 
+    private static String UNIT_PRESTR = null;
     private CallAnimationBrusher mAnimationBtusher = new
             CallAnimationBrusher(R.mipmap.call_outgoing_bright,R.mipmap.call_outgoing_dim);
 
@@ -47,6 +48,7 @@ public class CallOutgoingNeighborFragment extends Fragment implements View.OnCli
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = getActivity();
+        UNIT_PRESTR = getString(R.string.dialing);
         View view = inflater.inflate(R.layout.fragment_calloutgoing_neighborl, null);
         initViews(view);
         mAnimationBtusher.init(view);
@@ -78,7 +80,7 @@ public class CallOutgoingNeighborFragment extends Fragment implements View.OnCli
     private void initViews(View view) {
         mUnitTv  = (TextView)view.findViewById(R.id.unit_tv);
         if(getActivity() instanceof CallActivity){
-            mUnitTv.setText(((CallActivity) getActivity()).mUnit);
+            mUnitTv.setText(UNIT_PRESTR + ((CallActivity) getActivity()).mUnit);
         }
         mCancelBtn = (Button)view.findViewById(R.id.cancel_btn);
         mCancelBtn.setOnClickListener(this);

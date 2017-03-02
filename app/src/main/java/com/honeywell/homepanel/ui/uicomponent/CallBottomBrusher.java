@@ -111,4 +111,39 @@ public class CallBottomBrusher {
                 break;
         }
     }
+
+    public void setImageRes(int position,int backRes,int imageRes){
+        switch (position){
+            case BOTTOM_POSTION_LEFT:
+                left_btn.setBackgroundResource(backRes);
+                left_imageview.setImageResource(imageRes);
+                break;
+            case BOTTOM_POSTION_MIDDLE:
+                middle_btn.setBackgroundResource(backRes);
+                middle_imageview.setImageResource(imageRes);
+                break;
+            case BOTTOM_POSTION_RIGHT:
+                right_btn.setBackgroundResource(backRes);
+                right_imageview.setImageResource(imageRes);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void setTextRes(int position,String res){
+        switch (position){
+            case BOTTOM_POSTION_LEFT:
+                left_tv.setText(res);
+                break;
+            case BOTTOM_POSTION_MIDDLE:
+                middle_tv.setText(res);
+                break;
+            case BOTTOM_POSTION_RIGHT:
+                right_tv.setText(res);
+                break;
+            default:
+                break;
+        }
+    }
 }
