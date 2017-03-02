@@ -37,7 +37,7 @@ public class CommonData {
 
      /******************any call status************************************/
     public static  final int CALL_OUTGOING_NEIGHBOR = 0;/*邻里呼出*/
-    public static  final int CALL_INCOMING_NEIGHBOR = 1;/*邻里呼入*/
+    public static  final int CALL_INCOMING_NEIGHBOR = 1;/*邻里&PCGuard呼入*/
     public static  final int CALL_CONNECTED_AUDIO_NETGHBOR = 2;/*邻里音频通话*/
     public static  final int CALL_CONNECTED_VIDEO_NETGHBOR = 3;/*邻里视频通话*/
     public static  final int CALL_LOBBY_INCOMMING = 4;/*lobby呼入*/

@@ -1,5 +1,6 @@
 package com.honeywell.homepanel.ui.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,7 +8,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
@@ -136,5 +141,7 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
     public void setCurFragmentStatus(int status ){
          mCurCallStatus = status;
     }
+
+
 
 }

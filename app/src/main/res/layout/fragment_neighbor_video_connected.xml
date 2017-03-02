@@ -41,7 +41,7 @@
                 style="@style/call_textview"
                 android:textStyle="bold"/>
             <TextView
-                android:id="@+id/call_time"
+                android:id="@+id/calltime_tv"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"

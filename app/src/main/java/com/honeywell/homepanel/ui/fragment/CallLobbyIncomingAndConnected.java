@@ -1,14 +1,18 @@
 package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
@@ -92,12 +96,22 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
         switch (viewId){
             case R.id.left_btn:
                 Toast.makeText(mContext,"call_left",Toast.LENGTH_SHORT).show();
-                switchToLobbyConnected();
+                int status = ((CallActivity)getActivity()).getCurFragmentStatus();
+                if(status == CommonData.CALL_LOBBY_INCOMMING){
+                    status = CommonData.CALL_LOBBY_CONNECTED;
+                    ((CallActivity)getActivity()).setCurFragmentStatus(status);
+                    switchToLobbyConnected();
+                }
+                else{
+                    status = CommonData.CALL_LOBBY_INCOMMING;
+                    getActivity().finish();
+                }
                 break;
             case R.id.right_btn:
                 Toast.makeText(mContext,"call_right",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.top_btn:
+                alert();
                 Toast.makeText(mContext,"top_btn",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bottom_btn:
@@ -110,7 +124,6 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
 
     private void switchToLobbyConnected() {
         if(getActivity() instanceof CallActivity){
-            ((CallActivity)getActivity()).setCurFragmentStatus(CommonData.CALL_LOBBY_CONNECTED);
             mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_LEFT,R.mipmap.call_red_background,R.mipmap.call_end_image);
             mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_LEFT,"End");
             mCallTopBrusher.setResText(CallTopBrusher.POSITION_TOP,"Calling");
@@ -120,5 +133,29 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(MessageEvent event) {
 
+    }
+
+    public void alert(){
+        final WindowManager manager = getActivity().getWindowManager();
+        Display display = manager.getDefaultDisplay();
+        int width = display.getWidth();
+        int height = display.getHeight();
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.layout_call_bottom_button, null);
+        TextView left_tv = (TextView)view.findViewById(R.id.left_tv);
+        left_tv.setText("111111111111111");
+        left_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(),"2222222222222222",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        AlertDialog alert = new AlertDialog.Builder(getActivity()).create();
+        alert.show();
+        alert.getWindow().setLayout(width/2, height/4);
+        alert.setTitle("测试");
+        alert.getWindow().setContentView(view);
     }
 }

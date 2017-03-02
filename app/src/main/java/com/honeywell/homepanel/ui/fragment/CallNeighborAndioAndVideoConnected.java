@@ -3,12 +3,15 @@ package com.honeywell.homepanel.ui.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
@@ -24,6 +27,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by H135901 on 1/25/2017.
  */
@@ -31,6 +37,7 @@ import org.greenrobot.eventbus.ThreadMode;
 @SuppressLint("ValidFragment")
 public class CallNeighborAndioAndVideoConnected extends Fragment implements View.OnClickListener{
     private String mTitle = "";
+    private static final int MSG_SHOW_ELAPSE_TIME = 100;
     private static  final  String TAG = "CallNeighborAndioAndVideoConnected";
     private Context mContext = null;
 
@@ -49,9 +56,14 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
     );
     private View mCallTopView = null;
 
-    private CallAnimationBrusher mAnimationBtusher = new
-            CallAnimationBrusher(R.mipmap.call_audio_bright,R.mipmap.call_audio_dim);
+    private CallAnimationBrusher mAnimationBtusher = new CallAnimationBrusher(R.mipmap.call_audio_bright,R.mipmap.call_audio_dim);
     private View mCallAnimationView = null;
+
+    private TextView unit_tv = null;
+    private TextView calltime_tv = null;
+
+    private long lastTime = System.currentTimeMillis();
+    private Timer mTimer = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,14 +77,20 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
         mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_neighbor_video_connected, null);
         initViews(view);
-        mCallBottomBrusher.init(view);
-        mCallRightBrusher.init(view);
-        mCallTopBrusher.init(view);
-        mAnimationBtusher.init(view);
-        mCallTopView = view.findViewById(R.id.call_top);
-        mCallAnimationView = view.findViewById(R.id.call_animation);
         changeViewStatus();
+        initElapseTimer();
         return view;
+    }
+
+    private void initElapseTimer() {
+        if(mTimer == null){
+            mTimer = new Timer();
+        }
+        mTimer.schedule(new TimerTask() {
+            public void run() {
+                myHandler.sendEmptyMessage(MSG_SHOW_ELAPSE_TIME);
+            }
+        },1000,1000);
     }
 
     private void changeViewStatus() {
@@ -105,6 +123,8 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
         EventBus.getDefault().unregister(this);
         mAnimationBtusher.destroy();
         Log.d(TAG,"CallNeighborAndioAndVideoConnected.onDestroy() 11111111");
+        mTimer.cancel();
+        mTimer = null;
         super.onDestroy();
     }
 
@@ -117,7 +137,18 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
     }
 
     private void initViews(View view) {
-
+        mCallTopView = view.findViewById(R.id.call_top);
+        mCallAnimationView = view.findViewById(R.id.call_animation);
+        mCallBottomBrusher.init(view);
+        mCallRightBrusher.init(view);
+        mCallTopBrusher.init(view);
+        mAnimationBtusher.init(view);
+        unit_tv = (TextView) view.findViewById(R.id.unit_tv);
+        calltime_tv = (TextView) view.findViewById(R.id.calltime_tv);
+        unit_tv.setText(((CallActivity) getActivity()).mUnit);
+        calltime_tv.setText("00:00");
+        mCallTopBrusher.setResText(CallTopBrusher.POSITION_TOP,((CallActivity) getActivity()).mUnit);
+        mCallTopBrusher.setResText(CallTopBrusher.POSITION_BOTTOM,"00:00");
     }
 
     @Override
@@ -139,7 +170,7 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
                 changeViewStatus();
                 break;
             case R.id.right_btn:
-                Toast.makeText(mContext,"call_right",Toast.LENGTH_SHORT).show();
+                getActivity().finish();
                 break;
             case R.id.top_btn:
                 Toast.makeText(mContext,"top_btn",Toast.LENGTH_SHORT).show();
@@ -151,9 +182,34 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
                 break;
         }
     }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(MessageEvent event) {
 
     }
+
+    private Handler myHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+           if(msg.what == MSG_SHOW_ELAPSE_TIME){
+                long nowTime = System.currentTimeMillis();
+                long l = nowTime - lastTime;
+                long hour=(l/(60 * 60 * 1000));
+                long min=((l/(60 * 1000))- hour*60);
+                long s=(l/1000 - hour*60*60 - min*60);
+
+                String minString = String.valueOf(min);
+                if(min < 10){
+                    minString = "0" + min;
+                }
+
+                String sString = String.valueOf(s);
+                if(s<10){
+                    sString = "0" + s;
+                }
+                String timeString = minString + ":" + sString;
+               calltime_tv.setText(timeString);
+               mCallTopBrusher.setResText(CallTopBrusher.POSITION_BOTTOM,timeString);
+            }
+        }
+    };
 }
