@@ -1,15 +1,21 @@
 package com.honeywell.homepanel.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.ui.fragment.CallIncomingNeighbor;
+import com.honeywell.homepanel.ui.fragment.CallLobbyIncomingAndConnected;
+import com.honeywell.homepanel.ui.fragment.CallNeighborAudioConnected;
+import com.honeywell.homepanel.ui.fragment.CallNeighborVideoConnected;
 import com.honeywell.homepanel.ui.fragment.CallOutgoingNeighborFragment;
 import com.honeywell.homepanel.ui.uicomponent.TopViewBrusher;
 
@@ -26,21 +32,33 @@ import java.util.Map;
 
 public  class CallActivity extends FragmentActivity implements View.OnClickListener{
 
+    private static  final String TAG = "CallActivity";
     private TopViewBrusher mTopViewBrusher = new TopViewBrusher();
     private Map<Integer,Fragment> mFragments = new HashMap<Integer, Fragment>();
 
-    private int mCurCallStatus = CommonData.CALL_OUTGOING_NEIGHBOR;
+    public int mCurCallStatus = CommonData.CALL_LOBBY_INCOMMING;
+    public String mUnit = "";
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
 
         setContentView(R.layout.layout_call);
+        getAllParameter(getIntent());
+        EventBus.getDefault().register(this);
         initViewAndListener();
-        mTopViewBrusher.initTop(this);
-        /*mCurCallStatus = // from intent*/
-        fragmentAdd(true,mCurCallStatus);
+        mTopViewBrusher.init(this);
+        fragmentAdd(mCurCallStatus);
+    }
+
+    private void getAllParameter(Intent intent) {
+        if(intent.hasExtra(CommonData.INTENT_KEY_CALL_TYPE)){
+            mCurCallStatus = intent.getIntExtra(CommonData.INTENT_KEY_CALL_TYPE,mCurCallStatus);
+        }
+        if(intent.hasExtra(CommonData.INTENT_KEY_UNIT)){
+            mUnit = intent.getStringExtra(CommonData.INTENT_KEY_UNIT);
+        }
+        Log.d(TAG,"getAllParameter() mCurCallStatus:"+mCurCallStatus+",mUnit:"+mUnit +",,,1111111");
     }
 
     protected void initViewAndListener() {
@@ -58,19 +76,15 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
     }
 
 
-    public void fragmentAdd(boolean bAdd, int position)  {
+    public void fragmentAdd(int position)  {
+        mCurCallStatus = position;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         Fragment fragment = mFragments.get(position);
         if(null == fragment){
             fragment = getNewFragMent(position);
         }
-        if(bAdd){
-            transaction.add(R.id.main_frameLayout, fragment);
-        }
-        else {
-            transaction.replace(R.id.main_frameLayout, fragment);
-        }
+        transaction.replace(R.id.main_frameLayout, fragment);
         transaction.commit();
     }
     private Fragment getNewFragMent(int position) {
@@ -79,19 +93,32 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
             case CommonData.CALL_OUTGOING_NEIGHBOR:
                 fragment = new CallOutgoingNeighborFragment("" + position);
                 break;
-            case CommonData.call_CONNECTED_AUDIO_NETGHBOR:
+            case CommonData.CALL_INCOMING_NEIGHBOR:
+                fragment = new CallIncomingNeighbor("" + position);
                 break;
-            case CommonData.call_CONNECTED_VIDEO_NETGHBOR:
+            case CommonData.CALL_CONNECTED_AUDIO_NETGHBOR:
+                fragment = new CallNeighborAudioConnected("" + position);
+                break;
+            case CommonData.CALL_CONNECTED_VIDEO_NETGHBOR:
+                fragment = new CallNeighborVideoConnected("" + position);
                 break;
             case CommonData.CALL_LOBBY_INCOMMING:
+                fragment = new CallLobbyIncomingAndConnected("" + position);
                 break;
             case CommonData.CALL_LOBBY_CONNECTED:
+                fragment = new CallLobbyIncomingAndConnected("" + position);
                 break;
             default:
                 break;
         }
         mFragments.put(position, fragment);
         return fragment;
+    }
+
+    public static void switchFragmentInFragment(Fragment fragment,int callType) {
+        if(fragment.getActivity() instanceof CallActivity){
+            ((CallActivity)fragment.getActivity()).fragmentAdd(callType);
+        }
     }
 
     @Override
@@ -102,4 +129,9 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
     public void OnMessageEvent(MessageEvent event) {
 
     }
+
+    public int getCurFragment(){
+        return mCurCallStatus;
+    }
+
 }

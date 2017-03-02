@@ -48,7 +48,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 
         setContentView(getContent());
         initViewAndListener();
-        mTopViewBrusher.initTop(this);
+        mTopViewBrusher.init(this);
 
         fragmentAdd(true,CommonData.LEFT_SELECT_HOME);
     }

@@ -8,6 +8,9 @@
     <string name="device_air">Air Purifer</string>
     <string name="device_camera">Camera</string>
     <string name="device_elevator">Elevator</string>
+    <string name="devices_cameras_living_room">Living Room</string>
+    <string name="devices_cameras_ipdoor_camera">IP Door Camera</string>
+    <string name="devices_cameras_parking">Parking</string>
     <string name="secnario_arm">Arm</string>
     <string name="secnario_disarm">Disarm</string>
     <string name="secnario_home">Home</string>
@@ -33,6 +36,7 @@
 
     <string name="password_hint_disarm">Please enter your password to disarm.</string>
     <string name="password_hint_arm">Please enter your password to arm.</string>
+    <string name="password_sences_edit">Please enter your password first.</string>
     <string name="password_hint_passworderror">Your password is incorrect,please try again.</string>
     <string name="msg_tab2">Alarm History</string>
     <string name="msg_tab3">Notification</string>

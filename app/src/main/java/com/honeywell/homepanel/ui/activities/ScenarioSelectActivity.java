@@ -23,11 +23,11 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class ScenarioSelectActivity extends Activity {
     GridView gridView;
-    private static  final  int [] TEXTES = {R.string.scenario_home,
+    private static final int[] TEXTES = {R.string.scenario_home,
             R.string.scenario_away,
             R.string.scenario_sleep,
             R.string.scenario_wakeup};
-    private static  final  int[] IMAGES = {R.mipmap.home_sel,R.mipmap.away,R.mipmap.sleep,R.mipmap.wakeup};
+    private static final int[] IMAGES = {R.mipmap.home_sel, R.mipmap.away, R.mipmap.sleep, R.mipmap.wakeup};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +37,14 @@ public class ScenarioSelectActivity extends Activity {
 
         setContentView(R.layout.layout_homescenarioselect);
 
-        GridView gridView= (GridView) findViewById(R.id.gridView);
+        GridView gridView = (GridView) findViewById(R.id.gridView);
 
-        gridView.setAdapter(new ImageAdapter(this, IMAGES,TEXTES));
+        gridView.setAdapter(new ImageAdapter(this, IMAGES, TEXTES));
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View view, int position,long id) {
-                Intent intent = new Intent(ScenarioSelectActivity.this,PasswordEnterActivity.class);
-                intent.putExtra(CommonData.INTENT_KEY_SCENARIO,position+1);
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
+                Intent intent = new Intent(ScenarioSelectActivity.this, PasswordEnterActivity.class);
+                intent.putExtra(CommonData.INTENT_KEY_SCENARIO, position + 1);
                 startActivity(intent);
                 finish();
             }
@@ -58,8 +58,7 @@ public class ScenarioSelectActivity extends Activity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(MessageEvent event)
-    {
+    public void OnMessageEvent(MessageEvent event) {
 
     }
 }

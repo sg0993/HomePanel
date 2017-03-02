@@ -158,7 +158,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         mArmHintNoEventTv = (TextView)mainPage1.findViewById(R.id.arm_hint_noevent);
         mCurrentScenarioTv = (TextView)mainPage1.findViewById(R.id.currentscenario);
 
-        mGoodWhatHasEventTv.setOnClickListener(this);// for test call
+        mGoodWhatHasEventTv.setOnClickListener(this);// for test Neighbor OutGoing call
+        mArmHintHasEventTv.setOnClickListener(this);// for test Neighbor Incoming call
+        mCurrentScenarioTv.setOnClickListener(this);// for test Lobby Incoming call
     }
 
     @Override
@@ -168,15 +170,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             case R.id.choose_scenarioImage:
                 showScenarioSelect();
                 break;
-            case R.id.goodwhat_hasevent:// for test call
-                Intent intent = new Intent(mContext, CallActivity.class);
-                //
-                startActivity(intent);
+            case R.id.goodwhat_hasevent:// for test Neighbor OutGoing call
+                testCall("100-202",CommonData.CALL_OUTGOING_NEIGHBOR);
+                break;
+            case R.id.arm_hint_hasevent:// for test Neighbor Incoming call
+                testCall("100-202",CommonData.CALL_INCOMING_NEIGHBOR);
+                break;
+            case R.id.currentscenario:// for test Lobby Incoming call
+                testCall("Lobby",CommonData.CALL_LOBBY_INCOMMING);
                 break;
             default:
                 break;
         }
     }
+    private void testCall(String unit,int call_type){
+        Intent intent = new Intent(mContext, CallActivity.class);
+        intent.putExtra(CommonData.INTENT_KEY_UNIT,unit);
+        intent.putExtra(CommonData.INTENT_KEY_CALL_TYPE,call_type);
+        startActivity(intent);
+    }
+
     private void showScenarioSelect() {
         startActivity(new Intent(mContext, ScenarioSelectActivity.class));
     }

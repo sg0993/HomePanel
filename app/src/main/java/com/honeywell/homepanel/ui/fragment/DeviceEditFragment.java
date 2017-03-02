@@ -13,8 +13,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.ui.activities.CamerasActivity;
 import com.honeywell.homepanel.ui.activities.IndicatorBoardActivity;
-import com.honeywell.homepanel.ui.uicomponent.ImageAdapter;
+import com.honeywell.homepanel.ui.uicomponent.DevicesImageAdapter;
 import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
 
 /**
@@ -37,9 +38,9 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
-        View view = inflater.inflate(R.layout.fragment_deviceedit, null);
+        View view = inflater.inflate(R.layout.fragment_devices, null);
         gridView = (GridView) view.findViewById(R.id.gridView);
-        gridView.setAdapter(new ImageAdapter(getActivity(), IMAGES, TEXTES));
+        gridView.setAdapter(new DevicesImageAdapter(getActivity(), IMAGES, TEXTES));
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -47,6 +48,9 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
                                     long id) {
                 if (position == 0) {
                     startActivity(new Intent(mContext, IndicatorBoardActivity.class));
+                }
+                if (position == 1) {
+                    startActivity(new Intent(mContext, CamerasActivity.class));
                 }
             }
         });

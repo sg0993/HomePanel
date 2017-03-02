@@ -53,7 +53,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener{
         Log.d("MessageFragment", "#####  onCreateView ");
         initView(view);
         initEvents();
-        setSelect(0, mNaviEvent.getId());
+        setSelect(true,0, mNaviEvent.getId());
 
         return view;
     }
@@ -69,64 +69,64 @@ public class MessageFragment extends Fragment implements View.OnClickListener{
         this.title = title;
     }
 
-    private void setSelect(int i, int id) {
+    private void setSelect(boolean bFirst,int i, int id) {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
 
-        hideFragment(transaction);
+        //hideFragment(transaction);
         setStyleById(id);
         //set img to bright color
         switch (i)
         {
             case 0:
                 Log.d("MessageFragment", "setSelect 0");
-                if (mTabFragEvent == null) {
+                if (mTabFragEvent == null || bFirst) {
                     Log.d("MessageFragment", "mTabFragEvent is null");
                     mTabFragEvent = new FragmentEvent();
-                    transaction.add(R.id.id_msg_body, mTabFragEvent);
+                    transaction.replace(R.id.id_msg_body, mTabFragEvent);
                 } else {
                     Log.d("MessageFragment", "mTabFragEvent not null");
-                    transaction.show(mTabFragEvent);
+                    transaction.replace(R.id.id_msg_body,mTabFragEvent);
                 }
                 break;
             case 1:
                 Log.d("MessageFragment", "setSelect 1 ");
-                if (mTabFragAlarm == null) {
+                if (mTabFragAlarm == null|| bFirst) {
                     Log.d("MessageFragment", "alarm is null");
                     mTabFragAlarm = new FragmentAlarm();
-                    transaction.add(R.id.id_msg_body, mTabFragAlarm);
+                    transaction.replace(R.id.id_msg_body, mTabFragAlarm);
                 } else {
                     Log.d("MessageFragment", "alarm not null");
-                    transaction.show(mTabFragAlarm);
+                    transaction.replace(R.id.id_msg_body,mTabFragAlarm);
                 }
                 break;
             case 2:
                 Log.d("MessageFragment", "setSelect 2 ");
-                if (mTabFragNotify == null) {
+                if (mTabFragNotify == null|| bFirst) {
                     Log.d("MessageFragment", "notify is null");
                     mTabFragNotify = new FragmentNofity();
-                    transaction.add(R.id.id_msg_body, mTabFragNotify);
+                    transaction.replace(R.id.id_msg_body, mTabFragNotify);
                 } else {
                     Log.d("MessageFragment", "notify not null");
-                    transaction.show(mTabFragNotify);
+                    transaction.replace(R.id.id_msg_body,mTabFragNotify);
                 }
                 break;
             case 3:
                 Log.d("MessageFragment", "setSelect 3 ");
-                if (mTabFragVoice == null) {
+                if (mTabFragVoice == null|| bFirst) {
                     Log.d("MessageFragment", "voice is null");
                     mTabFragVoice = new FragmentVoice();
-                    transaction.add(R.id.id_msg_body, mTabFragVoice);
+                    transaction.replace(R.id.id_msg_body, mTabFragVoice);
                 } else {
                     Log.d("MessageFragment", "voice not null");
-                    transaction.show(mTabFragVoice);
+                    transaction.replace(R.id.id_msg_body,mTabFragVoice);
                 }
                 break;
         }
         transaction.commit();
     }
 
-    private void hideFragment(FragmentTransaction transaction) {
+    /*private void hideFragment(FragmentTransaction transaction) {
         if (mTabFragEvent != null) {
             transaction.hide(mTabFragEvent);
         }
@@ -139,7 +139,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener{
         if (mTabFragVoice != null) {
             transaction.hide(mTabFragVoice);
         }
-    }
+    }*/
 
     private void initEvents() {
         mNaviEvent.setOnClickListener(this);
@@ -164,16 +164,16 @@ public class MessageFragment extends Fragment implements View.OnClickListener{
         switch (view.getId())
         {
             case R.id.msg_navi_event:
-                setSelect(0, view.getId());
+                setSelect(false,0, view.getId());
                 break;
             case R.id.msg_navi_alarm:
-                setSelect(1, view.getId());
+                setSelect(false,1, view.getId());
                 break;
             case R.id.msg_navi_notify:
-                setSelect(2, view.getId());
+                setSelect(false,2, view.getId());
                 break;
             case R.id.msg_navi_voice:
-                setSelect(3, view.getId());
+                setSelect(false,3, view.getId());
                 break;
         }
     }

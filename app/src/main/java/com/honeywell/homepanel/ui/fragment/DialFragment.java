@@ -54,6 +54,9 @@ public class DialFragment extends Fragment implements View.OnClickListener{
     private List<Button> btnList = new ArrayList<Button>();
     private FragmentManager fm;
     private FragmentTransaction ft;
+    private SpeedDialFragment speedDialFragment;
+    private SubphoneFragment subphoneFragment;
+    private KeypadFragment keypadFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,8 +116,10 @@ public class DialFragment extends Fragment implements View.OnClickListener{
     private void setBackgroundColorById(int btnId) {
         for (Button btn : btnList) {
             if (btn.getId() == btnId) {
-                btn.setBackgroundColor(Color.BLACK);
+                btn.setBackgroundResource(R.drawable.button_pressed);
+                btn.setTextColor(getResources().getColor(R.color.white));
             } else {
+                btn.setTextColor(getResources().getColor(R.color.black));
                 btn.setBackgroundColor(Color.WHITE);
             }
         }
@@ -128,21 +133,27 @@ public class DialFragment extends Fragment implements View.OnClickListener{
                 speeddial.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_dark_pressed));
                 subphone.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
                 keypad.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
-                ft.replace(R.id.fragment_content, new SpeedDialFragment());
+                if(speedDialFragment == null)
+                    speedDialFragment = new SpeedDialFragment();
+                ft.replace(R.id.fragment_content, speedDialFragment);
                 break;
             case R.id.subphone:
                 setBackgroundColorById(R.id.subphone);
                 subphone.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_dark_pressed));
                 speeddial.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
                 keypad.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
-                ft.replace(R.id.fragment_content, new SubphoneFragment());
+                if(subphoneFragment == null)
+                    subphoneFragment = new SubphoneFragment();
+                ft.replace(R.id.fragment_content, subphoneFragment);
                 break;
             case R.id.keypad:
                 setBackgroundColorById(R.id.keypad);
                 keypad.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_dark_pressed));
                 speeddial.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
                 subphone.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
-                ft.replace(R.id.fragment_content, new KeypadFragment());
+                if(keypadFragment == null)
+                    keypadFragment = new KeypadFragment();
+                ft.replace(R.id.fragment_content, keypadFragment);
                 break;
             default:
                 break;

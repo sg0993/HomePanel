@@ -64,6 +64,37 @@
             android:screenOrientation="landscape">
         </activity>
 
+        <activity
+            android:name=".ui.activities.AlarmZoneActivity"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".ui.activities.CamerasActivity"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".ui.activities.CamerasFullActivity"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".ui.activities.SaveSpeedDialActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation">
+        </activity>
+        <activity
+            android:name=".ui.activities.IndicatorBoardActivity"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
+
         <service
             android:name="com.honeywell.homepanel.cloud.CloudConnService"
             android:exported="false"

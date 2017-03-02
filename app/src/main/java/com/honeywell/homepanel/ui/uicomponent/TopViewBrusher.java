@@ -50,7 +50,7 @@ public class TopViewBrusher {
         }
     };
 
-    public void initTop(Activity activity) {
+    public void init(Activity activity) {
         mContext = activity.getApplicationContext();
         mTopView = activity.findViewById(R.id.top_status);
         mTimeTv = (TextView)activity.findViewById(R.id.timeTv);
