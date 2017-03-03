@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +65,7 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
 
     private long lastTime = System.currentTimeMillis();
     private Timer mTimer = null;
+    private ImageView lefttop_image = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,22 +104,22 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
                 mCallAnimationView.setVisibility(View.VISIBLE);
                 mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,R.mipmap.call_blue_background,R.mipmap.call_video_image);
                 mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,"Video");
+                lefttop_image.setVisibility(View.INVISIBLE);
             }
             else{
                 mCallTopView.setVisibility(View.VISIBLE);
                 mCallAnimationView.setVisibility(View.GONE);
                 mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,R.mipmap.call_blue_background,R.mipmap.call_audio_image);
                 mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,"Audio");
+                lefttop_image.setVisibility(View.VISIBLE);
             }
         }
     }
-
     @Override
     public void onResume() {
         Log.d(TAG,"CallNeighborAndioAndVideoConnected.onResume() 11111111");
         super.onResume();
     }
-
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
@@ -149,6 +151,7 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
         calltime_tv.setText("00:00");
         mCallTopBrusher.setResText(CallTopBrusher.POSITION_TOP,((CallActivity) getActivity()).mUnit);
         mCallTopBrusher.setResText(CallTopBrusher.POSITION_BOTTOM,"00:00");
+        lefttop_image = (ImageView)view.findViewById(R.id.lefttop_image);
     }
 
     @Override
