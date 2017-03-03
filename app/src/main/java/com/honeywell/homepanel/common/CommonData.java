@@ -43,10 +43,38 @@ public class CommonData {
     public static  final int CALL_LOBBY_INCOMMING = 4;/*lobby呼入*/
     public static  final int CALL_LOBBY_CONNECTED = 5;/*lobby接通*/
     /************************added by ellen end**********************************/
+    //JSON Key & Valve Define
+    public static final String JSON_KEY_MSGID="msgid";
 
+    public static final String JSON_ACTION_KEY="action";
+    public static final String JSON_ACTION_VALUE_REQUEST="request";
+    public static final String JSON_ACTION_VALUE_RESPONSE="response";
+    public static final String JSON_ACTION_VALUE_EVENT="event";
 
+    public static final String JSON_SUBACTION_KEY="subaction";
+    public static final String JSON_SUBACTION_VALUE_REGISTER="register";
+    public static final String JSON_SUBACTION_VALUE_UNREGISTER="unregister";
+    public static final String JSON_SUBACTION_VALUE_HEARTBEAT="heartbeat";
+    public static final String JSON_SUBACTION_VALUE_UPGRADE="upgrade";
+    public static final String JSON_SUBACTION_VALUE_CALLIN="callin";
+    public static final String JSON_SUBACTION_VALUE_CALLOUT="callout";
+    public static final String JSON_SUBACTION_VALUE_TAKECALL="talkcall";
+    public static final String JSON_SUBACTION_VALUE_ENDCALL="endcall";
+    public static final String JSON_SUBACTION_VALUE_RTPCONTOL="rtpctl";
+    public static final String JSON_SUBACTION_VALUE_CAPTURE="capture";
+    public static final String JSON_SUBACTION_VALUE_DISPATCH="dispatch";
 
-
+    public static final String JSON_PHONEID_KEY="phoneid";
+    public static final String JSON_PHONEID_VALUE_MAIN="0";
+    public static final String JSON_PHONEID_VALUE_SUB1="1";
+    public static final String JSON_PHONEID_VALUE_SUB2="2";
+    public static final String JSON_PHONEID_VALUE_SUB3="3";
+    public static final String JSON_PHONEID_VALUE_SUB4="4";
+    public static final String JSON_PHONEID_VALUE_SUB5="5";
+    public static final String JSON_PHONEID_VALUE_SUB6="6";
+    public static final String JSON_PHONEID_VALUE_SUB7="7";
+    public static final String JSON_PHONEID_VALUE_SUB8="8";
+    public static final String JSON_PHONEID_VALUE_Cloud="C";
 	// Standard Call
     public static final  int SENCES_EDIT = 5;
     public static final String CALL_PHONE_MAIN="0";

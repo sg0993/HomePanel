@@ -173,10 +173,11 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
                 getActivity().finish();
                 break;
             case R.id.top_btn:
-                Toast.makeText(mContext,"top_btn",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "bottom_btn", Toast.LENGTH_SHORT).show();
+                ((CallActivity)getActivity()).volumeMic();
                 break;
             case R.id.bottom_btn:
-                Toast.makeText(mContext,"bottom_btn",Toast.LENGTH_SHORT).show();
+                ((CallActivity)getActivity()).volumeSpeaker();
                 break;
             default:
                 break;

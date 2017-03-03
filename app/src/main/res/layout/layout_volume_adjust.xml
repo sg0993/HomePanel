@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Adjust the speak"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/volume_decrease"
+            android:layout_width="30dp"
+            android:background="@color/white"
+            android:layout_height="30dp">
+            <ImageView
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/call_volume_decrease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+        <SeekBar
+            android:id="@+id/volume_seekbar"
+            android:paddingLeft="16.0dip"
+            android:paddingRight="16.0dip"
+            android:maxHeight="3.0dip"
+            android:minHeight="3.0dip"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:focusable="true"
+            android:progressDrawable="@drawable/call_volume_seekbar_background"
+            android:thumb="@drawable/call_volume_seekbar_thumb" />
+        <RelativeLayout
+            android:layout_marginLeft="10dp"
+            android:id="@+id/volume_increase"
+            android:layout_width="30dp"
+            android:background="@color/white"
+            android:layout_height="30dp">
+            <ImageView
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/call_volume_increase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

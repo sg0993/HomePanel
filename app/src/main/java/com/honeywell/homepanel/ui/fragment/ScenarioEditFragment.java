@@ -53,9 +53,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-/**
- * Created by H135901 on 1/25/2017.
- */
 
 @SuppressLint("ValidFragment")
 public class ScenarioEditFragment extends Fragment implements OnLongClickListener {
@@ -96,6 +93,12 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
                 mframement.getForeground().setAlpha(150);
                 showpopupwindow(inflater);
                 return true;
+            }
+        });
+        gridView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    mframement.getForeground().setAlpha(0);
             }
         });
         return view;

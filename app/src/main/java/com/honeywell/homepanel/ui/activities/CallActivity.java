@@ -1,22 +1,22 @@
 package com.honeywell.homepanel.ui.activities;
 
-import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.TextView;
+import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.fragment.CallIncomingNeighbor;
 import com.honeywell.homepanel.ui.fragment.CallLobbyIncomingAndConnected;
 import com.honeywell.homepanel.ui.fragment.CallNeighborAndioAndVideoConnected;
@@ -34,7 +34,7 @@ import java.util.Map;
  * Created by H135901 on 1/24/2017.
  */
 
-public  class CallActivity extends FragmentActivity implements View.OnClickListener{
+public  class CallActivity extends FragmentActivity implements View.OnClickListener,SeekBar.OnSeekBarChangeListener{
 
     private static  final String TAG = "CallActivity";
     private TopViewBrusher mTopViewBrusher = new TopViewBrusher();
@@ -43,6 +43,8 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
     public int mCurCallStatus = CommonData.CALL_LOBBY_INCOMMING;
     public String mUnit = "";
 
+    private AudioManager mAudioManager = null;
+    private boolean mSpeakerAdjust = false;
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,7 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         initViewAndListener();
         mTopViewBrusher.init(this);
         fragmentAdd(mCurCallStatus);
+        mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
     }
 
     private void getAllParameter(Intent intent) {
@@ -124,11 +127,47 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
             ((CallActivity)fragment.getActivity()).fragmentAdd(callType);
         }
     }
-
     @Override
     public void onClick(View view) {
+        int viewId = view.getId();
+        switch (viewId) {
+            case R.id.volume_decrease:
+                if(mSpeakerAdjust){
+                    Toast.makeText(getApplicationContext(),"volume decrease!!!!",Toast.LENGTH_SHORT).show();
+                    mAudioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM,AudioManager.ADJUST_LOWER,AudioManager.FLAG_PLAY_SOUND);
+                    mCurSeekBar.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM));
+                }
+                else{
 
+                }
+                break;
+            case R.id.volume_increase:
+                if(mSpeakerAdjust){
+                    Toast.makeText(this,"volume increase!!!!",Toast.LENGTH_SHORT).show();
+                    mAudioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM,AudioManager.ADJUST_RAISE,AudioManager.FLAG_PLAY_SOUND);
+                    mCurSeekBar.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM));
+                }
+                else{
+
+                }
+                break;
+            default:
+                break;
+        }
     }
+
+    private SeekBar mCurSeekBar = null;
+    public void volumeSpeaker(){
+        mSpeakerAdjust = true;
+        mCurSeekBar = CommonUtils.showCallVolumeDialog(this,this,this, mSpeakerAdjust);
+        Toast.makeText(getApplicationContext(), "top_btn", Toast.LENGTH_SHORT).show();
+    }
+
+    public void volumeMic(){
+        mSpeakerAdjust = false;
+        //mCurSeekBar = CommonUtils.showCallVolumeDialog(this,this,this, mSpeakerAdjust);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(MessageEvent event) {
 
@@ -142,6 +181,18 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
          mCurCallStatus = status;
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {}
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        Log.d(TAG,"onStopTrackingTouch() progress:" + seekBar.getProgress());
+        if(mSpeakerAdjust){
+            mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM,seekBar.getProgress(),AudioManager.FLAG_PLAY_SOUND);
+        }
+        else{
 
-
+        }
+    }
 }
