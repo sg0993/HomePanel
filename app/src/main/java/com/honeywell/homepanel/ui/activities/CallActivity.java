@@ -41,7 +41,7 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
     private Map<Integer,Fragment> mFragments = new HashMap<Integer, Fragment>();
 
     public int mCurCallStatus = CommonData.CALL_LOBBY_INCOMMING;
-    public String mUnit = "";
+    public String mUnit = "100-202";
 
     private AudioManager mAudioManager = null;
     private boolean mSpeakerAdjust = false;

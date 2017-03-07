@@ -61,7 +61,9 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
         super();
         this.title = title;
     }
-
+    public DeviceEditFragment() {
+        super();
+    }
     @Override
     public void onClick(View view) {
         int viewId = view.getId();

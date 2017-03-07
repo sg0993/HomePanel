@@ -10,7 +10,10 @@
 
 
     <include layout="@layout/msg_navi"/>
-
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/pressblue"
+        android:layout_height="3dp" />
     <FrameLayout
         android:layout_marginTop="-4dp"
         android:id="@+id/id_msg_body"

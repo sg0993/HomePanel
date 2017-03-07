@@ -46,7 +46,7 @@
         <TextView
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
-            android:text="Cancel"
+            android:text="@string/indicator_board_cancel"
             style="@style/call_textview"/>
     </LinearLayout>
 </RelativeLayout>

@@ -43,10 +43,7 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
     private Context mContext = null;
 
 
-    private CallBottomBrusher mCallBottomBrusher = new CallBottomBrusher
-            (this,R.mipmap.call_blue_background,R.mipmap.call_lift_image,"Lift",
-                    R.mipmap.call_blue_background,R.mipmap.call_audio_image,"Audio",
-                    R.mipmap.call_red_background,R.mipmap.call_end_image,"End");
+    private CallBottomBrusher mCallBottomBrusher = null;
 
     private CalRightBrusher mCallRightBrusher = new CalRightBrusher(
             this,R.mipmap.call_right_background,R.mipmap.call_microphone,
@@ -72,6 +69,10 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
         Log.d(TAG,"CallNeighborAndioAndVideoConnected.onCreate() 11111111");
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+        mCallBottomBrusher = new CallBottomBrusher
+                (this,R.mipmap.call_blue_background,R.mipmap.call_lift_image,getString(R.string.lift),
+                        R.mipmap.call_blue_background,R.mipmap.call_audio_image,getString(R.string.video),
+                        R.mipmap.call_red_background,R.mipmap.call_end_image,getString(R.string.end));
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -103,14 +104,14 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
                 mCallTopView.setVisibility(View.GONE);
                 mCallAnimationView.setVisibility(View.VISIBLE);
                 mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,R.mipmap.call_blue_background,R.mipmap.call_video_image);
-                mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,"Video");
+                mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,getString(R.string.video));
                 lefttop_image.setVisibility(View.INVISIBLE);
             }
             else{
                 mCallTopView.setVisibility(View.VISIBLE);
                 mCallAnimationView.setVisibility(View.GONE);
                 mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,R.mipmap.call_blue_background,R.mipmap.call_audio_image);
-                mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,"Audio");
+                mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,getString(R.string.audio));
                 lefttop_image.setVisibility(View.VISIBLE);
             }
         }

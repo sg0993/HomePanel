@@ -158,7 +158,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
                 mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.dial_select);
                 break;
             case CommonData.LEFT_SELECT_SETTING:
-                mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.setting);
+                mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.setting_select);
                 break;
         }
         if(mLeftCurPage != mLeftPrePage){

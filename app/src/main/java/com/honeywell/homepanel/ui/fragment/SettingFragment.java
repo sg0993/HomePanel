@@ -67,6 +67,9 @@ public class SettingFragment extends Fragment {
 
     }
 
+    public SettingFragment() {
+        super();
+    }
     public List<Map<String, Object>> getData(){
         for(int i=0;i<icon.length;i++){
             Map<String,Object> map = new HashMap<String, Object>();

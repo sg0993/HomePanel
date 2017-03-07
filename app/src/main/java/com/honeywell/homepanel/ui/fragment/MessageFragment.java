@@ -15,6 +15,7 @@ import android.widget.Button;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.ui.domain.NotifyVoiceEventBusClass;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,6 +39,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener{
     private Fragment mTabFragAlarm;
     private Fragment mTabFragNotify;
     private Fragment mTabFragVoice;
+    private static final String TAG = "MessageFragment";
 
     private String title = "";
 
@@ -69,6 +71,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener{
         this.title = title;
     }
 
+    public MessageFragment() {
+        super();
+    }
     private void setSelect(boolean bFirst,int i, int id) {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
@@ -193,6 +198,13 @@ public class MessageFragment extends Fragment implements View.OnClickListener{
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(MessageEvent event)
     {
+        Log.d(TAG, "OnMessageEvent: ");
+    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnEvent(NotifyVoiceEventBusClass event)
+    {
+//        int operCode = event.getOperateCode();
+//        Log.d(TAG, "messageFragment: operCode= 0x"+Integer.toHexString(operCode));
     }
 }

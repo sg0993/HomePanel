@@ -99,7 +99,9 @@ public class DialFragment extends Fragment implements View.OnClickListener{
         this.title = title;
 
     }
-
+    public DialFragment() {
+        super();
+    }
     private void initViews(View view) {
         speeddial = (Button) view.findViewById(R.id.speed_dial);
         subphone = (Button) view.findViewById(R.id.subphone);

@@ -1,4 +1,20 @@
 <resources>
+    <string name="cloudservice">:cloudservice</string>
+    <string name="communityservice">:communityservice</string>
+    <string name="configservice">:configservice</string>
+    <string name="controlservice">:controlservice</string>
+    <string name="devicemanage">:devicemanage</string>
+    <string name="ipcservice">:ipcservice</string>
+    <string name="ipdcservice">:ipdcservice</string>
+    <string name="logservice">:logservice</string>
+    <string name="pbxservice">:pbxservice</string>
+    <string name="security">:security</string>
+    <string name="sipservice">:sipservice</string>
+    <string name="subphoneclient">:subphoneclient</string>
+    <string name="subphoneserver">:subphoneserver</string>
+    <string name="upgrade">:upgrade</string>
+    <string name="watchdog">:watchdog</string>
+
     <string name="app_name">HomePanel</string>
 
     <string name="scenario_home">Home</string>
@@ -45,4 +61,12 @@
     <string name="indicator_board_tap">Tap to Call lift</string>
 
     <string name="dialing">Dialing...</string>
+    <string name="incommingcall">InComing call...</string>
+    <string name="neighbor">Neighbor</string>
+
+    <string name="end">End</string>
+    <string name="answer">Answer</string>
+    <string name="lift">Lift</string>
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
 </resources>

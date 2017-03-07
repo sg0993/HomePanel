@@ -52,9 +52,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private TextView mGoodWhatNoEventTv = null;
     private TextView mArmHintHasEventTv = null;
     private TextView mArmHintNoEventTv = null;
-
     private TextView mCurrentScenarioTv = null;
 
+    /*********For Event view logic*************/
+    private boolean  bHasEvent = true;
+    private View mArmStatusNoevent = null;
+    private View mArmStatusHasevent = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -158,9 +161,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         mArmHintNoEventTv = (TextView)mainPage1.findViewById(R.id.arm_hint_noevent);
         mCurrentScenarioTv = (TextView)mainPage1.findViewById(R.id.currentscenario);
 
+        mArmStatusNoevent = mainPage1.findViewById(R.id.arm_status_noevent);
+        mArmStatusHasevent = mainPage1.findViewById(R.id.arm_status_hasevent);
+        setArmView(bHasEvent);
+
+        /***************For Test Call********************************/
         mGoodWhatHasEventTv.setOnClickListener(this);// for test Neighbor OutGoing call
         mArmHintHasEventTv.setOnClickListener(this);// for test Neighbor Incoming call
         mCurrentScenarioTv.setOnClickListener(this);// for test Lobby Incoming call
+        /***************For Test Call********************************/
+    }
+
+    private void setArmView(boolean bHasEvent) {
+        if(bHasEvent){
+            mArmStatusNoevent.setVisibility(View.GONE);
+            mArmStatusHasevent.setVisibility(View.VISIBLE);
+        }
+        else{
+            mArmStatusNoevent.setVisibility(View.VISIBLE);
+            mArmStatusHasevent.setVisibility(View.GONE);
+        }
     }
 
     @Override

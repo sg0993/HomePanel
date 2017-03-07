@@ -96,10 +96,24 @@
             android:screenOrientation="landscape">
         </activity>
 
+        <activity
+            android:name=".ui.activities.NotificationNotifyPageMore"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity
+            android:name=".ui.activities.NotificationVideoMsgBoard"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
+
         <service
             android:name="com.honeywell.homepanel.cloud.CloudConnService"
             android:exported="false"
-            android:process=":cloudservice">
+            android:process="@string/cloudservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.cloud.CloudConnService"
@@ -109,7 +123,7 @@
         <service
             android:name="com.honeywell.homepanel.community.CommunityService"
             android:exported="false"
-            android:process=":communityservice">
+            android:process="@string/communityservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.community.CommunityService"
@@ -119,7 +133,7 @@
         <service
             android:name="com.honeywell.homepanel.configcenter.ConfigService"
             android:exported="false"
-            android:process=":configservice">
+            android:process="@string/configservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.configcenter.ConfigService"
@@ -129,7 +143,7 @@
         <service
             android:name="com.honeywell.homepanel.control.ControlService"
             android:exported="false"
-            android:process=":controlservice">
+            android:process="@string/controlservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.control.ControlService"
@@ -139,7 +153,7 @@
         <service
             android:name="com.honeywell.homepanel.deviceadapter.DeviceManageService"
             android:exported="false"
-            android:process=":devicemanage">
+            android:process="@string/devicemanage">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.deviceadapter.DeviceManageService"
@@ -149,7 +163,7 @@
         <service
             android:name="com.honeywell.homepanel.ipc.IPCService"
             android:exported="false"
-            android:process=":ipcservice">
+            android:process="@string/ipcservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.ipc.IPCService"
@@ -159,7 +173,7 @@
         <service
             android:name="com.honeywell.homepanel.ipdc.IPDCService"
             android:exported="false"
-            android:process=":ipdcservice">
+            android:process="@string/ipdcservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.ipdc.IPDCService"
@@ -169,7 +183,7 @@
         <service
             android:name="com.honeywell.homepanel.logserver.LogService"
             android:exported="false"
-            android:process=":logservice">
+            android:process="@string/logservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.logserver.LogService"
@@ -179,7 +193,7 @@
         <service
             android:name="com.honeywell.homepanel.pbx.PBXService"
             android:exported="false"
-            android:process=":pbxservice">
+            android:process="@string/pbxservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.pbx.PBXService"
@@ -189,7 +203,7 @@
         <service
             android:name="com.honeywell.homepanel.security.SecurityService"
             android:exported="false"
-            android:process=":security">
+            android:process="@string/security">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.security.SecurityService"
@@ -199,7 +213,7 @@
         <service
             android:name="com.honeywell.homepanel.sip.SipService"
             android:exported="false"
-            android:process=":sipservice">
+            android:process="@string/sipservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.sip.SipService"
@@ -209,7 +223,7 @@
         <service
             android:name="com.honeywell.homepanel.subphoneservice.SubPhoneClientService"
             android:exported="false"
-            android:process=":subphoneclient">
+            android:process="@string/subphoneclient">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.subphoneservice.SubPhoneClientService"
@@ -219,7 +233,7 @@
         <service
             android:name="com.honeywell.homepanel.subphoneservice.SubPhoneServerService"
             android:exported="false"
-            android:process=":subphoneserver">
+            android:process="@string/subphoneserver">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.subphoneservice.SubPhoneServerService"
@@ -238,7 +252,7 @@
         <service
             android:name="com.honeywell.homepanel.upgrade.UpgradeService"
             android:exported="false"
-            android:process=":upgrade">
+            android:process="@string/upgrade">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.upgrade.UpgradeService"
@@ -248,7 +262,7 @@
         <service
             android:name="com.honeywell.homepanel.watchdog.WatchDogService"
             android:exported="false"
-            android:process=":watchdog">
+            android:process="@string/watchdog">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.watchdog.WatchDogService"

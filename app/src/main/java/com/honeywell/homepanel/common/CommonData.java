@@ -44,7 +44,7 @@ public class CommonData {
     public static  final int CALL_LOBBY_CONNECTED = 5;/*lobby接通*/
     /************************added by ellen end**********************************/
     //JSON Key & Valve Define
-    public static final String JSON_KEY_MSGID="msgid";
+    public static final String JSON_MSGID_KEY ="msgid";
 
     public static final String JSON_ACTION_KEY="action";
     public static final String JSON_ACTION_VALUE_REQUEST="request";
@@ -75,6 +75,85 @@ public class CommonData {
     public static final String JSON_PHONEID_VALUE_SUB7="7";
     public static final String JSON_PHONEID_VALUE_SUB8="8";
     public static final String JSON_PHONEID_VALUE_Cloud="C";
+
+    public static final String JSON_PHONEIP_KEY="phoneip";
+
+    public static final String JSON_PASSWORD_KEY="password";
+
+    public static final String JSON_DONGHO_KEY="dongho";
+
+    public static final String JSON_CALLTYPE_KEY="calltype";
+    public static final String JSON_CALLTYPE_VALUE_LOBBY="lobby";
+    public static final String JSON_CALLTYPE_VALUE_IPVDP="ipvdp";
+    public static final String JSON_CALLTYPE_VALUE_DOORCAMERA="doorcamera";
+    public static final String JSON_CALLTYPE_VALUE_GUARD="guard";
+    public static final String JSON_CALLTYPE_VALUE_HOMEPANEL="homepanel";
+    public static final String JSON_CALLTYPE_VALUE_OFFICE="office";
+    public static final String JSON_CALLTYPE_VALUE_NEIGHBOUR="neighbour";
+
+    public static final String JSON_ALIASNAME_KEY="aliasname";
+    public static final String JSON_ALIASNAME_VALUE_OFFICE="office";
+    public static final String JSON_ALIASNAME_VALUE_GUARD="guard";
+    public static final String JSON_ALIASNAME_VALUE_LOBBY="lobby";
+    public static final String JSON_ALIASNAME_VALUE_FRONTDOOR="frontdoor";
+    public static final String JSON_ALIASNAME_VALUE_BACKDOOR="backdoor";
+
+    public static final String JSON_DISPLAYNAME_KEY="displayname";
+
+    public static final String JSON_DEVICETYPE_KEY="devicetype";
+
+    public static final String JSON_DEVICEVENDOR_KEY="devicevendor";
+
+    public static final String JSON_UUID_KEY="uuid";
+
+    public static final String JSON_ERRORCODE_KEY="errorcode";
+    public static final int JSON_ERRORCODE_VALUE_OK=0;
+    public static final int JSON_ERRORCODE_VALUE_KEYMISS=1;
+
+    public static final String JSON_VIDEOSTATUS_KEY="videostatus";
+    public static final String JSON_VIDEOSTATUS_VALUE_ON="on";
+    public static final String JSON_VIDEOSTATUS_VALUE_OFF="off";
+
+    public static final String JSON_AUDIOTATUS_KEY="audiostatus";
+    public static final String JSON_AUDIOTATUS_VALUE_ON="on";
+    public static final String JSON_AUDIOTATUS_VALUE_OFF="off";
+    
+    public static final String JSON_LOCALIP_KEY="localip";
+    
+    /* reference android mediacodec defined */
+    public static final String JSON_VIDEOCODEC_KEY="videocodec";
+    public static final String JSON_VIDEOCODEC_VALUE_H264="video/avc";
+    public static final String JSON_VIDEOCODEC_VALUE_MP4V="video/mp4v-es";
+    public static final String JSON_VIDEOCODEC_VALUE_VP8="video/x-vnd.on2.vp8";
+    public static final String JSON_VIDEOCODEC_VALUE_VP9="video/x-vnd.on2.vp9";
+    public static final String JSON_VIDEOCODEC_VALUE_3GPP="video/3gpp";
+    
+    public static final String JSON_VIDEOWIDTH_KEY="videowidth";
+    
+    public static final String JSON_VIDEOHEIGHT_KEY="videoheight";
+    
+    public static final String JSON_VIDEOFRAME_KEY="videoframe";
+    public static final String JSON_VIDEOFRAME_VALUE_30="30";
+    public static final String JSON_VIDEOFRAME_VALUE_25="25";
+    public static final String JSON_VIDEOFRAME_VALUE_20="20";
+    /* reference android mediacodec defined */
+    public static final String JSON_AUDIOCODEC_KEY="audiocodec";
+    public static final String JSON_AUDIOCODEC_VALUE_ALAW="audio/g711-alaw";
+    public static final String JSON_AUDIOCODEC_VALUE_ULAW="audio/g711-ulaw";
+    
+    public static final String JSON_AUDIOFRAME_KEY="audioframe";
+    public static final String JSON_AUDIOFRAME_VALUE_8000="8000Hz";
+    public static final String JSON_AUDIOFRAME_VALUE_11025="11025Hz";
+    public static final String JSON_AUDIOFRAME_VALUE_22050="22050Hz";
+    public static final String JSON_AUDIOFRAME_VALUE_44100="44100Hz";
+    public static final String JSON_AUDIOFRAME_VALUE_48000="48000Hz";
+
+    public static final String JSON_VIDEOPORT_KEY="videoport";
+    public static final String JSON_AUDIOPORT_KEY="audioport";
+
+    public static final String JSON_LOOPID_KEY="loop";
+
+    public static final String JSON_REASON_KEY="reason";
 	// Standard Call
     public static final  int SENCES_EDIT = 5;
     public static final String CALL_PHONE_MAIN="0";

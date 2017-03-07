@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
@@ -33,16 +34,19 @@ public class CallIncomingNeighbor extends Fragment implements View.OnClickListen
 
     private CallAnimationBrusher mCallAnimationBrusher = new
             CallAnimationBrusher(R.mipmap.call_audio_bright,R.mipmap.call_audio_dim);
-    private CallBottomBrusher mCallBottomBrusher = new CallBottomBrusher
-            (this,R.mipmap.call_incoming_background,R.mipmap.call_incoming_call,"Answer",
-                    R.mipmap.call_red_background,R.mipmap.call_video_image,"End",
-                    R.mipmap.call_red_background,R.mipmap.call_end_image,"End");
+    private CallBottomBrusher mCallBottomBrusher = null;
+
+    private TextView unitTv = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         Log.d(TAG,"CallIncomingNeighbor.onResume() 11111111");
+        mCallBottomBrusher = new CallBottomBrusher
+                (this,R.mipmap.call_incoming_background,R.mipmap.call_incoming_call,getString(R.string.answer),
+                        R.mipmap.call_red_background,R.mipmap.call_video_image,getString(R.string.end),
+                        R.mipmap.call_red_background,R.mipmap.call_end_image,getString(R.string.end));
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,7 +82,8 @@ public class CallIncomingNeighbor extends Fragment implements View.OnClickListen
     }
 
     private void initViews(View view) {
-
+        unitTv = (TextView)view.findViewById(R.id.unitTv);
+        unitTv.setText(getString(R.string.neighbor) + "-" + ((CallActivity)getActivity()).mUnit);
     }
 
     @Override
