@@ -7,15 +7,41 @@
     android:orientation="vertical"
     android:background="@android:color/white"
     tools:context=".ui.activities.MainActivity">
-    <GridView
-        android:id="@+id/gridview_setting"
-        android:numColumns="4"
-        android:columnWidth="@dimen/activity_horizontal_margin"
-        android:gravity="center_horizontal"
-        android:verticalSpacing="20dp"
-        android:paddingTop="40dp"
-        android:paddingBottom="40dp"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:background="@color/pressblue"
+        android:gravity="center"
+        android:text="Settings"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        tools:ignore="HardcodedText" />
+    <LinearLayout
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </GridView>
+        <Button
+            android:background="@color/line_color"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"></Button>
+        <GridView
+            android:background="@color/line_color"
+            android:id="@+id/gridview_setting"
+            android:numColumns="4"
+            android:columnWidth="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:listSelector="@null"
+            android:verticalSpacing="1dp"
+            android:horizontalSpacing="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </GridView>
+        <Button
+            android:background="@color/line_color"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"></Button>
+    </LinearLayout>
 </LinearLayout>

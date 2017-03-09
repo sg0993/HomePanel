@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.common.Message.ui.AlarmHint;
 import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
@@ -86,6 +87,7 @@ public class CallIncomingNeighbor extends Fragment implements View.OnClickListen
         unitTv.setText(getString(R.string.neighbor) + "-" + ((CallActivity)getActivity()).mUnit);
     }
 
+    private static int mTestAlarmCount = 1;
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
@@ -94,7 +96,8 @@ public class CallIncomingNeighbor extends Fragment implements View.OnClickListen
                 CallActivity.switchFragmentInFragment(this,CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
                 break;
             case R.id.right_btn:
-                getActivity().finish();
+                //getActivity().finish();
+                EventBus.getDefault().post(new AlarmHint(mTestAlarmCount++));
                 break;
             default:
                 break;

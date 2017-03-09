@@ -3,55 +3,38 @@ package com.honeywell.homepanel.ui.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
-
 import com.honeywell.homepanel.common.CommonData;
-import com.honeywell.homepanel.ui.activities.AlarmZoneActivity;
-import com.honeywell.homepanel.ui.activities.BaseActivity;
-import com.honeywell.homepanel.ui.activities.IndicatorBoardActivity;
-import com.honeywell.homepanel.ui.activities.MainActivity;
-import com.honeywell.homepanel.ui.activities.PasswordEnterActivity;
-import com.honeywell.homepanel.ui.activities.ScenarioSelectActivity;
-
 import com.honeywell.homepanel.common.Message.MessageEvent;
-
-import com.honeywell.homepanel.ui.activities.ScenarioSelectHintActivity;
-import com.honeywell.homepanel.ui.uicomponent.ImageAdapter;
-import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
+import com.honeywell.homepanel.ui.activities.PasswordEnterActivity;
 import com.honeywell.homepanel.ui.uicomponent.SencesImageAdapter;
-
-
-import butterknife.OnLongClick;
-
-import static android.R.attr.bottom;
-import static android.R.attr.onClick;
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static android.widget.AdapterView.*;
-import static com.honeywell.homepanel.common.CommonData.SENCES_EDIT;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import static android.widget.AdapterView.LayoutParams;
+import static android.widget.AdapterView.OnClickListener;
+import static android.widget.AdapterView.OnItemClickListener;
+import static android.widget.AdapterView.OnItemLongClickListener;
+import static android.widget.AdapterView.OnLongClickListener;
+import static com.honeywell.homepanel.common.CommonData.SENCES_EDIT;
 
 
 @SuppressLint("ValidFragment")
@@ -67,6 +50,7 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
     private int mSelect_Scenario = 1;
     private PopupWindow mpopupWindow = null;
     private Intent mIntent;
+    private TextView sencestitle;
 
 
     @Override

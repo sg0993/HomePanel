@@ -11,7 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
-import com.honeywell.homepanel.ui.domain.AlarmHint;
+import com.honeywell.homepanel.common.Message.ui.AlarmHint;
 
 import java.util.List;
 
@@ -28,10 +28,13 @@ public class AlarmHintPopAdapter extends BaseAdapter {
     private final int ITEM_STATUS_CHECKED = 1;
     private final int ITEM_STATUS_NORMAL = 0;
 
+    private AdapterCallback mAdapterCallBack = null;
+
     public AlarmHintPopAdapter() {}
-    public AlarmHintPopAdapter(List<AlarmHint> msgList, Context context) {
+    public AlarmHintPopAdapter(List<AlarmHint> msgList, Context context,AdapterCallback adapterCallback) {
         this.msgList = msgList;
         this.inflater = LayoutInflater.from(context);
+        mAdapterCallBack = adapterCallback;
     }
 
     @Override
@@ -76,7 +79,13 @@ public class AlarmHintPopAdapter extends BaseAdapter {
         viewHolder.left_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"left_btn  position:" + view.getTag());
+                int i = (Integer) view.getTag();
+                Log.d(TAG,"left_btn  position:" + i);
+                msgList.remove(i);
+                AlarmHintPopAdapter.this.notifyDataSetChanged();
+                if(msgList.size() == 0){
+                    mAdapterCallBack.subviewOnclick(0,"");
+                }
             }
         });
         viewHolder.right_btn.setTag(i);

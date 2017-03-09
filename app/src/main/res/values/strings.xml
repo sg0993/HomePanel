@@ -24,9 +24,13 @@
     <string name="device_air">Air Purifer</string>
     <string name="device_camera">Camera</string>
     <string name="device_elevator">Elevator</string>
+    <string name="device_empty"> </string>
     <string name="devices_cameras_living_room">Living Room</string>
     <string name="devices_cameras_ipdoor_camera">IP Door Camera</string>
     <string name="devices_cameras_parking">Parking</string>
+    <string name="devices_cameras_living_room_time">Image from 10:40 am</string>
+    <string name="devices_cameras_ipdoor_camera_time">Image from 10:40 am</string>
+    <string name="devices_cameras_parking_time">Image from 10:40 am</string>
     <string name="secnario_arm">Arm</string>
     <string name="secnario_disarm">Disarm</string>
     <string name="secnario_home">Home</string>
@@ -61,6 +65,11 @@
     <string name="indicator_board_tap">Tap to Call lift</string>
 
     <string name="dialing">Dialing...</string>
+
+    <string-array name="fullscreen_arrays">
+        <item>720P</item>
+        <item>1080P</item>
+    </string-array>
     <string name="incommingcall">InComing call...</string>
     <string name="neighbor">Neighbor</string>
 

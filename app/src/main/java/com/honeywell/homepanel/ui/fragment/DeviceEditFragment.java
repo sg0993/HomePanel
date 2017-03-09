@@ -30,9 +30,13 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
     private Context mContext = null;
     GridView gridView;
     private static final int[] IMAGES = {R.mipmap.device_elevator3x,
-            R.mipmap.device_camera3x, R.mipmap.device_air3x};
+            R.mipmap.device_camera3x, R.mipmap.device_air3x,R.mipmap.device_white,
+            R.mipmap.device_white,R.mipmap.device_white,R.mipmap.device_white,
+            R.mipmap.device_white};
     private static final int[] TEXTES = {R.string.device_elevator,
-            R.string.device_camera, R.string.device_air};
+            R.string.device_camera, R.string.device_air,R.string.device_empty,
+            R.string.device_empty, R.string.device_empty,R.string.device_empty,
+            R.string.device_empty};
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

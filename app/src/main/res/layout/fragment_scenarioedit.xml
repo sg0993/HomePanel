@@ -23,19 +23,35 @@
             android:text="Scences"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="18sp"
             tools:ignore="HardcodedText" />
 
-        <GridView
-            android:id="@+id/gridView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:columnWidth="100dp"
-            android:gravity="center"
-            android:horizontalSpacing="1dp"
-            android:longClickable="true"
-            android:numColumns="2"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="1dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <View
+                android:background="#C6C6C6"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
+            <GridView
+                android:background="#C6C6C6"
+                android:id="@+id/gridView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnWidth="100dp"
+                android:gravity="center"
+                android:horizontalSpacing="1dp"
+                android:longClickable="true"
+                android:numColumns="2"
+                android:listSelector="@null"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="1dp" />
+            <View
+                android:background="#C6C6C6"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

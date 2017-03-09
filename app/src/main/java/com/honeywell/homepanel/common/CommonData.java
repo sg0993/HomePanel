@@ -63,24 +63,40 @@ public class CommonData {
     public static final String JSON_SUBACTION_VALUE_RTPCONTOL="rtpctl";
     public static final String JSON_SUBACTION_VALUE_CAPTURE="capture";
     public static final String JSON_SUBACTION_VALUE_DISPATCH="dispatch";
+    public static final String JSON_SUBACTION_VALUE_CALLMUTE = "mute";
+    public static final String JSON_SUBACTION_VALUE_OPENDOOR = "opendoor";
+    public static final String JSON_SUBACCTION_VALUE_VIDEOAUTH = "videoauth";
+    public static final String JSON_SUBACTION_VALUE_CALLELEVATOR = "callelevator";
+    public static final String JSON_SUBACTION_VALUE_ELEVATORAUTH = "elevatorauth";
+    public static final String JSON_SUBACTION_VALUE_CALLTERMINATED = "callterminated";
+    public static final String JSON_SUBACTION_VALUE_CALLACTIVED = "callactived";
+    public static final String JSON_SUBACTION_VALUE_ELEVATORINFO = "elevatorinfo";
+    public static final String JSON_SUBACTION_VALUE_IP2ALIAS="ip2alias";
+    public static final String JSON_SUBACTION_VALUE_ALIAS2IP="alias2ip";
 
-    public static final String JSON_PHONEID_KEY="phoneid";
-    public static final String JSON_PHONEID_VALUE_MAIN="0";
-    public static final String JSON_PHONEID_VALUE_SUB1="1";
-    public static final String JSON_PHONEID_VALUE_SUB2="2";
-    public static final String JSON_PHONEID_VALUE_SUB3="3";
-    public static final String JSON_PHONEID_VALUE_SUB4="4";
-    public static final String JSON_PHONEID_VALUE_SUB5="5";
-    public static final String JSON_PHONEID_VALUE_SUB6="6";
-    public static final String JSON_PHONEID_VALUE_SUB7="7";
-    public static final String JSON_PHONEID_VALUE_SUB8="8";
-    public static final String JSON_PHONEID_VALUE_Cloud="C";
+    public static final String JSON_VIDEORATIO_KEY = "videoratio";
+    public static final String JSON_VIDEORATIO_VALUE_DEFAULT = "320*240";
+
+    public static final String JSON_SWICHSTATUS_KEY = "switchstatus";
+    public static final String JSON_SWICHSTATUS_VALUE_ON = "on";
+    public static final String JSON_SWICHSTATUS_VALUE_OFF= "off";
+
+    public static final String JSON_REGISTERSTATUS_KEY = "registerstatus";
+    public static final String JSON_REGISTERSTATUS_VALUE_REGISTERED = "registered";
+    public static final String JSON_REGISTERSTATUS_VALUE_UNREGISTERED = "unregistered";
+
+    public static final String JSON_DIRECTION_KEY = "direction";
+    public static final String JSON_DIRECTION_VALUE_OUT = "out";
+    public static final String JSON_DIRECTION_VALUE_IN = "in";
+    public static final String JSON_DIRECTION_VALUE_DOWN = "down";
+    public static final String JSON_DIRECTION_VALUE_UP = "up";
+
+    public static final String JSON_ELEVATORID_KEY = "elevatorid";
+    public static final String JSON_FLOORNO_KEY = "floorno";
 
     public static final String JSON_PHONEIP_KEY="phoneip";
 
     public static final String JSON_PASSWORD_KEY="password";
-
-    public static final String JSON_DONGHO_KEY="dongho";
 
     public static final String JSON_CALLTYPE_KEY="calltype";
     public static final String JSON_CALLTYPE_VALUE_LOBBY="lobby";
@@ -90,15 +106,28 @@ public class CommonData {
     public static final String JSON_CALLTYPE_VALUE_HOMEPANEL="homepanel";
     public static final String JSON_CALLTYPE_VALUE_OFFICE="office";
     public static final String JSON_CALLTYPE_VALUE_NEIGHBOUR="neighbour";
+    public static final String JSON_CALLTYPE_VALUE_INNER="inner";
 
     public static final String JSON_ALIASNAME_KEY="aliasname";
-    public static final String JSON_ALIASNAME_VALUE_OFFICE="office";
-    public static final String JSON_ALIASNAME_VALUE_GUARD="guard";
-    public static final String JSON_ALIASNAME_VALUE_LOBBY="lobby";
+    public static final String JSON_ALIASNAME_VALUE_MAIN="0";
+    public static final String JSON_ALIASNAME_VALUE_SUB1="1";
+    public static final String JSON_ALIASNAME_VALUE_SUB2="2";
+    public static final String JSON_ALIASNAME_VALUE_SUB3="3";
+    public static final String JSON_ALIASNAME_VALUE_SUB4="4";
+    public static final String JSON_ALIASNAME_VALUE_SUB5="5";
+    public static final String JSON_ALIASNAME_VALUE_SUB6="6";
+    public static final String JSON_ALIASNAME_VALUE_SUB7="7";
+    public static final String JSON_ALIASNAME_VALUE_SUB8="8";
+    public static final String JSON_ALIASNAME_VALUE_Cloud="C";
     public static final String JSON_ALIASNAME_VALUE_FRONTDOOR="frontdoor";
     public static final String JSON_ALIASNAME_VALUE_BACKDOOR="backdoor";
 
     public static final String JSON_DISPLAYNAME_KEY="displayname";
+    public static final String JSON_DISPLAYNAME_VALUE_OFFICE="office";
+    public static final String JSON_DISPLAYNAME_VALUE_GUARD="guard";
+    public static final String JSON_DISPLAYNAME_VALUE_LOBBY="lobby";
+    public static final String JSON_DISPLAYNAME_VALUE_FRONTDOOR="frontdoor";
+    public static final String JSON_DISPLAYNAME_VALUE_BACKDOOR="backdoor";
 
     public static final String JSON_DEVICETYPE_KEY="devicetype";
 
@@ -107,8 +136,11 @@ public class CommonData {
     public static final String JSON_UUID_KEY="uuid";
 
     public static final String JSON_ERRORCODE_KEY="errorcode";
-    public static final int JSON_ERRORCODE_VALUE_OK=0;
-    public static final int JSON_ERRORCODE_VALUE_KEYMISS=1;
+    public static final String JSON_ERRORCODE_VALUE_FAIL="-1";
+    public static final String JSON_ERRORCODE_VALUE_OK="0";
+    public static final String JSON_ERRORCODE_VALUE_KEYMISS="1";
+    public static final String JSON_ERRORCODE_VALUE_SUBPHONE_UNREGISTER="2";
+    public static final String JSON_ERRORCODE_VALUE_SUBPHONE_BUSY="3";
 
     public static final String JSON_VIDEOSTATUS_KEY="videostatus";
     public static final String JSON_VIDEOSTATUS_VALUE_ON="on";
@@ -148,12 +180,22 @@ public class CommonData {
     public static final String JSON_AUDIOFRAME_VALUE_44100="44100Hz";
     public static final String JSON_AUDIOFRAME_VALUE_48000="48000Hz";
 
-    public static final String JSON_VIDEOPORT_KEY="videoport";
-    public static final String JSON_AUDIOPORT_KEY="audioport";
+    public static final String JSON_CALLEEVIDEOPORT_KEY ="calleevideoport";
+    public static final String JSON_CALLERVIDEOPORT_KEY ="callervideoport";
+    public static final String JSON_VIDEOPORT_VALUE_DEFAULT = "2000";
+
+    public static final String JSON_CALLEEAUDIOPORT_KEY ="calleeaudioport";
+    public static final String JSON_CALLERAUDIOPORT_KEY ="calleraudioport";
+    public static final String JSON_AUDIOPORT_VALUE_DEFAULT = "3000";
+
+    public static final String JSON_RTPIP_KEY = "rtpip";
 
     public static final String JSON_LOOPID_KEY="loop";
 
     public static final String JSON_REASON_KEY="reason";
+
+    public static final String JSON_FROMIP_KEY="fromip";
+    public static final String JSON_TOIP_KEY="toip";
 	// Standard Call
     public static final  int SENCES_EDIT = 5;
     public static final String CALL_PHONE_MAIN="0";
@@ -176,6 +218,7 @@ public class CommonData {
     public static final int CALL_STATE_TERMINATED=4;
     public static final int CALL_STATE_PREPARE=5;
     public static final int CALL_STATE_CALLOUT=6;
+    public static final int CALL_STATE_BUSY=7;
 
     public static final String CALL_CMD_INCOMING="incoming";
     public static final String CALL_CMD_TAKECALL="takecall";
@@ -186,11 +229,6 @@ public class CommonData {
     public static final String CALL_CMD_CLOSERTP="closertp";
     public static final String CALL_CMD_NETCHANGE="netchange";
 
-    public static final String CALL_TYPE_LOBBY="lobby";
-    public static final String CALL_TYPE_CUARD="guard";
-    public static final String CALL_TYPE_PANEL="homepanel";
-    public static final String CALL_TYPE_DOORCAMERA="ipdoorcamera";
-    public static final String CALL_TYPE_IPVDP="ipvdp";
 
     public static final String CAMERAS_CMD_NEXT="cameras_next";
     public static final String CAMERAS_CMD_FULLSCREEN="cameras_fullscreen";
