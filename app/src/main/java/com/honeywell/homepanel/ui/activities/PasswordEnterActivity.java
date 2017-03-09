@@ -23,16 +23,12 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.honeywell.homepanel.R.color.black;
-
 /**
  * Created by H135901 on 2/16/2017.
  */
 
 public class PasswordEnterActivity extends Activity implements View.OnClickListener, AdapterCallback {
     private GridView gridView;
-
-
     private Button mCancelBtn = null;
     private StringBuffer mPasswordStr = new StringBuffer();
 
@@ -48,6 +44,12 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
             R.mipmap.clear, R.mipmap.zero, R.mipmap.delete,
     };
 
+    private static final int IMAGES_DOWN[] = {
+            R.mipmap.one_down, R.mipmap.two_down, R.mipmap.three_down,
+            R.mipmap.four_down, R.mipmap.five_down, R.mipmap.six_down,
+            R.mipmap.seven_down, R.mipmap.eight_down, R.mipmap.nine_down,
+            R.mipmap.clear_down, R.mipmap.zero_down, R.mipmap.delete_down,
+    };
     private int mSelect_Scenario = 1;
 
     @Override
@@ -63,13 +65,7 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
 
     private void initGridView() {
         GridView gridView = (GridView) findViewById(R.id.gridView);
-        gridView.setAdapter(new PasswordAdapter(getApplicationContext(), this, IMAGES));
-      /* gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
-
-            }
-        });*/
+        gridView.setAdapter(new PasswordAdapter(getApplicationContext(), this, IMAGES,IMAGES_DOWN));
     }
 
     private void comparePassword(StringBuffer password) {
