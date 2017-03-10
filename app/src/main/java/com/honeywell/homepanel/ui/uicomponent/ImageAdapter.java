@@ -2,6 +2,7 @@ package com.honeywell.homepanel.ui.uicomponent;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,12 +18,16 @@ public class ImageAdapter extends BaseAdapter {
 
     private Context mContext;
     private LayoutInflater inflater = null;
+    private AdapterCallback mCallBacks = null;
 
     private int [] mTextes = null;
     private int[] mImages = null;
+    private int[] mImages_down = null;
 
-    public ImageAdapter(Context c,int[] images,int[]textes) {
+    public ImageAdapter(Context c,AdapterCallback callbacks,int[] images,int[] images_down,int[]textes) {
         mImages = images;
+        mCallBacks = callbacks;
+        mImages_down = images_down;
         mTextes = textes;
         mContext = c;
         inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,20 +52,48 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         View view;
+        ViewHolder viewHolder = null;
         if (convertView == null) {
             //给ImageView设置资源
             view = inflater.inflate(R.layout.layout_scenarioselect_item, null);
+            ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
+            TextView textView = (TextView) view.findViewById(R.id.textview);
+            viewHolder = new ViewHolder(position,imageView,textView);
+            view.setTag(viewHolder);
         } else {
             view = convertView;
+            viewHolder = (ViewHolder) view.getTag();
         }
-        ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
-        imageView.setImageResource(mImages[position]);
-        TextView textView = (TextView) view.findViewById(R.id.textview);
-        textView.setText(mTextes[position]);
-
+        viewHolder.mImageView.setImageResource(mImages[position]);
+        viewHolder.mTextView.setText(mTextes[position]);
         return view;
+    }
+
+    class ViewHolder{
+        private ImageView mImageView = null;
+        private   TextView mTextView = null;
+        private int mPostion = 0;
+
+        public ViewHolder(final int postion, ImageView imageView, TextView textView) {
+            mPostion = postion;
+            this.mImageView = imageView;
+            this.mTextView = textView;
+            mImageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                        mImageView.setImageResource(mImages_down[mPostion]);
+                        mTextView.setTextColor(mContext.getResources().getColor(R.color.black));
+                    } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                        mImageView.setImageResource(mImages[mPostion]);
+                        mCallBacks.subviewOnclick(mPostion,"");
+                        mTextView.setTextColor(mContext.getResources().getColor(R.color.black_text_transparent));
+                    }
+                    return true;
+                }
+            });
+        }
     }
 
 }

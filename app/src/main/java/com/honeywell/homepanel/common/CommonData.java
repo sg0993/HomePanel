@@ -130,8 +130,11 @@ public class CommonData {
     public static final String JSON_DISPLAYNAME_VALUE_BACKDOOR="backdoor";
 
     public static final String JSON_DEVICETYPE_KEY="devicetype";
+    public static final String JSON_DEVICETYPE_VALUE_HOMEPANEL="homepanel";
+    public static final String JSON_DEVICETYPE_VALUE_CLOUD="cloud";
 
     public static final String JSON_DEVICEVENDOR_KEY="devicevendor";
+    public static final String JSON_DEVICEVENDOR_VALUE_HONEYWELL="honeywell";
 
     public static final String JSON_UUID_KEY="uuid";
 
@@ -141,6 +144,9 @@ public class CommonData {
     public static final String JSON_ERRORCODE_VALUE_KEYMISS="1";
     public static final String JSON_ERRORCODE_VALUE_SUBPHONE_UNREGISTER="2";
     public static final String JSON_ERRORCODE_VALUE_SUBPHONE_BUSY="3";
+
+    public static final String JSON_VIDEOPORT_KEY="videoport";
+    public static final String JSON_AUDIOPORT_KEY="audioport";
 
     public static final String JSON_VIDEOSTATUS_KEY="videostatus";
     public static final String JSON_VIDEOSTATUS_VALUE_ON="on";
@@ -195,7 +201,9 @@ public class CommonData {
     public static final String JSON_REASON_KEY="reason";
 
     public static final String JSON_FROMIP_KEY="fromip";
+    public static final String JSON_FROMALIASNAME_KEY="fromalias";
     public static final String JSON_TOIP_KEY="toip";
+    public static final String JSON_TOALIASNAME_KEY ="toalias";
 	// Standard Call
     public static final  int SENCES_EDIT = 5;
     public static final String CALL_PHONE_MAIN="0";
@@ -236,5 +244,7 @@ public class CommonData {
     public static final int CAMERAS_LIVING = 0;
     public static final int CAMERAS_IPDOOR = 1;
     public static final int CAMERAS_PARKING = 2;
+    public static final String CALL_DIRECTION_CALLED ="";
+    public static final String CALL_DIRECTION_CALLING = "";
 
 }

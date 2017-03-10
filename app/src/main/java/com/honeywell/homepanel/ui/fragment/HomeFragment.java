@@ -16,10 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.PlistUtil;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.activities.ScenarioSelectActivity;
+import com.honeywell.homepanel.ui.domain.MenuCity;
 import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
 
@@ -191,7 +193,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 showScenarioSelect();
                 break;
             case R.id.goodwhat_hasevent:// for test Neighbor OutGoing call
-                testCall("100-202",CommonData.CALL_OUTGOING_NEIGHBOR);
+                //testCall("100-202",CommonData.CALL_OUTGOING_NEIGHBOR);
+                ArrayList<MenuCity> lists = PlistUtil.getDefaultCities(getActivity().getApplicationContext());
+                Log.d(TAG,"size :" + lists.size() +",,,1111111111");
+
+
                 break;
             case R.id.arm_hint_hasevent:// for test Neighbor Incoming call
                 testCall("100-202",CommonData.CALL_INCOMING_NEIGHBOR);

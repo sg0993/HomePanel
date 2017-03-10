@@ -78,4 +78,19 @@
     <string name="lift">Lift</string>
     <string name="audio">Audio</string>
     <string name="video">Video</string>
+
+    <string name="engin_network">Homepanel network setting</string>
+    <string name="engin_serverip">Server IP settiong</string>
+    <string name="engin_roomno">Room number</string>
+    <string name="engin_zonecfg">Zone configuration</string>
+    <string name="engin_relaycfg">Relay configuration</string>
+    <string name="engin_elevatorset">Elevator setting</string>
+    <string name="engin_ddkset">DDK setting</string>
+    <string name="engin_subphone">IP subphone setting</string>
+    <string name="engin_camera">IP camera setting</string>
+    <string name="engin_antidismantle">Anti-dismantle</string>
+    <string name="engin_finaltest">Start final tester</string>
+    <string name="engin_restart">Restart</string>
+    <string name="engin_serverip_addr">159.99.249.40</string>
+    <string name="engin_roomno_number">300201002</string>
 </resources>
