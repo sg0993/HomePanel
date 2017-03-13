@@ -7,13 +7,13 @@
     <color name="colorAccent">#FF4081</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-
+    <color name="record_voice_color">#5C5C5C</color>
     <color name="blue">#0000FF</color>
     <color name="progress_blue">#3D80BC</color>
     <color name="pressblue">#1792e5</color>
     <color name="transparent">#00000000</color>
     <color name="welcome_white">#ffffff</color>
-
+    <color name="listview_divider">#C6C6C6</color>
     <color name="normal_grey">#9b9b9b</color>
     <color name="black_grey">#4A4A4A</color>
     <color name="left_navigation_background">#f5f5f5</color>

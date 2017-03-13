@@ -79,7 +79,9 @@
     <string name="audio">Audio</string>
     <string name="video">Video</string>
 
-    <string name="engin_network">Homepanel network setting</string>
+    <string name="engin_top_title">Engineering mode</string>
+    <string name="engin_device_role">Device role</string>
+    <string name="engin_network">Network setting</string>
     <string name="engin_serverip">Server IP settiong</string>
     <string name="engin_roomno">Room number</string>
     <string name="engin_zonecfg">Zone configuration</string>
@@ -93,4 +95,56 @@
     <string name="engin_restart">Restart</string>
     <string name="engin_serverip_addr">159.99.249.40</string>
     <string name="engin_roomno_number">300201002</string>
+
+    <string name="network_top_title">Netmask setting</string>
+    <string name="network_IP_addr">IP address</string>
+    <string name="network_netmask">Netmask</string>
+    <string name="network_gateway">Gateway</string>
+    <string name="network_ipaddr_value">159.99.249.247</string>
+    <string name="network_netmask_value">255.255.255.0</string>
+    <string name="network_gateway_value">159.99.249.1</string>
+
+    <string name="zone_top_title">Zone configuration</string>
+    <string name="zone_local_zone">Local zone</string>
+    <string name="zone_extension_zone">Extension zone</string>
+        <string name="title_activity_wifi_configure">WifiConfigureActivity</string>
+    <string name="wifi_configure">Wi-Fi configuration</string>
+    <string name="title_activity_location">LocationActivity</string>
+    <string name="location">Set Location</string>
+    <string name="title_activity_date_time">DateTimeActivity</string>
+    <string name="date">Date&amp;Time</string>
+    <string name="title_activity_advanced">AdvancedActivity</string>
+    <string name="advanced">Advanced settings</string>
+    <string name="card">Access card management</string>
+    <string name="password">Change disarm password</string>
+    <string name="title_activity_card_management">CardManagementActivity</string>
+    <string name="add_card">There are no any access card yet,you can tap the "add" button to create it first.</string>
+    <string name="title_activity_add_card">AddCardActivity</string>
+    <string name="card_type">Please select card type you want to create</string>
+    <string name="card_permanent">Permanent card</string>
+    <string name="card_temporary">Temporary card</string>
+    <string name="title_activity_config_card">ConfigCardActivity</string>
+    <string name="config_permanent">Configure Permanent card</string>
+    <string name="config_temporary">Configure Temporary card</string>
+    <string name="title_activity_config_temorary">ConfigTemoraryActivity</string>
+    <string name="title_activity_set_date">SetDateActivity</string>
+    <string name="title_activity_set_time">SetTimeActivity</string>
+    <string name="title_activity_change_pwd">ChangePwdActivity</string>
+    <string name="title_activity_passwd_change">PasswdChangeActivity</string>
+    <string name="title_activity_new_passwd">NewPasswdActivity</string>
+    <string name="Password">Password</string>
+
+    <string name="elevator_top_title">Elevator setting</string>
+    <string name="elevator_ip">IP</string>
+    <string name="elevator_port">Port</string>
+    <string name="elevator_localfloor">Local floor</string>
+    <string name="elevator_ip_value">192.171.92.1</string>
+    <string name="elevator_port_value">4001</string>
+    <string name="elevator_localfloor_value">10</string>
+
+    <string name="extension_zone_top_title">Extension zone</string>
+    <string name="extension_zone_5804EU">5804EU</string>
+    <string name="extension_zone_5800_PIR_AP">5800-PIR-AP</string>
+    <string name="extension_zone_5804EU_status">online</string>
+    <string name="extension_zone_5800_PIR_AP_status">online</string>
 </resources>

@@ -22,6 +22,7 @@ public class CommonData {
 
     public static final  int WIFI_CONNECTED = 0;
     public static final  int WIFI_DISCONNECT = 1;
+    public static final int CHANGE_PASSWORD_LENGTH = 4;
     public static final int SRCURITY_PASSWORD_LENGTH = 6;
 
     /**********************default scenario******************************/
@@ -43,6 +44,13 @@ public class CommonData {
     public static  final int CALL_LOBBY_INCOMMING = 4;/*lobby呼入*/
     public static  final int CALL_LOBBY_CONNECTED = 5;/*lobby接通*/
     /************************added by ellen end**********************************/
+	public static final  String INTENT_CARD_ALIAS = "card_alias";
+    public static final  String INTENT_KEY_CARD_TYPE = "card_type";
+    public static final  String INTENT_KEY_CARD_FRAGMENT = "card_fragment";
+	public static  final int CARD_PERMANENT = 6;
+	public static  final int CARD_TEMORARY = 7;
+    public static  final int CARD_NO = 8;
+	public static  final int CARD_LIST = 9;
     //JSON Key & Valve Define
     public static final String JSON_MSGID_KEY ="msgid";
 
@@ -132,6 +140,7 @@ public class CommonData {
     public static final String JSON_DEVICETYPE_KEY="devicetype";
     public static final String JSON_DEVICETYPE_VALUE_HOMEPANEL="homepanel";
     public static final String JSON_DEVICETYPE_VALUE_CLOUD="cloud";
+    public static final String JSON_DEVICETYPE_VALUE_LOBBY="lobby";
 
     public static final String JSON_DEVICEVENDOR_KEY="devicevendor";
     public static final String JSON_DEVICEVENDOR_VALUE_HONEYWELL="honeywell";
@@ -144,6 +153,9 @@ public class CommonData {
     public static final String JSON_ERRORCODE_VALUE_KEYMISS="1";
     public static final String JSON_ERRORCODE_VALUE_SUBPHONE_UNREGISTER="2";
     public static final String JSON_ERRORCODE_VALUE_SUBPHONE_BUSY="3";
+    public static final String JSON_ERRORCODE_VALUE_PASSWORD="4";
+    public static final String JSON_ERRORCODE_VALUE_MSGTO="5";
+    public static final String JSON_ERRORCODE_VALUE_TIMEOUT = "6";
 
     public static final String JSON_VIDEOPORT_KEY="videoport";
     public static final String JSON_AUDIOPORT_KEY="audioport";

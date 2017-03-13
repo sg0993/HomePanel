@@ -10,15 +10,12 @@
 
 
     <include layout="@layout/notification_navi"/>
-    <ImageView
+    <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
-        android:src="@drawable/button_pressed"
-        android:scaleType="fitXY"
-        />
+        android:background="#1792E5" />
 
     <FrameLayout
-        android:layout_marginTop="-4dp"
         android:id="@+id/id_msg_body"
         android:layout_weight="1"
         android:layout_width="fill_parent"

@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 
@@ -48,5 +49,11 @@ public class CommonUtils {
         alert.setTitle("测试");
         alert.getWindow().setContentView(view);
         return  seekBar;
+    }
+
+    public static void setWindowAlpha(Window window, float f) {
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.alpha = f;
+        window.setAttributes(lp);
     }
 }

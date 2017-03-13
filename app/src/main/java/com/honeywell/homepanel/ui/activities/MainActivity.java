@@ -15,6 +15,7 @@ import android.widget.PopupWindow;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.ui.AlarmHint;
+import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.uicomponent.AdapterCallback;
 import com.honeywell.homepanel.ui.uicomponent.AlarmHintPopAdapter;
@@ -26,7 +27,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements AdapterCallback{
+public class MainActivity extends BaseActivity implements AdapterCallback,PopupWindow.OnDismissListener{
     private static final String TAG = "MainActivity";
     private View mCenterView = null;
 
@@ -117,10 +118,12 @@ public class MainActivity extends BaseActivity implements AdapterCallback{
             mpopupWindow = new PopupWindow(mPopWndView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             mpopupWindow.setBackgroundDrawable(new ColorDrawable());
             mpopupWindow.setOutsideTouchable(true);
+            mpopupWindow.setOnDismissListener(this);
         }
         if(!mpopupWindow.isShowing()){
             mpopupWindow.showAtLocation(content_scrolling, Gravity.LEFT | Gravity.TOP, 0, 0);
         }
+        CommonUtils.setWindowAlpha(getWindow(),0.3f);
     }
 
     @Override
@@ -135,5 +138,10 @@ public class MainActivity extends BaseActivity implements AdapterCallback{
     @Override
     public void subviewOnclick(int position, String more) {
         mpopupWindow.dismiss();
+    }
+
+    @Override
+    public void onDismiss() {
+        CommonUtils.setWindowAlpha(getWindow(),1.0f);
     }
 }

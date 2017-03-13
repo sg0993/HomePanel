@@ -1,17 +1,26 @@
 package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.ui.activities.AdvancedActivity;
+import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.activities.DateTimeActivity;
+import com.honeywell.homepanel.ui.activities.LocationActivity;
+import com.honeywell.homepanel.ui.activities.SaveSpeedDialActivity;
+import com.honeywell.homepanel.ui.activities.WifiConfigureActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,6 +61,7 @@ public class SettingFragment extends Fragment {
         simpleAdapter = new SimpleAdapter(getActivity().getApplicationContext(),data_list,R.layout.item_setting,
                 new String[] {"image","text"},new int[] {R.id.image, R.id.text});
         gridView.setAdapter(simpleAdapter);
+        gridView.setOnItemClickListener(new ItemClickListener());
         return view;
     }
 
@@ -66,7 +76,40 @@ public class SettingFragment extends Fragment {
         this.title = title;
 
     }
-
+    class  ItemClickListener implements AdapterView.OnItemClickListener {
+        public void onItemClick(AdapterView<?> arg0,//The AdapterView where the click happened
+                                View arg1,//The view within the AdapterView that was clicked
+                                int arg2,//The position of the view in the adapter
+                                long arg3//The row id of the item that was clicked
+        ) {
+            switch (arg2) {
+                case 0:
+                    Intent intent1 = new Intent(getActivity(), WifiConfigureActivity.class);
+                    startActivity(intent1);
+                    break;
+                case 1:
+                    Intent intent2 = new Intent(getActivity(), LocationActivity.class);
+                    startActivity(intent2);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    Intent intent4 = new Intent(getActivity(), DateTimeActivity.class);
+                    startActivity(intent4);
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    Intent intent = new Intent(getActivity(), AdvancedActivity.class);
+                    startActivity(intent);
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+            }
+        }
+    }
     public SettingFragment() {
         super();
     }

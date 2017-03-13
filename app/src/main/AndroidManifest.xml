@@ -116,6 +116,98 @@
             android:launchMode="singleInstance"
             android:screenOrientation="landscape">
         </activity>
+        <activity
+            android:name=".ui.activities.WifiConfigureActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.LocationActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.DateTimeActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.AdvancedActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.CardManagementActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.AddCardActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.ConfigPermanentActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.ConfigTemoraryActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.SetTimeActivity"
+            android:label="@string/title_activity_set_time"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.SetDateActivity"
+            android:label="@string/title_activity_set_date"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.PasswdChangeActivity"
+            android:label="@string/title_activity_set_date"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.NewPasswdActivity"
+            android:label="@string/title_activity_set_date"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+
+        <activity
+            android:name=".ui.activities.NetworkSettingActivity"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity
+            android:name=".ui.activities.ZoneConfigurationActivity"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity
+            android:name=".ui.activities.ElevatorSettingActivity"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity
+            android:name=".ui.activities.ExtensionZoneActivity"
+            android:theme="@style/Theme.notAnimation"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+        </activity>
 
         <service
             android:name="com.honeywell.homepanel.cloud.CloudConnService"
@@ -229,8 +321,7 @@
         </service>
         <service
             android:name="com.honeywell.homepanel.subphoneservice.SubPhoneClientService"
-            android:exported="false"
-            android:process="@string/subphoneclient">
+            android:exported="false">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.subphoneservice.SubPhoneClientService"
