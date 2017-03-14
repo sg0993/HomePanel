@@ -259,4 +259,14 @@ public class CommonData {
     public static final String CALL_DIRECTION_CALLED ="";
     public static final String CALL_DIRECTION_CALLING = "";
 
+    /***********************ellen 20170313*********************************/
+    public static final String APPDATABASEFILE = "homepanel.db";
+    public static final String ACTION_SUBPHONE_SERVICE = "com.honeywell.homepanel.subphoneuiservice.SubPhoneUIService";
+
+    public static final String WIFIMODULE_DEFAULT_VERSION ="0.0.1";
+
+    public static final int ONLINE = 1;
+    public static final int NOTONLINE = 0;
+
+
 }
