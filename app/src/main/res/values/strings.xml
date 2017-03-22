@@ -107,7 +107,7 @@
     <string name="zone_top_title">Zone configuration</string>
     <string name="zone_local_zone">Local zone</string>
     <string name="zone_extension_zone">Extension zone</string>
-        <string name="title_activity_wifi_configure">WifiConfigureActivity</string>
+    <string name="title_activity_wifi_configure">WifiConfigureActivity</string>
     <string name="wifi_configure">Wi-Fi configuration</string>
     <string name="title_activity_location">LocationActivity</string>
     <string name="location">Set Location</string>
@@ -147,4 +147,95 @@
     <string name="extension_zone_5800_PIR_AP">5800-PIR-AP</string>
     <string name="extension_zone_5804EU_status">online</string>
     <string name="extension_zone_5800_PIR_AP_status">online</string>
+    <string name="title_activity_wifi_connect">WifiConnectActivity</string>
+
+    <string name="relay_top_title">Relay configuration</string>
+    <string name="relay_wifi_relay_module">WIFI Relay modules (8)</string>
+    <string name="relay_wifi_relay_module2">WIFI Relay modules (4)</string>
+    <string name="relay_wifi_relay_module_state">online</string>
+
+    <string name="IP_subphone_setting_top_title">IP subphone setting</string>
+    <string name="IP_subphone_setting_alias">Alias</string>
+    <string name="IP_subphone_setting_master_phone_ip_address">
+        Master phone IP address</string>
+    <string name="IP_subphone_setting_ip_subphone_id">
+        IP subphone ID</string>
+    <string name="IP_subphone_setting_change_ip_subphone_password">
+        Change IP subphone password</string>
+    <string name="IP_subphone_setting_change_engin_password">
+        Change engineering mode password</string>
+    <string name="IP_subphone_setting_alias_value">XXXXXX</string>
+    <string name="IP_subphone_setting_master_phone_ip_address_value">
+        192.168.98.1</string>
+    <string name="IP_subphone_setting_ip_subphone_id_value">
+        2</string>
+
+    <string name="door_lock_setting_top_title">Door lock setting</string>
+    <string name="door_lock_setting_top_front_door">Front door</string>
+    <string name="door_lock_setting_top_back_door">Back door</string>
+    <string name="door_lock_setting_top_front_door_value">IP door camera</string>
+    <string name="door_lock_setting_top_back_door_value">
+        Honeywell Momas Key</string>
+
+    <string name="ip_camera_setting_top_title">IP camera setting</string>
+    <string name="ip_camer1">IP camera 1</string>
+    <string name="ip_camer2">IP camera 2</string>
+    <string name="ip_camera_setting_alias_name">Alias name</string>
+    <string name="ip_camer1_value">192.168.11.1</string>
+    <string name="ip_camer2_value">192.168.11.1</string>
+    <string name="alias_name_value">192.158.112.11</string>
+    <string name="local_zone_top_title">Local zone</string>
+    <string name="local_zone_zone1">Zone1</string>
+    <string name="local_zone_alias">Alias</string>
+    <string name="local_zone_alias_value">XXXXXX</string>
+    <string name="local_zone_alarm_type">Alarm type</string>
+    <string name="local_zone_alarm_type_value">Fire</string>
+    <string name="local_zone_zone_type">Zone type</string>
+    <string name="local_zone_zone_type_value">Instant</string>
+    <string name="local_zone_enable">Enable</string>
+    <string name="local_zone_delay_time">Delay time</string>
+    <string name="local_zone_zone2">Zone2</string>
+
+    <string name="room_number_title">Room number</string>
+    <string name="bright_title">Brightness Volume</string>
+    <string name="brightness">Brightness</string>
+    <string name="volume">Volume</string>
+
+    <string name="options_zone_type_instant">Instant</string>
+    <string name="options_zone_type_24hours">24 hours</string>
+    <string name="options_zone_type_delay">Delay</string>
+
+    <string name="options_alarm_type_fire">Fire</string>
+    <string name="options_alarm_type_help">Help</string>
+    <string name="options_alarm_type_gas">Gas</string>
+    <string name="options_alarm_type_emergency">Emergency</string>
+
+    <string name="options_device_role_master">Master phone</string>
+    <string name="options_device_role_subphone">Subphone</string>
+
+    <string name="relay_cfg_relay1">Relay 1</string>
+    <string name="relay_cfg_relay2">Relay 2</string>
+
+    <string name="save_to_room_number">Save to room number</string>
+
+    <string name="local_zone_delay_time_30s">30 seconds</string>
+    <string name="local_zone_delay_time_1m">1 min</string>
+    <string name="local_zone_delay_time_1m30s">1 min 30 seconds</string>
+    <string name="local_zone_delay_time_2m">2 min</string>
+    <string name="local_zone_delay_time_2m30s">2 min 30 seconds</string>
+    <string name="local_zone_delay_time_3m">3 min</string>
+    <string name="local_zone_delay_time_3m30s">3 min 30 seconds</string>
+    <string name="local_zone_delay_time_4m">4 min</string>
+    <string name="local_zone_delay_time_4m30s">4 min 30 seconds</string>
+    <string name="local_zone_delay_time_5m">5 min</string>
+
+    <string name="ip_camera_configuration_top_title">IP camera configuration</string>
+    <string name="ip_camera_configuration_alias">Alias</string>
+    <string name="ip_camera_configuration_alias_value">XXXXXXX</string>
+    <string name="ip_camera_configuration_ip_address">IP address</string>
+    <string name="ip_camera_configuration_ip_address_value">192.171.92.1</string>
+    <string name="ip_camera_configuration_user_name">User name</string>
+    <string name="ip_camera_configuration_user_name_value">XXXXXX</string>
+    <string name="ip_camera_configuration_password">Password</string>
+    <string name="ip_camera_configuration_password_value">XXXXXX</string>
 </resources>

@@ -33,7 +33,7 @@ public class PlistUtil {
         return plistUtil;
     }
 
-    private PlistUtil(Context context) {
+    public PlistUtil(Context context) {
         this.mContext = context;
         parser.setHandler(handler);
     }
@@ -182,7 +182,7 @@ public class PlistUtil {
         ArrayList<MenuCity> returnArray = new ArrayList<MenuCity>();
         for (int i = 0; i < items.size(); i++) {
             Map<String, Object> item = (Map<String, Object>) items.get(i);
-            ArrayList<Object> cityArr = (ArrayList<Object>) item.get("Cities");
+            ArrayList<String> cityArr = (ArrayList<String>) item.get("Cities");
             String province = (String) item.get("ProvinceName");
             MenuCity menuCity = new MenuCity();
             menuCity.citiesStr = cityArr;

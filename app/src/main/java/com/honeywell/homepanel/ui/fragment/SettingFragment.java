@@ -1,10 +1,12 @@
 package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +38,7 @@ import java.util.Map;
  */
 
 @SuppressLint("ValidFragment")
-public class SettingFragment extends Fragment {
+public class SettingFragment extends Fragment implements View.OnClickListener{
     private String title = "";
     private GridView gridView = null;
     private List<Map<String,Object>> data_list;
@@ -76,6 +78,12 @@ public class SettingFragment extends Fragment {
         this.title = title;
 
     }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
     class  ItemClickListener implements AdapterView.OnItemClickListener {
         public void onItemClick(AdapterView<?> arg0,//The AdapterView where the click happened
                                 View arg1,//The view within the AdapterView that was clicked

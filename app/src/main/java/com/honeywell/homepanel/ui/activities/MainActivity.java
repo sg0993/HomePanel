@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setLeftNavifation(CommonData.LEFT_SELECT_HOME);
+       /* setLeftNavifation(CommonData.LEFT_SELECT_HOME);*/
 
         // start watch dog
         startService(new Intent(this, WatchDogService.class));
@@ -75,6 +75,7 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
     }
     @Override
     protected void onDestroy() {
+        Log.d(TAG,TAG+".onDestroy() 111111");
         super.onDestroy();
         if (mpopupWindow != null && mpopupWindow.isShowing()) {
             mpopupWindow.dismiss();
@@ -132,7 +133,10 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
             mpopupWindow.dismiss();
             return true;
         }
-        return super.onKeyDown(keyCode, event);
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            return true;
+        }
+        return  super.onKeyDown(keyCode,event);
     }
 
     @Override

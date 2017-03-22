@@ -26,7 +26,8 @@
         <Button
             android:background="@color/line_color"
             android:layout_width="match_parent"
-            android:layout_height="2dp"></Button>
+            android:layout_height="2dp">
+        </Button>
         <GridView
             android:background="@color/line_color"
             android:id="@+id/gridview_setting"
@@ -42,6 +43,7 @@
         <Button
             android:background="@color/line_color"
             android:layout_width="match_parent"
-            android:layout_height="2dp"></Button>
+            android:layout_height="2dp">
+        </Button>
     </LinearLayout>
 </LinearLayout>

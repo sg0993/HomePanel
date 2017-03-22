@@ -31,4 +31,10 @@
     <color name="black_text_transparent">#3f000000</color>
     <color name="white_text_transparent">#7effffff</color>
     <color name="line_color">#C6C6C6</color>
+
+    <!-- Global Buttons Spec -->
+    <color name="fill_primary_button_active">#1792E5</color>
+    <color name="fill_primary_button_pressed">#0A6299</color>
+    <color name="fill_standard_button_active">#B3B3B3</color>
+    <color name="fill_standard_button_pressed">#666666</color>
 </resources>

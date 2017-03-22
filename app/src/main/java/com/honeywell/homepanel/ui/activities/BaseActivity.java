@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,6 +35,7 @@ import java.util.Map;
  */
 
 public abstract class BaseActivity extends FragmentActivity implements View.OnClickListener{
+    private static final String TAG = "BaseActivity";
     private static int mLeftCurPage = CommonData.LEFT_SELECT_HOME;
     private static int mLeftPrePage = CommonData.LEFT_SELECT_HOME;
     private List<View>mLeftViews = new ArrayList<View>();
@@ -49,18 +51,20 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         setContentView(getContent());
         initViewAndListener();
         mTopViewBrusher.init(this);
+        fragmentAdd(true,mLeftCurPage);
 
-        fragmentAdd(true,CommonData.LEFT_SELECT_HOME);
+        setLeftNavifation(mLeftCurPage);
     }
  	@Override
     protected void onResume() {
         super.onResume();
-        setLeftNavifation(mLeftCurPage);
+        //setLeftNavifation(mLeftCurPage);
 
         mTopViewBrusher.setTop(getApplicationContext());
     }
     @Override
     protected void onDestroy() {
+        Log.d(TAG,TAG+".onDestroy() 111111");
         EventBus.getDefault().unregister(this);
         super.onDestroy();
         mTopViewBrusher.destory();
@@ -133,6 +137,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 
 
     protected  void setLeftNavifation(int curPage) {
+        Log.d(TAG,"setLeftNavifation() mCur:"+mLeftCurPage+",nPre:"+mLeftPrePage+", 11111111111111");
         mLeftPrePage = mLeftCurPage;
         mLeftCurPage = curPage;
         initLeftPage();
@@ -141,6 +146,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     protected abstract int getContent();
 
     private void initLeftPage() {
+        Log.d(TAG,"initLeftPage() 11111111111111");
         switch (mLeftCurPage){
             case CommonData.LEFT_SELECT_HOME:
                 mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.home_select);

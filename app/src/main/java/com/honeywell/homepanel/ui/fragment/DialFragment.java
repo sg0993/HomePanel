@@ -7,35 +7,21 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.honeywell.homepanel.common.Message.MessageEvent;
-import com.honeywell.homepanel.ui.activities.MainActivity;
-import com.honeywell.homepanel.ui.fragment.SpeedDialFragment;
-import com.honeywell.homepanel.ui.fragment.SubphoneFragment;
-import com.honeywell.homepanel.ui.fragment.KeypadFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -43,10 +29,11 @@ import butterknife.ButterKnife;
 
 @SuppressLint("ValidFragment")
 public class DialFragment extends Fragment implements View.OnClickListener{
+    private static final String TAG = "DialFragment";
     /*
-    @Bind(R.id.dialTv)
-    TextView dialTv;
-    */
+        @Bind(R.id.dialTv)
+        TextView dialTv;
+        */
     private String title = "";
     private Button speeddial = null;
     private Button subphone = null;
@@ -56,7 +43,7 @@ public class DialFragment extends Fragment implements View.OnClickListener{
     private FragmentTransaction ft;
     private SpeedDialFragment speedDialFragment;
     private SubphoneFragment subphoneFragment;
-    private KeypadFragment keypadFragment;
+    private KeypadFragment keyPadFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,7 +59,7 @@ public class DialFragment extends Fragment implements View.OnClickListener{
         */
         initViews(view);
         initEvents();
-
+        Log.d(TAG,"DialFragment.onCreateView() 11111111111111");
         fm = getFragmentManager();
         ft = fm.beginTransaction();
         setBackgroundColorById(R.id.speed_dial);
@@ -153,9 +140,9 @@ public class DialFragment extends Fragment implements View.OnClickListener{
                 keypad.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_dark_pressed));
                 speeddial.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
                 subphone.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
-                if(keypadFragment == null)
-                    keypadFragment = new KeypadFragment();
-                ft.replace(R.id.fragment_content, keypadFragment);
+                if(keyPadFragment == null)
+                    keyPadFragment = new KeypadFragment();
+                ft.replace(R.id.fragment_content, keyPadFragment);
                 break;
             default:
                 break;

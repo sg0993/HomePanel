@@ -38,25 +38,16 @@ public class PeripheralDeviceManager {
     }
 
     public synchronized long add(String moduleUuid,String name,String type, String ipAddr,String macAddr,String version,int onLine){
-        long rowId = -1;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        try {
-            ContentValues values = new ContentValuesFactory()
-                    .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_TYPE, type)
-                    .put(ConfigConstant.COLUMN_NAME, name)
-                    .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_IP, ipAddr)
-                    .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_MAC, macAddr)
-                    .put(ConfigConstant.COLUMN_MODULEUUID,moduleUuid)
-                    .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_ONLINE,onLine)
-                    .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_VERSION, version).getValues();
-            rowId =  db.insert(ConfigConstant.TABLE_PERIPHERALDEVICE, null, values);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if(rowId > 0){
-            PreferenceManager.updateVersionId(mContext);
-        }
-        return rowId;
+        ContentValues values = new ContentValuesFactory()
+                .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_TYPE, type)
+                .put(ConfigConstant.COLUMN_NAME, name)
+                .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_IP, ipAddr)
+                .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_MAC, macAddr)
+                .put(ConfigConstant.COLUMN_MODULEUUID,moduleUuid)
+                .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_ONLINE,onLine)
+                .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_VERSION, version).getValues();
+
+        return DbCommonUtil.add(mContext,dbHelper,ConfigConstant.TABLE_PERIPHERALDEVICE,values);
     }
 
     public synchronized int deleteByModuleUuid(String  moduleUuid) {
@@ -64,54 +55,29 @@ public class PeripheralDeviceManager {
         if(TextUtils.isEmpty(moduleUuid)){
             return num;
         }
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            PeripheralDevice device = getByModuleUuid(moduleUuid);
-            if(null == device){
-                return num;
-            }
-            //deleteCorrespondingLoop(primaryId,device.mType);
-            num = db.delete(ConfigConstant.TABLE_PERIPHERALDEVICE,
-                    ConfigConstant.COLUMN_MODULEUUID + "=?",
-                    new String[]{moduleUuid});
-            if(num > 0){
-                db.setTransactionSuccessful();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        PeripheralDevice device = getByModuleUuid(moduleUuid);
+        if(null == device){
+            return num;
         }
+        num = DbCommonUtil.deleteByStringFieldType(mContext,dbHelper,ConfigConstant.TABLE_PERIPHERALDEVICE,ConfigConstant.COLUMN_MODULEUUID,moduleUuid);
         if(num > 0){
-            db.endTransaction();
-            PreferenceManager.updateVersionId(mContext);
+            //TODO:delete all  device loop of such moduleuuid
         }
         return num;
     }
 
     public synchronized int deleteByPrimaryId(long primaryId) {
+
         int num = -1;
-       SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            PeripheralDevice device = getByPrimaryId(primaryId);
-            if(null == device){
-                return num;
-            }
-            //deleteCorrespondingLoop(primaryId,device.mType);
-            num = db.delete(ConfigConstant.TABLE_PERIPHERALDEVICE,
-                    ConfigConstant.COLUMN_ID + "=?",
-                    new String[]{String.valueOf(primaryId)});
-            if(num > 0){
-                db.setTransactionSuccessful();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        PeripheralDevice device = getByPrimaryId(primaryId);
+        if(null == device){
+            return num;
         }
+        num = DbCommonUtil.deleteByPrimaryId(mContext,dbHelper,ConfigConstant.TABLE_PERIPHERALDEVICE,primaryId);
         if(num > 0){
-            db.endTransaction();
-            PreferenceManager.updateVersionId(mContext);
+            //TODO:delete all  device loop of such moduleuuid
         }
-        return num;
+        return  num;
     }
 
     private ContentValues putUpDateValues(PeripheralDevice device){
@@ -172,13 +138,11 @@ public class PeripheralDeviceManager {
         return num;
     }
 
-    public PeripheralDevice getByPrimaryId(long primaryId) {
+    public synchronized PeripheralDevice getByPrimaryId(long primaryId) {
         if(primaryId <= 0){
             return null;
         }
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(ConfigConstant.TABLE_PERIPHERALDEVICE,null,
-                ConfigConstant.COLUMN_ID + "=?", new String[] { String.valueOf(primaryId) }, null, null, null, null);
+        Cursor cursor = DbCommonUtil.getByPrimaryId(dbHelper,ConfigConstant.TABLE_PERIPHERALDEVICE,primaryId);
         PeripheralDevice device = null;
         while(cursor.moveToNext()){
             device = fillDefault(cursor);
@@ -191,9 +155,7 @@ public class PeripheralDeviceManager {
         if(TextUtils.isEmpty(moduleUuid)){
             return null;
         }
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(ConfigConstant.TABLE_PERIPHERALDEVICE,null,
-                ConfigConstant.COLUMN_MODULEUUID + "=?", new String[] { moduleUuid }, null, null, null, null);
+        Cursor cursor = DbCommonUtil.getByStringField(dbHelper,ConfigConstant.TABLE_PERIPHERALDEVICE,ConfigConstant.COLUMN_MODULEUUID,moduleUuid);
         PeripheralDevice device = null;
         while(cursor.moveToNext()){
             device = fillDefault(cursor);
@@ -204,8 +166,7 @@ public class PeripheralDeviceManager {
 
     public synchronized List<PeripheralDevice> getPeripheralDeviceAllList() {
         List<PeripheralDevice> peripheralDevices = null;
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(ConfigConstant.TABLE_PERIPHERALDEVICE, null, null, null, null, null, ConfigConstant.COLUMN_ID +" asc", null);
+        Cursor cursor = DbCommonUtil.getAll(dbHelper,ConfigConstant.TABLE_PERIPHERALDEVICE);
         while(cursor.moveToNext()){
             if(null == peripheralDevices){
                 peripheralDevices = new ArrayList<PeripheralDevice>();

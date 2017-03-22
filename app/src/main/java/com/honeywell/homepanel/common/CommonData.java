@@ -81,9 +81,56 @@ public class CommonData {
     public static final String JSON_SUBACTION_VALUE_ELEVATORINFO = "elevatorinfo";
     public static final String JSON_SUBACTION_VALUE_IP2ALIAS="ip2alias";
     public static final String JSON_SUBACTION_VALUE_ALIAS2IP="alias2ip";
+    public static final String JSON_SUBACTION_VALUE_AUTOTAKECALL = "autotakecall";
+    public static final String JSON_SUBACTION_VALUE_RELAYCALL = "relaycall";
+    public static final String JSON_SUBACTION_VALUE_STARTSESSION = "startsession";
+    public static final String JSON_SUBACTION_VALUE_GETSCENARIOLIST = "getscenariolist";
+    public static final String JSON_SUBACTION_VALUE_SWITCHSCENARIO = "switchscenario";
+    public static final String JSON_SUBACTION_VALUE_GETSCENARIOCONFIG = "getscenarioconfig";
+    public static final String JSON_SUBACTION_VALUE_SETSCENARIOCONFIG = "setscenarioconfig";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTGET = "notificationeventget";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTADD = "notificationeventadd";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTDELETE = "notificationeventdelete";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTUPDATE = "notificationeventupdate";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMGET = "notificationalarmget";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMADD = "notificationalarmadd";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMDELETE = "notificationalarmdelete";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMUPDATE = "notificationalarmupdate";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGGET = "notificationvoicemsgget";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGUPDATE = "notificationvoicemsgupdate";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGDELETE = "notificationvoicemsgdelete";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGADD = "notificationvoicemsgadd";
+    public static final String JSON_SUBACTION_VALUE_SPEEDDIALGET = "speeddialget";
+    public static final String JSON_SUBACTION_VALUE_SPEEDDIALADD = "speeddialadd";
+    public static final String JSON_SUBACTION_VALUE_SPEEDDIALUPDATE = "speeddialupdate";
+    public static final String JSON_SUBACTION_VALUE_SPEEDDIALDELETE = "speeddialdelete";
+    public static final String JSON_SUBACTION_VALUE_CARDGET = "cardget";
+    public static final String JSON_SUBACTION_VALUE_CARDADD = "cardadd";
+    public static final String JSON_SUBACTION_VALUE_CARDDELEETE = "carddelete";
+    public static final String JSON_SUBACTION_VALUE_CARDUPDATE = "cardupdate";
+    public static final String JSON_SUBACTION_VALUE_IPCGET = "ipcget";
+    public static final String JSON_SUBACTION_VALUE_IPCADD = "ipcadd";
+    public static final String JSON_SUBACTION_VALUE_IPCDELETE = "ipcdelete";
+    public static final String JSON_SUBACTION_VALUE_IPCUPDATE = "ipcupdate";
+    public static final String JSON_SUBACTION_VALUE_LOCALZONEUPUDATE = "localzoneupdate";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONZONEGET = "extensionzoneget";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONZONEUPDATE = "extensionzoneupdate";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONZONEDELETE = "extensionzonedelete";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONRELAYGET = "extensionrelayget";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONRELAYUPDATE = "extensionrelayupdate";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONRELAYDELETE = "extensionrelaydelete";
 
     public static final String JSON_VIDEORATIO_KEY = "videoratio";
     public static final String JSON_VIDEORATIO_VALUE_DEFAULT = "320*240";
+
+    public static final String JSON_REMOTEIP_KEY = "remoteip";
+
+    public static final String JSON_VIDEOFMG_KEY = "videofmg";
+    public static final String JSON_VIDEOFMG_VALUE_DEFAULT = "fsfs&**++%$$#";
+
+    public static final String JSON_PHONEMSTYPE_KEY = "phonemstype";
+    public static final String JSON_PHONEMSTYPE_VALUE_MASTER = "master";
+    public static final String JSON_PHONEMSTYPE_VALUE_SLAVE = "slave";
 
     public static final String JSON_SWICHSTATUS_KEY = "switchstatus";
     public static final String JSON_SWICHSTATUS_VALUE_ON = "on";
@@ -141,6 +188,8 @@ public class CommonData {
     public static final String JSON_DEVICETYPE_VALUE_HOMEPANEL="homepanel";
     public static final String JSON_DEVICETYPE_VALUE_CLOUD="cloud";
     public static final String JSON_DEVICETYPE_VALUE_LOBBY="lobby";
+    public static final String JSON_DEVICETYPE_VALUE_GUARD="guard";
+    public static final String JSON_DEVICETYPE_VALUE_IPVDP="ipvdp";
 
     public static final String JSON_DEVICEVENDOR_KEY="devicevendor";
     public static final String JSON_DEVICEVENDOR_VALUE_HONEYWELL="honeywell";
@@ -198,17 +247,21 @@ public class CommonData {
     public static final String JSON_AUDIOFRAME_VALUE_44100="44100Hz";
     public static final String JSON_AUDIOFRAME_VALUE_48000="48000Hz";
 
-    public static final String JSON_CALLEEVIDEOPORT_KEY ="calleevideoport";
-    public static final String JSON_CALLERVIDEOPORT_KEY ="callervideoport";
-    public static final String JSON_VIDEOPORT_VALUE_DEFAULT = "2000";
+    public static final String JSON_VIDEOLOCALPORT_KEY ="videoloacalport";
+    public static final String JSON_VIDEOLOCALPORT_VALUE_DEFAULT = "2000";
 
-    public static final String JSON_CALLEEAUDIOPORT_KEY ="calleeaudioport";
-    public static final String JSON_CALLERAUDIOPORT_KEY ="calleraudioport";
-    public static final String JSON_AUDIOPORT_VALUE_DEFAULT = "3000";
+    public static final String JSON_AUDIOLOCALPORT_KEY ="audiolocalport";
+    public static final String JSON_AUDIOLOCALPORT_VALUE_DEFAULT = "3000";
+
+    public static final String JSON_VIDEOREMOTEPORT_KEY ="videoremoteport";
+    public static final String JSON_VIDEREMOTEPORT_VALUE_DEFAULT = "2000";
+
+    public static final String JSON_AUDIOREMOTEPORT_KEY ="audioremoteport";
+    public static final String JSON_AUDIOREMOTEPORT_VALUE_DEFAULT = "3000";
 
     public static final String JSON_RTPIP_KEY = "rtpip";
 
-    public static final String JSON_LOOPID_KEY="loop";
+    public static final String JSON_LOOPMAP_KEY ="loopmap";
 
     public static final String JSON_REASON_KEY="reason";
 
@@ -256,8 +309,7 @@ public class CommonData {
     public static final int CAMERAS_LIVING = 0;
     public static final int CAMERAS_IPDOOR = 1;
     public static final int CAMERAS_PARKING = 2;
-    public static final String CALL_DIRECTION_CALLED ="";
-    public static final String CALL_DIRECTION_CALLING = "";
+    
 
     /***********************ellen 20170313*********************************/
     public static final String APPDATABASEFILE = "homepanel.db";
@@ -268,5 +320,80 @@ public class CommonData {
     public static final int ONLINE = 1;
     public static final int NOTONLINE = 0;
 
+    /**********************engineering mode******************************/
+    public static final String ENGIN_MODE_OPTIONS = "enginneering mode options";
+    public static final int ENGIN_MODE_ZONE_TYPE = 13;
+    public static final int ENGIN_MODE_ALARM_TYPE = 12;
+    public static final int ENGIN_MODE_DEVICE_ROLE = 00;
+    public static final int ENGIN_MODE_RELAY_CFG = 20;
+    public static final int ENGIN_MODE_ROOM_NUMBER = 31;
+    public static final int ENGIN_MODE_ZONE_DELAY_TIME =14;
 
+    /**********************Local zone detail******************************/
+    public static final String OPTIONS_DETIAL_ZONE = "enginneering mode options";
+    public static final int OPTIONS_DETIAL_ZONE1 = 1;
+    public static final int OPTIONS_DETIAL_ZONE2 = 2;
+    public static final int OPTIONS_DETIAL_RELAY1 = 3;
+    public static final int OPTIONS_DETIAL_RELAY2 = 4;
+
+    /**********************************event bus broadcast****************************************/
+    public static final String INTENT_ACTION_EVENTBUS_MESSAGE = "com.honeywell.homepanel.eventbusmessage";
+    public static final String INTENT_EXTRA_JSONMESSAGECLASS_KEY = "jsonmessageclass";
+    public static final String INTENT_EXTRA_JSONMESSAGEBODY_KEY = "jsonmessagebody";
+
+
+    /*******************added by ellen for db *******************************/
+    public static  final  String DATASTATUS_ALL = "all";
+    public static  final  String DATASTATUS_UNREAD = "unread";
+    public static  final  String DATASTATUS_READ = "read";
+
+    public static  final  String COMMONDEVICE_TYPE_LIGHT = "light";
+    public static  final  String COMMONDEVICE_TYPE_RELAY = "relay";
+    public static  final  String COMMONDEVICE_TYPE_SCENARIO = "scenario";
+    public static  final  String COMMONDEVICE_TYPE_CURTAIN = "curtain";
+    public static  final  String COMMONDEVICE_TYPE_AIRCONDITION = "airconditon";
+    public static  final  String COMMONDEVICE_TYPE_VENTILATION = "ventilation";
+    public static  final  String COMMONDEVICE_TYPE_ZONE = "zone";
+    public static  final  String COMMONDEVICE_TYPE_THERMOSTAT = "thermostat";
+
+
+    public static  final  String JSON_OPERATIONTYPE_VALUE_ADD = "add";
+    public static  final  String JSON_OPERATIONTYPE_VALUE_DELETE = "delete";
+    public static  final  String JSON_OPERATIONTYPE_VALUE_UPDATE = "update";
+
+    public static  final  String JSON_KEY_NAME = "name";
+    public static  final  String JSON_KEY_ZONETYPE = "zonetype";
+    public static  final  String JSON_KEY_ALARMTYPE = "alarmtype";
+    public static  final  String JSON_KEY_ENABLE = "enable";
+    public static  final  String JSON_KEY_DELAYTIME = "delaytime";
+    public static  final  String JSON_KEY_LOOP = "loop";
+    public static  final  String JSON_KEY_OPERATIONTYPE = "operationtype";
+    public static  final  String JSON_KEY_DATASTATUS = "datastatus";
+    public static  final  String JSON_KEY_START = "start";
+    public static  final  String JSON_KEY_COUNT = "count";
+    public static  final  String JSON_KEY_EVENTTYPE = "eventtype";
+    public static  final  String JSON_KEY_TIME = "time";
+    public static  final  String JSON_KEY_IMAGENAME = "imgname";
+    public static  final  String JSON_KEY_VIDEONAME = "videoname";
+    public static  final  String JSON_KEY_CARDID = "cardid";
+    public static  final  String JSON_KEY_SWIPEACTION = "swipeaction";
+    public static  final  String JSON_KEY_MESSAGE = "message";
+    public static  final  String JSON_KEY_FILENAME = "filename";
+    public static  final  String JSON_KEY_DURATION = "duration";
+    public static  final  String JSON_TYPE_KEY = "type";
+    public static  final  String JSON_DONGHO_KEY = "dongho";
+    public static  final  String JSON_KEY_CARDTYPE = "cardtype";
+    public static  final  String JSON_KEY_STARTDATE = "startdate";
+    public static  final  String JSON_KEY_EXPIREDATE = "enddate";
+    public static  final  String JSON_KEY_STARTTIME = "starttime";
+    public static  final  String JSON_KEY_EXPIRETIME = "endtime";
+    public static  final  String JSON_IP_KEY = "ip";
+    public static  final  String JSON_USERNAME_KEY = "username";
+    public static  final  String ZONETYPE_24H = "24h";
+    public static  final  String ZONETYPE_INSTANT = "instant";
+    public static  final  String ZONETYPE_DELAY = "delay";
+    public static  final  String ALARMTYPE_EMERGENCY = "emergency";
+    public static  final  String ALARMTYPE_HELP = "help";
+    public static  final  String ALARMTYPE_FIRE = "fire";
+    public static  final  String ALARMTYPE_GAS = "gas";
 }
