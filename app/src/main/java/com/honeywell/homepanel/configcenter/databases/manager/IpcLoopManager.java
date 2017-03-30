@@ -172,7 +172,11 @@ public class IpcLoopManager {
             String userName = loopMapObject.optString(CommonData.JSON_USERNAME_KEY);
             String pwd = loopMapObject.optString(CommonData.JSON_PASSWORD_KEY);
             String name = loopMapObject.optString(CommonData.JSON_ALIASNAME_KEY);
-            long rowid = add(UUID.randomUUID().toString(),name,ip,userName,pwd);
+            String uuid = UUID.randomUUID().toString();
+            long rowid = add(uuid,name,ip,userName,pwd);
+            if(rowid > 0){
+                CommonlDeviceManager.getInstance(mContext).add(uuid,name,CommonData.COMMONDEVICE_TYPE_IPC);
+            }
             DbCommonUtil.putErrorCodeFromOperate(rowid, loopMapObject);
         }
     }
@@ -186,10 +190,18 @@ public class IpcLoopManager {
             String user  = loopMapObject.optString(CommonData.JSON_USERNAME_KEY);
             String pwd  = loopMapObject.optString(CommonData.JSON_PASSWORD_KEY);
             IpcLoop loop = getByUuid(uuid);
-            loop.mName = name;
-            loop.mUser = user;
-            loop.mPwd = pwd;
+            if(loopMapObject.has(CommonData.JSON_ALIASNAME_KEY)){
+                loop.mName = name;
+                DbCommonUtil.updateCommonName(mContext,uuid,name);
+            }
+            if(loopMapObject.has(CommonData.JSON_USERNAME_KEY)){
+                loop.mUser = user;
+            }
+            if(loopMapObject.has(CommonData.JSON_PASSWORD_KEY)){
+                loop.mPwd = pwd;
+            }
             long num = updateByUuid(uuid,loop);
+
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
         }
     }
@@ -201,6 +213,9 @@ public class IpcLoopManager {
             String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
             long num = deleteByUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
+            if(num > 0) {
+                CommonlDeviceManager.getInstance(mContext).deleteByUuid(uuid);
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.utils.CommonUtils;
+import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.fragment.CallIncomingNeighbor;
 import com.honeywell.homepanel.ui.fragment.CallLobbyIncomingAndConnected;
 import com.honeywell.homepanel.ui.fragment.CallNeighborAndioAndVideoConnected;
@@ -45,7 +46,10 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
 
     private AudioManager mAudioManager = null;
     private boolean mSpeakerAdjust = false;
-	@Override
+
+    public static UIBaseCallInfo CallBaseInfo;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

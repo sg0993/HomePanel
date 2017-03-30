@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.activities.DateTimeActivity;
 import com.honeywell.homepanel.ui.activities.LocationActivity;
 import com.honeywell.homepanel.ui.activities.SaveSpeedDialActivity;
+import com.honeywell.homepanel.ui.activities.SettingBrightVolumeAdjustment;
 import com.honeywell.homepanel.ui.activities.WifiConfigureActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -43,10 +43,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
     private GridView gridView = null;
     private List<Map<String,Object>> data_list;
     private SimpleAdapter simpleAdapter;
-    private int[] icon = {R.mipmap.setting_wifi,R.mipmap.setting_location,
+    private static int[] icon = {R.mipmap.setting_wifi,R.mipmap.setting_location,
             R.mipmap.setting_volume, R.mipmap.setting_date,R.mipmap.setting_account,
             R.mipmap.setting_advanced, R.mipmap.setting_cleaning,R.mipmap.setting_upgrade};
-    private String[] iconName = {"WIFI","Location","Brightness","Date&Time",
+    private static String[] iconName = {"WIFI","Location","Brightness","Date&Time",
             "Account Settings","Advanced Settings","Cleaning","Upgrade"};
 
     @Override
@@ -100,6 +100,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
                     startActivity(intent2);
                     break;
                 case 2:
+                    Intent intent3 = new Intent(getActivity(), SettingBrightVolumeAdjustment.class);
+                    startActivity(intent3);
                     break;
                 case 3:
                     Intent intent4 = new Intent(getActivity(), DateTimeActivity.class);

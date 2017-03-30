@@ -41,7 +41,18 @@
     <string name="Subphone">Subphone</string>
     <string name="Keypad">Keypad</string>
     <string name="welcomehome">Welcome Home</string>
-    <string name="msg_tab1">Event</string>
+
+
+    <string name="call_title_speeddial">Speed dial</string>
+    <string name="call_title_subphone">Subphone</string>
+    <string name="call_title_keypad">Keypad</string>
+
+    <string name="notification_title_event">Event</string>
+    <string name="notification_title_alarm">Alarm History</string>
+    <string name="notification_title_notify">Notification</string>
+    <string name="notification_title_voice">Voice Message</string>
+
+
     <string name="lowbattery">Front door lock has low battery, tap to learn how to change your door lock.</string>
     <string name="temp_hot">The inside temperature is too hot, tap to control air condition."</string>
     <string name="newvisitor">You have a new visitor, tap to check.</string>
@@ -58,9 +69,7 @@
     <string name="password_hint_arm">Please enter your password to arm.</string>
     <string name="password_sences_edit">Please enter your password first.</string>
     <string name="password_hint_passworderror">Your password is incorrect,please try again.</string>
-    <string name="msg_tab2">Alarm History</string>
-    <string name="msg_tab3">Notification</string>
-    <string name="msg_tab4">Voice Message</string>
+
     <string name="indicator_board_cancel">Cancel</string>
     <string name="indicator_board_tap">Tap to Call lift</string>
 

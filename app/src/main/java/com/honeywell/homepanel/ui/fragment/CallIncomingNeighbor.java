@@ -14,10 +14,13 @@ import android.widget.TextView;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
 import com.honeywell.homepanel.common.Message.ui.AlarmHint;
 import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
+import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,7 +41,6 @@ public class CallIncomingNeighbor extends Fragment implements View.OnClickListen
     private CallBottomBrusher mCallBottomBrusher = null;
 
     private TextView unitTv = null;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,12 +93,15 @@ public class CallIncomingNeighbor extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
+        CallActivity.CallBaseInfo = new UIBaseCallInfo(CommonData.JSON_CALLTYPE_VALUE_NEIGHBOUR,((CallActivity) getActivity()).mUnit);
         switch (viewId){
             case R.id.left_btn:
+                UISendCallMessage.requestForTakeCall(CallActivity.CallBaseInfo);
                 CallActivity.switchFragmentInFragment(this,CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
                 break;
             case R.id.right_btn:
                 //getActivity().finish();
+                UISendCallMessage.requestForHungUp(CallActivity.CallBaseInfo);
                 EventBus.getDefault().post(new AlarmHint(mTestAlarmCount++));
                 break;
             default:
@@ -107,5 +112,19 @@ public class CallIncomingNeighbor extends Fragment implements View.OnClickListen
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(MessageEvent event) {
 
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISCallInMessageEve msg) {
+        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
+
+        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_EVENT)) {
+            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            String videocodectype = msg.optString(CommonData.JSON_VIDEOCODEC_KEY, "");
+            String audiocodectype = msg.optString(CommonData.JSON_AUDIOCODEC_KEY, "");
+            CallActivity.CallBaseInfo.setCallUuid(uuid);
+
+        }
     }
 }

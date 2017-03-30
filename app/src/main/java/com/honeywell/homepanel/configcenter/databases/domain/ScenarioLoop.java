@@ -9,8 +9,9 @@ import android.os.Parcelable;
 
 public class ScenarioLoop implements Parcelable {
     public long mId = -1;
-    public String mUuid = "";//场景的uuid
-    public  String mName = "";//场景的名字
+
+    public String mUuid = "";
+    public  String mName = "";
     public  String mDeviceUuid = "";
     public  String mAction = "";
 

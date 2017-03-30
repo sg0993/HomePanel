@@ -19,12 +19,6 @@
     android:orientation="horizontal">
     <include layout="@layout/dial_btns" />
     </LinearLayout>
-<ImageView
-    android:layout_width="match_parent"
-    android:layout_height="3dp"
-    android:src="@drawable/button_pressed"
-    android:scaleType="fitXY">
-</ImageView>
 </LinearLayout>
 <FrameLayout
     android:id="@+id/fragment_content"

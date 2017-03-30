@@ -18,11 +18,14 @@ import android.widget.Toast;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
 import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CalRightBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallTopBrusher;
+import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -158,8 +161,10 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
+        CallActivity.CallBaseInfo = new UIBaseCallInfo(CommonData.JSON_CALLTYPE_VALUE_NEIGHBOUR,((CallActivity) getActivity()).mUnit);
         switch (viewId){
             case R.id.left_btn:
+                UISendCallMessage.requestForCallElevator(CallActivity.CallBaseInfo);
                 Toast.makeText(mContext,"call_left",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.middle_btn:
@@ -172,8 +177,10 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
                 }
                 ((CallActivity)getActivity()).setCurFragmentStatus(status);
                 changeViewStatus();
+                UISendCallMessage.requestForVideoAuth(CallActivity.CallBaseInfo);
                 break;
             case R.id.right_btn:
+                UISendCallMessage.requestForHungUp(CallActivity.CallBaseInfo);
                 getActivity().finish();
                 break;
             case R.id.top_btn:
@@ -188,10 +195,34 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(MessageEvent event) {
+    public void OnMessageEvent(SUISMessagesUICall.SUISVideoAuthMessageRsp msg) {
+        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
+        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
+            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+        }
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISCallElevatorMessageRsp msg) {
+        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
+        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
+            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISHungUpMessageRsp msg) {
+        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
+
+        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
+            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+
+        }
+    }
     private Handler myHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {

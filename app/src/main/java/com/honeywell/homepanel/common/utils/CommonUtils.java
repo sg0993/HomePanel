@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
+import android.os.Environment;
+import android.os.PowerManager;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,8 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 
 import com.honeywell.homepanel.R;
+
+import java.io.File;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 
@@ -94,4 +98,35 @@ public class CommonUtils {
         return b;
     }
 
+    public static String getSdcardPath() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath();
+    }
+
+    public static boolean checkSdcard() {
+        File sdcard = new File(getSdcardPath());
+        return !(!sdcard.exists() || !sdcard.canWrite());
+    }
+
+    public static boolean ISNULL(String str){
+        boolean bRet = false;
+        if(str == null || str.length() == 0){
+            bRet = true;
+        }
+        return bRet;
+    }
+
+    public static void rebootPM(Context ctx) {
+        if(null == ctx) {
+            return;
+        }
+        PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+        pm.reboot("null");
+    }
+    public static void recoveryPM(Context ctx) {
+        if(null == ctx) {
+            return;
+        }
+        PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+        pm.reboot("recovery");
+    }
 }

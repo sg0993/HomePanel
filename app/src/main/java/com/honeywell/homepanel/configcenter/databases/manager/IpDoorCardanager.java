@@ -196,9 +196,9 @@ public class IpDoorCardanager {
         loopMapObject.put(CommonData.JSON_KEY_NAME,loop.mName);
         loopMapObject.put(CommonData.JSON_KEY_CARDID,loop.mCardNo);
         loopMapObject.put(CommonData.JSON_KEY_STARTDATE,loop.mStartDate);
-        loopMapObject.put(CommonData.JSON_KEY_EXPIREDATE,loop.mExpireDate);
+        loopMapObject.put(CommonData.JSON_KEY_ENDDATE,loop.mExpireDate);
         loopMapObject.put(CommonData.JSON_KEY_STARTTIME,loop.mStartTime);
-        loopMapObject.put(CommonData.JSON_KEY_EXPIRETIME,loop.mExpireTime);
+        loopMapObject.put(CommonData.JSON_KEY_ENDTIME,loop.mExpireTime);
         loopMapObject.put(CommonData.JSON_KEY_SWIPEACTION,loop.mAction);
     }
 
@@ -210,9 +210,9 @@ public class IpDoorCardanager {
             String name = loopMapObject.optString(CommonData.JSON_ALIASNAME_KEY);
             String cardId = loopMapObject.optString(CommonData.JSON_KEY_CARDID);
             String startDate = loopMapObject.optString(CommonData.JSON_KEY_STARTDATE);
-            String expireDate = loopMapObject.optString(CommonData.JSON_KEY_EXPIREDATE);
+            String expireDate = loopMapObject.optString(CommonData.JSON_KEY_ENDDATE);
             String startTime = loopMapObject.optString(CommonData.JSON_KEY_STARTTIME);
-            String expireTime = loopMapObject.optString(CommonData.JSON_KEY_EXPIRETIME);
+            String expireTime = loopMapObject.optString(CommonData.JSON_KEY_ENDTIME);
             String action = loopMapObject.optString(CommonData.JSON_KEY_SWIPEACTION);
 
             long rowid = add(UUID.randomUUID().toString(),type,name,cardId,startDate,expireDate,startTime,expireTime,action);
@@ -229,9 +229,9 @@ public class IpDoorCardanager {
             String name = loopMapObject.optString(CommonData.JSON_KEY_NAME);
             String cardId = loopMapObject.optString(CommonData.JSON_KEY_CARDID);
             String startDate = loopMapObject.optString(CommonData.JSON_KEY_STARTDATE);
-            String expireDate = loopMapObject.optString(CommonData.JSON_KEY_EXPIREDATE);
+            String expireDate = loopMapObject.optString(CommonData.JSON_KEY_ENDDATE);
             String startTime = loopMapObject.optString(CommonData.JSON_KEY_STARTTIME);
-            String expireTime = loopMapObject.optString(CommonData.JSON_KEY_EXPIRETIME);
+            String expireTime = loopMapObject.optString(CommonData.JSON_KEY_ENDTIME);
             String action = loopMapObject.optString(CommonData.JSON_KEY_SWIPEACTION);
             IpDoorCard loop = getByUuid(uuid);
             loop.mType = type;

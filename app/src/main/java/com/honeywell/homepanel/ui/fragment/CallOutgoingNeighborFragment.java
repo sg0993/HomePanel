@@ -15,7 +15,11 @@ import android.widget.TextView;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
+import com.honeywell.homepanel.subphoneuiservice.SubUISvrRequestMgr;
+import com.honeywell.homepanel.subphoneuiservice.utils.Logger;
 import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 
 import org.greenrobot.eventbus.EventBus;
@@ -97,7 +101,15 @@ public class CallOutgoingNeighborFragment extends Fragment implements View.OnCli
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(MessageEvent event) {
+    public void OnMessageEvent(SUISMessagesUICall.SUISCallOutMessageRsp msg) {
+        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
+        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
+            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            CallActivity.CallBaseInfo.setCallUuid(uuid);
+            CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
+        }
     }
 }

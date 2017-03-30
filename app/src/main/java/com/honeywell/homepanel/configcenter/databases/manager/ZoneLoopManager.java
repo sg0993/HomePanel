@@ -5,10 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
 import com.honeywell.homepanel.configcenter.databases.domain.ZoneLoop;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +122,22 @@ public class ZoneLoopManager {
         cursor.close();
         return device;
     }
+    public synchronized List<ZoneLoop>getByModuleUuid(String moduleUuid){
+        if(TextUtils.isEmpty(moduleUuid)){
+            return null;
+        }
+        List<ZoneLoop>ZoneLoops = null;
+        Cursor cursor = DbCommonUtil.getByStringField(dbHelper,ConfigConstant.TABLE_ZONELOOP,ConfigConstant.COLUMN_MODULEUUID,moduleUuid);
+        while(cursor.moveToNext()){
+            if(null == ZoneLoops){
+                ZoneLoops = new ArrayList<ZoneLoop>();
+            }
+            ZoneLoop device = fillDefault(cursor);
+            ZoneLoops.add(device);
+        }
+        cursor.close();
+        return  ZoneLoops;
+    }
 
     public synchronized List<ZoneLoop> getZoneLoopAllList() {
         List<ZoneLoop> ZoneLoops = null;
@@ -138,7 +159,7 @@ public class ZoneLoopManager {
         }
         ZoneLoop device = new ZoneLoop();
         device.mModuleUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_MODULEUUID));
-        device.mUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_UUID));
+//        device.mUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_UUID));
         device.mName = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_NAME));
         device.mId = cursor.getLong(cursor.getColumnIndex(ConfigConstant.COLUMN_ID));
         device.mLoop = cursor.getInt(cursor.getColumnIndex(ConfigConstant.COLUMN_LOOP));
@@ -146,6 +167,78 @@ public class ZoneLoopManager {
         device.mEnabled = cursor.getInt(cursor.getColumnIndex(ConfigConstant.COLUMN_ENABLED));
         device.mZoneType = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_ZONETYPE));
         device.mAlarmType = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_ALARMTYPE));
+        device.mUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_ZONELOOP_INT,device.mId);
         return device;
+    }
+
+    public void zoneUpdate(JSONObject jsonObject) throws JSONException{
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject loopMapObject = jsonArray.getJSONObject(i);
+            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            ZoneLoop loop = getByUuid(uuid);
+            loopForUpdate(loop,loopMapObject);
+            long num = updateByUuid(uuid,loop);
+            DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
+            if(num > 0 && loopMapObject.has(CommonData.JSON_ALIASNAME_KEY)){
+               DbCommonUtil.updateCommonName(mContext,uuid,loopMapObject.getString(CommonData.JSON_ALIASNAME_KEY));
+            }
+        }
+    }
+
+    public  void loopForUpdate(ZoneLoop loop,JSONObject loopMapObject) throws  JSONException{
+        if(loopMapObject.has(CommonData.JSON_ALIASNAME_KEY)){
+            loop.mName = loopMapObject.optString(CommonData.JSON_ALIASNAME_KEY);
+        }
+        if(loopMapObject.has(CommonData.JSON_KEY_ALARMTYPE)){
+            loop.mAlarmType = loopMapObject.optString(CommonData.JSON_KEY_ALARMTYPE);
+        }
+        if(loopMapObject.has(CommonData.JSON_KEY_ZONETYPE)){
+            loop.mZoneType = loopMapObject.optString(CommonData.JSON_KEY_ZONETYPE);
+        }
+        if(loopMapObject.has(CommonData.JSON_KEY_DELAYTIME)){
+            loop.mDelayTime = Integer.valueOf(loopMapObject.optString(CommonData.JSON_KEY_DELAYTIME));
+        }
+        if(loopMapObject.has(CommonData.JSON_KEY_ENABLE)){
+            loop.mEnabled = Integer.valueOf(loopMapObject.optString(CommonData.JSON_KEY_ENABLE));
+        }
+    }
+    public void extensionZoneGet(JSONObject jsonObject) throws  JSONException{
+        List<ZoneLoop>lists = getByModuleUuid(jsonObject.getString(CommonData.JSON_UUID_KEY));
+        if(null == lists){
+            return;
+        }
+        JSONArray loopMapArray = new JSONArray();
+        for (int i = 0; i < lists.size(); i++) {
+            ZoneLoop loop = lists.get(i);
+            JSONObject loopMapObject = new JSONObject();
+            loopToJson(loopMapObject,loop);
+            loopMapArray.put(loopMapObject);
+        }
+        jsonObject.put(CommonData.JSON_LOOPMAP_KEY,loopMapArray);
+        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
+    }
+
+    private void loopToJson(JSONObject loopMapObject, ZoneLoop loop) throws  JSONException{
+        loopMapObject.put(CommonData.JSON_UUID_KEY,loop.mUuid);
+        loopMapObject.put(CommonData.JSON_ALIASNAME_KEY,loop.mName);
+        loopMapObject.put(CommonData.JSON_KEY_LOOP,loop.mLoop);
+        loopMapObject.put(CommonData.JSON_KEY_DELAYTIME,loop.mDelayTime+"");
+        loopMapObject.put(CommonData.JSON_KEY_ENABLE,loop.mEnabled+"");
+        loopMapObject.put(CommonData.JSON_KEY_ZONETYPE,loop.mZoneType);
+        loopMapObject.put(CommonData.JSON_KEY_ALARMTYPE,loop.mAlarmType);
+    }
+
+    public void extensionZoneDelete(JSONObject jsonObject) throws JSONException{
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject loopMapObject = jsonArray.getJSONObject(i);
+            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            long num = deleteByUuid(uuid);
+            DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
+            if(num > 0){
+                CommonlDeviceManager.getInstance(mContext).deleteByUuid(uuid);
+            }
+        }
     }
 }

@@ -9,9 +9,12 @@ import com.honeywell.homepanel.configcenter.databases.manager.CommonlDeviceManag
 import com.honeywell.homepanel.configcenter.databases.manager.EventHistoryManager;
 import com.honeywell.homepanel.configcenter.databases.manager.IpDoorCardanager;
 import com.honeywell.homepanel.configcenter.databases.manager.IpcLoopManager;
+import com.honeywell.homepanel.configcenter.databases.manager.PeripheralDeviceManager;
+import com.honeywell.homepanel.configcenter.databases.manager.RelayLoopManager;
 import com.honeywell.homepanel.configcenter.databases.manager.ScenarioLoopManager;
 import com.honeywell.homepanel.configcenter.databases.manager.SpeedDialManager;
 import com.honeywell.homepanel.configcenter.databases.manager.VoiceMessageManager;
+import com.honeywell.homepanel.configcenter.databases.manager.ZoneLoopManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +67,7 @@ public class ConfigDispatchCenter implements Runnable{
     public byte[] getFromDbManager(JSONObject jsonObject) throws JSONException {
         jsonObject.put(CommonData.JSON_ACTION_KEY,CommonData.JSON_ACTION_VALUE_RESPONSE);
         String subAction = jsonObject.optString(CommonData.JSON_SUBACTION_KEY);
+
         if(CommonData.JSON_SUBACTION_VALUE_GETSCENARIOLIST.equals(subAction)){
             CommonlDeviceManager.getInstance(mContext).getScenarioList(jsonObject);
         }
@@ -88,6 +92,16 @@ public class ConfigDispatchCenter implements Runnable{
         else if(CommonData.JSON_SUBACTION_VALUE_IPCGET.equals(subAction)){
             IpcLoopManager.getInstance(mContext).ipcGet(jsonObject);
         }
+        else if(CommonData.JSON_SUBACTION_VALUE_EXTENSIONMODULEGET.equals(subAction)){
+            PeripheralDeviceManager.getInstance(mContext).getExtensionModuleList(jsonObject);
+        }
+        else if(CommonData.JSON_SUBACTION_VALUE_EXTENSIONZONEGET.equals(subAction)){
+            ZoneLoopManager.getInstance(mContext).extensionZoneGet(jsonObject);
+        }
+        else if(CommonData.JSON_SUBACTION_VALUE_EXTENSIONRELAYGET.equals(subAction)){
+            RelayLoopManager.getInstance(mContext).extensionRelayGet(jsonObject);
+        }
+
 
         return jsonObject.toString().getBytes();
     }
@@ -152,7 +166,25 @@ public class ConfigDispatchCenter implements Runnable{
         else if(CommonData.JSON_SUBACTION_VALUE_IPCDELETE.equals(subAction)){
             IpcLoopManager.getInstance(mContext).ipcDelete(jsonObject);
         }
-
+        else if(CommonData.JSON_SUBACTION_VALUE_LOCALZONEUPUDATE.equals(subAction)
+                ||CommonData.JSON_SUBACTION_VALUE_EXTENSIONZONEUPDATE.equals(subAction)){
+            ZoneLoopManager.getInstance(mContext).zoneUpdate(jsonObject);
+        }
+        else if(CommonData.JSON_SUBACTION_VALUE_EXTENSIONZONEDELETE.equals(subAction)){
+            ZoneLoopManager.getInstance(mContext).extensionZoneDelete(jsonObject);
+        }
+        else if(CommonData.JSON_SUBACTION_VALUE_EXTENSIONRELAYUPDATE.equals(subAction)){
+            RelayLoopManager.getInstance(mContext).relayUpdate(jsonObject);
+        }
+        else if(CommonData.JSON_SUBACTION_VALUE_EXTENSIONRELAYDELETE.equals(subAction)){
+            RelayLoopManager.getInstance(mContext).relayDelete(jsonObject);
+        }
+        else if(CommonData.JSON_SUBACTION_VALUE_EXTENSIONMODULEADD.equals(subAction)){
+            PeripheralDeviceManager.getInstance(mContext).extensionModuleAdd(jsonObject);
+        }
+        else if(CommonData.JSON_SUBACTION_VALUE_EXTENSIONMODULEDELETE.equals(subAction)){
+            PeripheralDeviceManager.getInstance(mContext).extensionModuleDelete(jsonObject);
+        }
         return jsonObject.toString().getBytes();
     }
 }

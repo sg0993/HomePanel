@@ -14,10 +14,13 @@ import android.widget.Toast;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
 import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CalRightBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallTopBrusher;
+import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -90,6 +93,7 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
+        CallActivity.CallBaseInfo = new UIBaseCallInfo(CommonData.JSON_CALLTYPE_VALUE_LOBBY,((CallActivity) getActivity()).mUnit);
         switch (viewId){
             case R.id.left_btn:
                 Toast.makeText(mContext,"call_left",Toast.LENGTH_SHORT).show();
@@ -97,14 +101,29 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
                 if(status == CommonData.CALL_LOBBY_INCOMMING){
                     status = CommonData.CALL_LOBBY_CONNECTED;
                     ((CallActivity)getActivity()).setCurFragmentStatus(status);
+                    UISendCallMessage.requestForTakeCall(CallActivity.CallBaseInfo);
                     switchToLobbyConnected();
                 }
                 else{
                     status = CommonData.CALL_LOBBY_INCOMMING;
+                    UISendCallMessage.requestForHungUp(CallActivity.CallBaseInfo);
                     getActivity().finish();
                 }
                 break;
             case R.id.right_btn:
+                int CurStatus = ((CallActivity)getActivity()).getCurFragmentStatus();
+                if(CurStatus == CommonData.CALL_LOBBY_INCOMMING){
+                    CurStatus = CommonData.CALL_LOBBY_CONNECTED;
+                    ((CallActivity)getActivity()).setCurFragmentStatus(CurStatus);
+                    UISendCallMessage.requestForHungUp(CallActivity.CallBaseInfo);
+                    switchToLobbyConnected();
+                }
+                else{
+                    status = CommonData.CALL_LOBBY_INCOMMING;
+                    UISendCallMessage.requestForOpenDoor(CallActivity.CallBaseInfo);
+                    getActivity().finish();
+                }
+
                 Toast.makeText(mContext,"call_right",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.top_btn:
@@ -130,9 +149,46 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(MessageEvent event) {
+    public void OnMessageEvent(SUISMessagesUICall.SUISCallInMessageEve msg) {
+        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
+        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_EVENT)) {
+            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            String videocodectype = msg.optString(CommonData.JSON_VIDEOCODEC_KEY, "");
+            String audiocodectype = msg.optString(CommonData.JSON_AUDIOCODEC_KEY, "");
+            CallActivity.CallBaseInfo.setCallUuid(uuid);
+        }
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISOpenDoorMessageRsp msg) {
+        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
+        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
+            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISTakeCallMessageRsp msg) {
+        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
+
+        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
+            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISHungUpMessageRsp msg) {
+        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
+
+        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
+            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+
+        }
+    }
 
 }

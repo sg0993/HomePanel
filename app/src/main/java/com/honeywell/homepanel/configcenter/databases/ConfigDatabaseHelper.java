@@ -10,8 +10,6 @@ import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
 import com.honeywell.homepanel.configcenter.databases.manager.ContentValuesFactory;
 import com.honeywell.homepanel.configcenter.databases.manager.DbCommonUtil;
 
-import java.util.UUID;
-
 /**
  * Created by H135901 on 3/13/2017.
  */
@@ -103,24 +101,25 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper{
         db.beginTransaction();
         try {
             for (int i = 0; i < ConfigConstant.HOMEPANEL_ZONE_COUNT; i++) {
-                String uuid = UUID.randomUUID().toString();
+                String deviceUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_ZONELOOP_INT,DbCommonUtil.getSequenct(this,ConfigConstant.TABLE_ZONELOOP));
                 int loop = i+1;
                 String name = "homepanelZone" + loop;
                 ContentValues values = new ContentValuesFactory()
                         .put(ConfigConstant.COLUMN_MODULEUUID,"")
-                        .put(ConfigConstant.COLUMN_UUID, uuid)
+                        .put(ConfigConstant.COLUMN_UUID,deviceUuid)
                         .put(ConfigConstant.COLUMN_NAME,name)
                         .put(ConfigConstant.COLUMN_LOOP, loop)
                         .put(ConfigConstant.COLUMN_DELAYTIME, 0)
                         .put(ConfigConstant.COLUMN_ENABLED,1)
                         .put(ConfigConstant.COLUMN_ZONETYPE,CommonData.ZONETYPE_24H)
                         .put(ConfigConstant.COLUMN_ALARMTYPE,CommonData.ALARMTYPE_EMERGENCY).getValues();
-                db.insert(ConfigConstant.TABLE_ZONELOOP, null, values);
-
-                values = new ContentValuesFactory().put(ConfigConstant.COLUMN_UUID, uuid)
-                        .put(ConfigConstant.COLUMN_NAME, name)
-                        .put(ConfigConstant.COLUMN_TYPE,CommonData.COMMONDEVICE_TYPE_ZONE).getValues();
-                db.insert(ConfigConstant.TABLE_COMMONDEVICE, null, values);
+                long rowId = db.insert(ConfigConstant.TABLE_ZONELOOP, null, values);
+                if(rowId > 0) {
+                    values = new ContentValuesFactory().put(ConfigConstant.COLUMN_UUID,deviceUuid)
+                            .put(ConfigConstant.COLUMN_NAME, name)
+                            .put(ConfigConstant.COLUMN_TYPE, CommonData.COMMONDEVICE_TYPE_ZONE).getValues();
+                    db.insert(ConfigConstant.TABLE_COMMONDEVICE, null, values);
+                }
             }
             db.setTransactionSuccessful();
         } catch (Exception e) {

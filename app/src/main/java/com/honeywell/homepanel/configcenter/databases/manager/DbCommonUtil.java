@@ -11,6 +11,7 @@ import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
+import com.honeywell.homepanel.configcenter.databases.domain.CommonDevice;
 import com.honeywell.homepanel.configcenter.databases.domain.RelayLoop;
 import com.honeywell.homepanel.configcenter.databases.domain.ZoneLoop;
 
@@ -134,8 +135,22 @@ public class DbCommonUtil {
         return  cursor;
     }
 
+    public static  long getSequenct(ConfigDatabaseHelper dbHelper,String table) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query("sqlite_sequence",null, null, null, null, null,null, null);
+        long seq = 0;
+        while(cursor.moveToNext()){
+           if(cursor.getString(cursor.getColumnIndex("name")).equals(table)){
+               seq = cursor.getLong(cursor.getColumnIndex("seq"));
+               break;
+           }
+        }
+        cursor.close();
+        return  (seq + 1);
+    }
 
-    public static String getDeviceUuid(int tableInt,long primaryId) {
+    //relay及zone会用
+    public static String generateDeviceUuid(int tableInt, long primaryId) {
         String uuid = String.valueOf(tableInt);
         if(uuid.length() == 1){
             uuid = "00"+uuid;
@@ -227,5 +242,10 @@ public class DbCommonUtil {
             status = 1;
         }
         return status;
+    }
+    public  static  void updateCommonName(Context context,String uuid,String name) {
+        CommonDevice commonDevice = CommonlDeviceManager.getInstance(context).getByUuid(uuid);
+        commonDevice.mName = name;
+        CommonlDeviceManager.getInstance(context).updateByUuid(uuid, commonDevice);
     }
 }

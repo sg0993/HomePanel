@@ -47,8 +47,8 @@ public class CommonData {
 	public static final  String INTENT_CARD_ALIAS = "card_alias";
     public static final  String INTENT_KEY_CARD_TYPE = "card_type";
     public static final  String INTENT_KEY_CARD_FRAGMENT = "card_fragment";
-	public static  final int CARD_PERMANENT = 6;
-	public static  final int CARD_TEMORARY = 7;
+	public static  final String CARD_PERMANENT = "permanent";
+	public static  final String CARD_TEMORARY = "temorary";
     public static  final int CARD_NO = 8;
 	public static  final int CARD_LIST = 9;
     //JSON Key & Valve Define
@@ -84,26 +84,47 @@ public class CommonData {
     public static final String JSON_SUBACTION_VALUE_AUTOTAKECALL = "autotakecall";
     public static final String JSON_SUBACTION_VALUE_RELAYCALL = "relaycall";
     public static final String JSON_SUBACTION_VALUE_STARTSESSION = "startsession";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONMODULEGET = "extensionmoduleget";
     public static final String JSON_SUBACTION_VALUE_GETSCENARIOLIST = "getscenariolist";
     public static final String JSON_SUBACTION_VALUE_SWITCHSCENARIO = "switchscenario";
     public static final String JSON_SUBACTION_VALUE_GETSCENARIOCONFIG = "getscenarioconfig";
     public static final String JSON_SUBACTION_VALUE_SETSCENARIOCONFIG = "setscenarioconfig";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTGET = "notificationeventget";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTADD = "notificationeventadd";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTDELETE = "notificationeventdelete";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTUPDATE = "notificationeventupdate";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMGET = "notificationalarmget";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMADD = "notificationalarmadd";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMDELETE = "notificationalarmdelete";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMUPDATE = "notificationalarmupdate";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGGET = "notificationvoicemsgget";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGUPDATE = "notificationvoicemsgupdate";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGDELETE = "notificationvoicemsgdelete";
-    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGADD = "notificationvoicemsgadd";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTGET = "eventget";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTADD = "eventadd";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTDELETE = "eventdelete";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTUPDATE = "eventupdate";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMGET = "alarmget";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMADD = "alarmadd";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMDELETE = "alarmdelete";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONALARMUPDATE = "alarmupdate";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGGET = "voicemsgget";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGUPDATE = "voicemsgupdate";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGDELETE = "voicemsgdelete";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGADD = "voicemsgadd";
+
+    public static final String JSON_SUBACTION_VALUE_EVENTCOUNTGET = "eventcountget";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_ALARMCOUNTGET = "alarmcountget";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_VOICEMSGCOUNTGET = "voicemsgcountget";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONCOUNTGET = "notificationcountget";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_BULLETINCOUNTGET = "bulletincountget";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_BULLETINLISTGET = "bulletinlistget";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_BULLETINUPDATE = "bulletinlistupdate";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_BULLETINEVENT = "bulletinevent";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_FEELISTGET = "feelistget";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_FEEGET = "feeget";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_EVENT = "feeevent";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_INDIVIDUALLISTGET = "individuallistget";//Add by xc
+    public static final String JSON_SUBACTION_VALUE_INDIVIDUALGET = "individualget";
+    public static final String JSON_SUBACTION_VALUE_INDIVIDUALLISTEVENT = "individualevent";//Add by xc
+
     public static final String JSON_SUBACTION_VALUE_SPEEDDIALGET = "speeddialget";
     public static final String JSON_SUBACTION_VALUE_SPEEDDIALADD = "speeddialadd";
     public static final String JSON_SUBACTION_VALUE_SPEEDDIALUPDATE = "speeddialupdate";
     public static final String JSON_SUBACTION_VALUE_SPEEDDIALDELETE = "speeddialdelete";
+    public static final String JSON_SUBACTION_VALUE_SUBPHONEGET = "subphoneget";
+    public static final String JSON_SUBACTION_VALUE_SUBPHONEADD = "subphoneadd";
+    public static final String JSON_SUBACTION_VALUE_SUBPHONEUPDATE = "subphoneupdate";
+    public static final String JSON_SUBACTION_VALUE_SUBPHONEDELETE = "subphonedelete";
     public static final String JSON_SUBACTION_VALUE_CARDGET = "cardget";
     public static final String JSON_SUBACTION_VALUE_CARDADD = "cardadd";
     public static final String JSON_SUBACTION_VALUE_CARDDELEETE = "carddelete";
@@ -119,6 +140,21 @@ public class CommonData {
     public static final String JSON_SUBACTION_VALUE_EXTENSIONRELAYGET = "extensionrelayget";
     public static final String JSON_SUBACTION_VALUE_EXTENSIONRELAYUPDATE = "extensionrelayupdate";
     public static final String JSON_SUBACTION_VALUE_EXTENSIONRELAYDELETE = "extensionrelaydelete";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONMODULEADD = "extensionmoduleadd";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONMODULEDELETE = "extensionmoduledelete";
+    public static final String JSON_SUBACTION_VALUE_CONTENTLST0x51 = "contentlst0x51";
+    public static final String JSON_SUBACTION_VALUE_CONTENTFEE0x53 = "contentfee0x53";
+    public static final String JSON_SUBACTION_VALUE_CONTENTBULLETIN0x54 = "contentbulletin0x54";
+    public static final String JSON_SUBACTION_VALUE_CONTENTNOTICE0x55 = "contentnotice0x55";
+    public static final String JSON_SUBACTION_VALUE_GETIPBYDONGHO0x57 = "getipbydongho0x57";
+    public static final String JSON_SUBACTION_VALUE_GETDONGHOBYIP0x58 = "getdonghobyip0x58";
+    public static final String JSON_SUBACTION_VALUE_MGRFACILITY0x5A = "mgrfacility0x5A";
+    public static final String JSON_SUBACTION_VALUE_GETDONGHOBYALIAS0xE1 = "getdonghobyalias0xE1";
+    public static final String JSON_SUBACTION_VALUE_GETALIASBYDONGHO0xE2 = "getaliasbydongho0xE2";
+
+
+
+
 
     public static final String JSON_VIDEORATIO_KEY = "videoratio";
     public static final String JSON_VIDEORATIO_VALUE_DEFAULT = "320*240";
@@ -314,6 +350,7 @@ public class CommonData {
     /***********************ellen 20170313*********************************/
     public static final String APPDATABASEFILE = "homepanel.db";
     public static final String ACTION_SUBPHONE_SERVICE = "com.honeywell.homepanel.subphoneuiservice.SubPhoneUIService";
+    public static final String ACTION_CONFIG_SERVICE = "com.honeywell.homepanel.configcenter.ConfigService";
 
     public static final String WIFIMODULE_DEFAULT_VERSION ="0.0.1";
 
@@ -328,7 +365,9 @@ public class CommonData {
     public static final int ENGIN_MODE_RELAY_CFG = 20;
     public static final int ENGIN_MODE_ROOM_NUMBER = 31;
     public static final int ENGIN_MODE_ZONE_DELAY_TIME =14;
-
+    public static final String ENGIN_MODE_ZONE = "zone type";
+    public static final int ENGIN_MODE_LOCAL_ZONE = 10;
+    public static final int ENGIN_MODE_EXTENSION_ZONE = 11;
     /**********************Local zone detail******************************/
     public static final String OPTIONS_DETIAL_ZONE = "enginneering mode options";
     public static final int OPTIONS_DETIAL_ZONE1 = 1;
@@ -355,6 +394,7 @@ public class CommonData {
     public static  final  String COMMONDEVICE_TYPE_VENTILATION = "ventilation";
     public static  final  String COMMONDEVICE_TYPE_ZONE = "zone";
     public static  final  String COMMONDEVICE_TYPE_THERMOSTAT = "thermostat";
+    public static  final  String COMMONDEVICE_TYPE_IPC = "ipc";
 
 
     public static  final  String JSON_OPERATIONTYPE_VALUE_ADD = "add";
@@ -376,24 +416,137 @@ public class CommonData {
     public static  final  String JSON_KEY_IMAGENAME = "imgname";
     public static  final  String JSON_KEY_VIDEONAME = "videoname";
     public static  final  String JSON_KEY_CARDID = "cardid";
+    public static  final  String JSON_KEY_CARDTYPE = "cardtype";
     public static  final  String JSON_KEY_SWIPEACTION = "swipeaction";
+    public static  final  String JSON_KEY_PERMANENTCARD = "permanentcard";
+    public static  final  String JSON_KEY_TEMORARYCARD = "temorarycard";
     public static  final  String JSON_KEY_MESSAGE = "message";
+	public static  final  String JSON_DONGHO_KEY = "dongho";
     public static  final  String JSON_KEY_FILENAME = "filename";
     public static  final  String JSON_KEY_DURATION = "duration";
     public static  final  String JSON_TYPE_KEY = "type";
-    public static  final  String JSON_DONGHO_KEY = "dongho";
-    public static  final  String JSON_KEY_CARDTYPE = "cardtype";
+
+
     public static  final  String JSON_KEY_STARTDATE = "startdate";
-    public static  final  String JSON_KEY_EXPIREDATE = "enddate";
+	public static  final  String JSON_KEY_ENDDATE = "enddate";
+ 
     public static  final  String JSON_KEY_STARTTIME = "starttime";
-    public static  final  String JSON_KEY_EXPIRETIME = "endtime";
+	public static  final  String JSON_KEY_ENDTIME = "endtime";
+    public static  final  String JSON_KEY_CITY = "city";
     public static  final  String JSON_IP_KEY = "ip";
     public static  final  String JSON_USERNAME_KEY = "username";
+    public static  final  String JSON_ONLINE_KEY = "online";
+
     public static  final  String ZONETYPE_24H = "24h";
+    public static  final  String JSON_KEY_VERSION = "version";
+    public static  final  String JSON_KEY_MAC = "mac";
     public static  final  String ZONETYPE_INSTANT = "instant";
     public static  final  String ZONETYPE_DELAY = "delay";
     public static  final  String ALARMTYPE_EMERGENCY = "emergency";
     public static  final  String ALARMTYPE_HELP = "help";
     public static  final  String ALARMTYPE_FIRE = "fire";
     public static  final  String ALARMTYPE_GAS = "gas";
-}
+    public static  final  String ALARMTYPE_INTRUSION = "intrusion";
+
+
+    //added by ellen
+    public  static  final  int RELAY_LOOP_NUM = 4;
+    public  static  final  int ZONE_LOOP_NUM = 4;
+
+    public  static  final  int ENABLE = 1;
+    public  static  final  int DISENABLE = 0;
+
+
+    public static final String COMMUNITY_DEVLOOPMAP = "deviceloopmap";
+    public static final String COMMUNITY_KEY_EQUIP = "equip";
+    public static final String COMMUNITY_KEY_TYPE = "type";
+    public static final String COMMUNITY_KEY_PAGE = "page";
+    public static final String COMMUNITY_KEY_PER = "per";
+    public static final String COMMUNITY_KEY_ID = "id";
+    public static final String COMMUNITY_KEY_TITLE = "title";
+    public static final String COMMUNITY_KEY_DATE = "date";
+    public static final String COMMUNITY_KEY_YEAR = "year";
+    public static final String COMMUNITY_KEY_MONTH = "month";
+    public static final String COMMUNITY_KEY_DAY= "day";
+    public static final String COMMUNITY_KEY_HOUR = "hour";
+    public static final String COMMUNITY_KEY_MIN = "min";
+    public static final String COMMUNITY_KEY_SEC = "sec";
+    public static final String COMMUNITY_KEY_ITEM= "item";
+    public static final String COMMUNITY_KEY_VALUE = "value";
+    public static final String COMMUNITY_KEY_DONGHO = "dongho";
+    public static final String COMMUNITY_KEY_CONTENT = "content";
+    public static final String COMMUNITY_KEY_LOGIN = "login";
+    public static final String COMMUNITY_KEY_CALLTYPE = "calltype";
+    public static final String COMMUNITY_KEY_IP = "ip";
+    public static final String COMMUNITY_KEY_GUARDPHONE = "guardphone";
+    public static final String COMMUNITY_KEY_OFFICEPHONE = "officephone";
+    public static final String COMMUNITY_KEY_LOBBYPHONE = "lobbyphone";
+    public static final String COMMUNITY_KEY_ALIAS = "alias";
+
+
+
+    public static final String COMMUNITY_VALUE_EQUIP_WM = "WM";
+    public static final String COMMUNITY_VALUE_EQUIP_GM1 = "GM1";
+    public static final String COMMUNITY_VALUE_EQUIP_GM2 = "GM2";
+    public static final String COMMUNITY_VALUE_EQUIP_GM3 = "GM3";
+
+    public static final String COMMUNITY_VALUE_TYPE_REMOTE = "remote";
+    public static final String COMMUNITY_VALUE_TYPE_MANAGEMENT = "management";
+    public static final String COMMUNITY_VALUE_TYPE_ALL = "all";
+    public static final String COMMUNITY_VALUE_TYPE_INDIVIDUAL = "individual";
+
+    /*******************added by xc for notifiction *******************************/
+    public static  final  String FRAGMENT_EVENT = "event";
+    public static  final  String FRAGMENT_ALARM = "alarm";
+    public static  final  String FRAGMENT_NOTIFICATION = "notification";
+    public static  final  String FRAGMENT_VOICEMSG = "voicemsg";
+    public static  final  String JSON_VALUE_VISITOR = "visitor";
+    public static  final  String JSON_VALUE_VIDEO = "video";
+    public static  final  String JSON_VALUE_UNDEF = "undef";
+    public static  final  String JSON_VALUE_SWIPECARD= "swipecard";
+    public static  final  String JSON_VALUE_PERMANENT= "permanent";
+    public static  final  String JSON_VALUE_TEMPORARY= "temporary";
+    public static  final  String JSON_KEY_TITLE = "title";
+    public static  final  String JSON_KEY_DATE = "date";
+    public static final String COLOR_DARKGREY = "#4A4A4A";
+    public static final String COLOR_NORMALGREY = "#C6C6C6";
+
+    //Max Voice Message Count supported
+    public static final int MAX_VOICE_RECORD_COUNT = 3;
+    public static final int MAX_NOTIFICATION_BULLTIN_COUNT = 1000;
+    public static final int MAX_ALARM_COUNT = 1000;
+    public static final int MAX_EVENT_COUNT = 1000;
+
+
+/**      log level    */
+    public static final int LOG_LEVEL_DEBUG = 0;
+    public static final int LOG_LEVEL_WARNING = 1;
+    public static final int LOG_LEVEL_ERROR = 2;
+
+    public static final int MAXALARMCASHCOUNT = 100;
+
+    public final static String ALARMLOG_MODULETYPE = "moduletype";// string,
+    public final static String ALARMLOG_MODULEADDR = "moduleaddr";//str,ip or mac
+    public final static String ALARMLOG_LOOPID = "loopid";// str
+    public final static String ALARMLOG_ALARMINFO = "alarminfo";// str
+    public final static String ALARMLOG_TIMESTAMP = "timestamp";// long
+    public final static String ALARMLOG_ROOMNAME = "roomname";// str
+    public final static String ALARMLOG_LOOPNAME = "aliasname";// str
+    public final static String ALARMLOG_ISTOCLOUD = "istocloud";// str
+
+    // Full path name for services name
+    public final static String ACTION_SERVICE_LOGCENTER = "com.honeywell.homepanel.logserver.LogService";
+    public final static String ACTION_SERVICE_CONFIG = "com.honeywell.homepanel.configcenter.ConfigService";
+    public final static String ACTION_SERVICE_MONITOR = "com.honeywell.homepanel.watchdog.WatchDogService";
+
+
+
+    public static String file_() {
+        StackTraceElement ste = new Throwable().getStackTrace()[1];
+        return ste.getFileName();
+    }
+
+    public static int line_() {
+        StackTraceElement ste = new Throwable().getStackTrace()[1];
+        return ste.getLineNumber();
+    }}
