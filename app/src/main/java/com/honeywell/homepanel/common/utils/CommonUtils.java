@@ -18,6 +18,7 @@ import android.widget.SeekBar;
 import com.honeywell.homepanel.R;
 
 import java.io.File;
+import java.util.UUID;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 
@@ -129,4 +130,13 @@ public class CommonUtils {
         PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
         pm.reboot("recovery");
     }
+
+    public static String generateCommonEventUuid() {
+        return UUID.randomUUID().toString();
+    }
+
+    public static String generateCommonEventMsgId() {
+        return UUID.randomUUID().toString();
+    }
+
 }

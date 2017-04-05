@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
@@ -17,7 +18,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by H135901 on 3/17/2017.
@@ -172,13 +172,13 @@ public class IpDoorCardanager {
         if(null == lists){
             return;
         }
-        int start = jsonObject.optInt(CommonData.JSON_KEY_START);
-        int count = jsonObject.optInt(CommonData.JSON_KEY_COUNT);
+        int start = Integer.valueOf(jsonObject.optString(CommonData.JSON_KEY_START));
+        int count = Integer.valueOf(jsonObject.optString(CommonData.JSON_KEY_COUNT));
         JSONArray loopMapArray = new JSONArray();
         int index = 0;
         for (int i = 0; i < lists.size(); i++) {
             IpDoorCard loop = lists.get(i);
-            if(index < start && index >= start + count){
+            if(index < start || index >= start + count){
                 index++;
                 continue;
             }
@@ -215,7 +215,7 @@ public class IpDoorCardanager {
             String expireTime = loopMapObject.optString(CommonData.JSON_KEY_ENDTIME);
             String action = loopMapObject.optString(CommonData.JSON_KEY_SWIPEACTION);
 
-            long rowid = add(UUID.randomUUID().toString(),type,name,cardId,startDate,expireDate,startTime,expireTime,action);
+            long rowid = add(CommonUtils.generateCommonEventUuid(),type,name,cardId,startDate,expireDate,startTime,expireTime,action);
             DbCommonUtil.putErrorCodeFromOperate(rowid, loopMapObject);
         }
     }

@@ -17,7 +17,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by H135901 on 3/16/2017.
@@ -106,6 +105,17 @@ public class AlarmHistoryManager {
         return device;
     }
 
+    public synchronized int getAlarmCountByStatus(int status) {
+        Cursor cursor = DbCommonUtil.getByIntField(dbHelper,ConfigConstant.TABLE_ALARMHISTORY,ConfigConstant.COLUMN_READ,status);
+        int count = 0;
+        while(cursor.moveToNext()){
+            count++;
+        }
+        cursor.close();
+        return count;
+    }
+
+
     public synchronized AlarmHistory getByUuid(String uuid) {
         if(TextUtils.isEmpty(uuid)){
             return null;
@@ -153,8 +163,8 @@ public class AlarmHistoryManager {
             return;
         }
         String dataStatus = jsonObject.optString(CommonData.JSON_KEY_DATASTATUS);
-        int start = jsonObject.optInt(CommonData.JSON_KEY_START);
-        int count = jsonObject.optInt(CommonData.JSON_KEY_COUNT);
+        int start = Integer.valueOf(jsonObject.optString(CommonData.JSON_KEY_START));
+        int count = Integer.valueOf(jsonObject.optString(CommonData.JSON_KEY_COUNT));
         JSONArray loopMapArray = new JSONArray();
         int index = 0;
         for (int i = 0; i < lists.size(); i++) {
@@ -163,7 +173,7 @@ public class AlarmHistoryManager {
                     && !dataStatus.equals(DbCommonUtil.transferReadIntToString(loop.mRead))){
                 continue;
             }
-            if(index < start && index >= start + count){
+            if(index < start || index >= start + count){
                 index++;
                 continue;
             }
@@ -189,12 +199,13 @@ public class AlarmHistoryManager {
         JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
+            String uuid = loopMapObject.getString(CommonData.JSON_UUID_KEY);
             String message = loopMapObject.optString(CommonData.JSON_KEY_MESSAGE);
             String alarmType = loopMapObject.optString(CommonData.JSON_KEY_ALARMTYPE);
             String time = loopMapObject.optString(CommonData.JSON_KEY_TIME);
-            String datastatus  = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
-            long rowid = add(UUID.randomUUID().toString(),time,alarmType,message,DbCommonUtil.transferReadStringToInt(datastatus));
-            DbCommonUtil.putErrorCodeFromOperate(rowid,loopMapObject);
+            String dataStatus  = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
+            long rowId = add(uuid,time,alarmType,message,DbCommonUtil.transferReadStringToInt(dataStatus));
+            DbCommonUtil.putErrorCodeFromOperate(rowId,loopMapObject);
         }
     }
 
@@ -221,4 +232,11 @@ public class AlarmHistoryManager {
         }
     }
 
+    public void notificationAlarmCountGet(JSONObject jsonObject) throws  JSONException {
+        String statusStr = jsonObject.getString(CommonData.JSON_KEY_DATASTATUS);
+        int dataStatus = DbCommonUtil.transferReadStringToInt(statusStr);
+        int count = getAlarmCountByStatus(dataStatus);
+        jsonObject.put(CommonData.JSON_KEY_COUNT,""+count);
+        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
+    }
 }

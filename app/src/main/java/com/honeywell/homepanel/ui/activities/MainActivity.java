@@ -3,6 +3,7 @@ package com.honeywell.homepanel.ui.activities;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -25,7 +26,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends BaseActivity implements AdapterCallback,PopupWindow.OnDismissListener{
     private static final String TAG = "MainActivity";
@@ -35,7 +38,14 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
 
     private View content_scrolling = null;
     private  View mTopView = null;
-
+    //Add by xc
+    private boolean screenSaverIsRun = false;
+    private float screenSaverStartTime = 60;
+    private Date lastInputEventTime;
+    private Handler mHandler01 = new Handler();
+    private Handler mHandler02 = new Handler();
+    private final int MILLISECOND_COUNT = 1000;
+    private long timePeriod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,7 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
         });
         mCenterView = findViewById(R.id.main_frameLayout);
         content_scrolling = findViewById(R.id.content_scrolling);
+
     }
     @Override
     protected void onStop() {
@@ -72,6 +83,8 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
         super.onResume();
         setCenterViewBackground(TopStaus.getInstance(this).mCurScenario);
         Log.d(TAG,"onResume() mCurScenario:"+ TopStaus.getInstance(this).mCurScenario);
+        lastInputEventTime = new Date(System.currentTimeMillis());
+//        mHandler01.postAtTime(mTask01, MILLISECOND_COUNT);
     }
     @Override
     protected void onDestroy() {
@@ -133,9 +146,9 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
             mpopupWindow.dismiss();
             return true;
         }
-        if(keyCode == KeyEvent.KEYCODE_BACK){
+       /* if(keyCode == KeyEvent.KEYCODE_BACK){
             return true;
-        }
+        }*/
         return  super.onKeyDown(keyCode,event);
     }
 
@@ -147,5 +160,75 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
     @Override
     public void onDismiss() {
         CommonUtils.setWindowAlpha(getWindow(),1.0f);
+    }
+
+    private Runnable mTask01 = new Runnable() {
+        @Override
+        public void run() {
+           /* Date timeNow = new Date(System.currentTimeMillis());
+            timePeriod = (long) timeNow.getTime() - (long) lastInputEventTime.getTime();
+
+            float timePeriodSecond = ((float) timePeriod / MILLISECOND_COUNT);
+//            Log.d(TAG, "run: timePeriodSecond = " + timePeriodSecond);
+            if(timePeriodSecond > screenSaverStartTime){
+                if(screenSaverIsRun == false){
+                    mHandler02.postAtTime(mTask02, MILLISECOND_COUNT);
+                    screenSaverIsRun = true;
+                }else{
+                }
+            }else{
+                screenSaverIsRun = false;
+            }
+            mHandler01.postDelayed(mTask01, MILLISECOND_COUNT);*/
+        }
+    };
+
+    private Runnable mTask02 = new Runnable() {
+        @Override
+        public void run() {
+          /*  // TODO Auto-generated method stub
+            if (screenSaverIsRun == true) {
+                showScreenSaver();
+                mHandler02.postDelayed(mTask02, MILLISECOND_COUNT);
+            } else {
+                mHandler02.removeCallbacks(mTask02);
+            }*/
+        }
+    };
+
+    private void showScreenSaver() {
+//        Intent intent = new Intent(this, screensaveractivity.class);
+//        Intent intent = new Intent(this, timescreensaveractivity.class);
+        Random random = new Random();
+        int t = random.nextInt(100);
+        if (t % 2 == 0) {
+            Intent intent = new Intent(this, ScreensaverTextClockActivity.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, Screensaverwallpaper.class);
+            startActivity(intent);
+        }
+    }
+
+    public void updateUserActionTime() {
+        Date timeNow = new Date(System.currentTimeMillis());
+        timePeriod = timeNow.getTime() - lastInputEventTime.getTime();
+        lastInputEventTime.setTime(timeNow.getTime());
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+//        mHandler01.removeCallbacks(mTask01);
+//        mHandler02.removeCallbacks(mTask02);
+        super.onPause();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        updateUserActionTime();
+        return super.dispatchKeyEvent(event);
     }
 }

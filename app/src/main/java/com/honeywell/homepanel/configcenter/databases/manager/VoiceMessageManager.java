@@ -17,7 +17,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by H135901 on 3/16/2017.
@@ -115,6 +114,17 @@ public class VoiceMessageManager {
         return device;
     }
 
+    public synchronized int getVoiceCountByStatus(int status) {
+        Cursor cursor = DbCommonUtil.getByIntField(dbHelper,ConfigConstant.TABLE_VOICEMESSAGE,ConfigConstant.COLUMN_READ,status);
+        int count = 0;
+        while(cursor.moveToNext()){
+            count++;
+        }
+        cursor.close();
+        return count;
+    }
+
+
     public synchronized List<VoiceMessage> getVoiceMessageAllList() {
         List<VoiceMessage> VoiceMessages = null;
         Cursor cursor = DbCommonUtil.getAll(dbHelper,ConfigConstant.TABLE_VOICEMESSAGE);
@@ -148,9 +158,22 @@ public class VoiceMessageManager {
         if(null == lists){
             return;
         }
+        String dataStatus = jsonObject.optString(CommonData.JSON_KEY_DATASTATUS);
+        int start = Integer.valueOf(jsonObject.optString(CommonData.JSON_KEY_START));
+        int count = Integer.valueOf(jsonObject.optString(CommonData.JSON_KEY_COUNT));
         JSONArray loopMapArray = new JSONArray();
+        int index = 0;
         for (int i = 0; i < lists.size(); i++) {
             VoiceMessage loop = lists.get(i);
+            if(!dataStatus.equals(CommonData.DATASTATUS_ALL)
+                    && !dataStatus.equals(DbCommonUtil.transferReadIntToString(loop.mRead))){
+                continue;
+            }
+            if(index < start || index >= start + count){
+                index++;
+                continue;
+            }
+            index++;
             JSONObject loopMapObject = new JSONObject();
             loopToJson(loopMapObject,loop);
             loopMapArray.put(loopMapObject);
@@ -171,12 +194,13 @@ public class VoiceMessageManager {
         JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
+            String uuid = loopMapObject.getString(CommonData.JSON_UUID_KEY);
             String fileName = loopMapObject.optString(CommonData.JSON_KEY_FILENAME);
             String time = loopMapObject.optString(CommonData.JSON_KEY_TIME);
             String duration = loopMapObject.optString(CommonData.JSON_KEY_DURATION);
-            String datastatus = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
-            long rowid = add(UUID.randomUUID().toString(),time,Integer.valueOf(duration),fileName,DbCommonUtil.transferReadStringToInt(datastatus));
-            DbCommonUtil.putErrorCodeFromOperate(rowid, loopMapObject);
+            String dataStatus = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
+            long rowId = add(uuid,time,Integer.valueOf(duration),fileName,DbCommonUtil.transferReadStringToInt(dataStatus));
+            DbCommonUtil.putErrorCodeFromOperate(rowId, loopMapObject);
         }
     }
 
@@ -201,5 +225,13 @@ public class VoiceMessageManager {
             long num = deleteByUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
         }
+    }
+
+    public void notificationVoiceMsgCountGet(JSONObject jsonObject) throws  JSONException{
+        String statusStr = jsonObject.getString(CommonData.JSON_KEY_DATASTATUS);
+        int dataStatus = DbCommonUtil.transferReadStringToInt(statusStr);
+        int count = getVoiceCountByStatus(dataStatus);
+        jsonObject.put(CommonData.JSON_KEY_COUNT,""+count);
+        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
     }
 }

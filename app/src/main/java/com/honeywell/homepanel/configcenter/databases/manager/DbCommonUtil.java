@@ -122,6 +122,12 @@ public class DbCommonUtil {
                 new String[] { uuid }, null, null, null, null);
         return  cursor;
     }
+    public static  Cursor getByIntField(ConfigDatabaseHelper dbHelper, String table, String columnName, int status) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(table,null,columnName + "=?",
+                new String[] { String.valueOf(status) }, null, null, null, null);
+        return  cursor;
+    }
 
     public static  Cursor getAll(ConfigDatabaseHelper dbHelper,String table) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -149,7 +155,7 @@ public class DbCommonUtil {
         return  (seq + 1);
     }
 
-    //relay及zone会用
+   
     public static String generateDeviceUuid(int tableInt, long primaryId) {
         String uuid = String.valueOf(tableInt);
         if(uuid.length() == 1){
@@ -209,6 +215,9 @@ public class DbCommonUtil {
         String code = CommonData.JSON_ERRORCODE_VALUE_FAIL;
         if(numOrRowid > 0){
             code = CommonData.JSON_ERRORCODE_VALUE_OK;
+        }
+        else if(numOrRowid == Long.valueOf(CommonData.JSON_ERRORCODE_VALUE_EXIST)){
+            code = CommonData.JSON_ERRORCODE_VALUE_EXIST;
         }
         jsonObject.put(CommonData.JSON_ERRORCODE_KEY,code);
     }

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
@@ -17,7 +18,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by H135901 on 3/15/2017.
@@ -71,6 +71,9 @@ public class IpcLoopManager {
         }
         if(!TextUtils.isEmpty(device.mPwd)){
             values.put(ConfigConstant.COLUMN_PASSWORD, device.mPwd);
+        }
+        if(!TextUtils.isEmpty(device.mIpAddr)){
+            values.put(ConfigConstant.COLUMN_IPADDR, device.mIpAddr);
         }
         return values;
     }
@@ -172,7 +175,7 @@ public class IpcLoopManager {
             String userName = loopMapObject.optString(CommonData.JSON_USERNAME_KEY);
             String pwd = loopMapObject.optString(CommonData.JSON_PASSWORD_KEY);
             String name = loopMapObject.optString(CommonData.JSON_ALIASNAME_KEY);
-            String uuid = UUID.randomUUID().toString();
+            String uuid = CommonUtils.generateCommonEventUuid();
             long rowid = add(uuid,name,ip,userName,pwd);
             if(rowid > 0){
                 CommonlDeviceManager.getInstance(mContext).add(uuid,name,CommonData.COMMONDEVICE_TYPE_IPC);
@@ -199,6 +202,9 @@ public class IpcLoopManager {
             }
             if(loopMapObject.has(CommonData.JSON_PASSWORD_KEY)){
                 loop.mPwd = pwd;
+            }
+            if(loopMapObject.has(CommonData.JSON_IP_KEY)){
+                loop.mIpAddr = loopMapObject.getString(CommonData.JSON_IP_KEY);
             }
             long num = updateByUuid(uuid,loop);
 

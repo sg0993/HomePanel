@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
-import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
 import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
@@ -42,7 +41,7 @@ import java.util.TimerTask;
 public class CallNeighborAndioAndVideoConnected extends Fragment implements View.OnClickListener{
     private String mTitle = "";
     private static final int MSG_SHOW_ELAPSE_TIME = 100;
-    private static  final  String TAG = "CallNeighborAndioAndVideoConnected";
+    private static  final  String TAG = "CallNeighbor";
     private Context mContext = null;
 
 

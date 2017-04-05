@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.honeywell.homepanel.R.string.notification_title_event;
+
 /**
  * Created by H135901 on 1/25/2017.
  */
@@ -58,6 +60,12 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
 
     private String title = "";
     private final String NORMAL_GREY = "#ABABAB";
+
+    String title_event = null;
+    String title_alarm = null;
+    String title_notify = null;
+    String title_voice = null;
+
 
     public static Map<String, Integer> unreadCountMap;
 
@@ -100,6 +108,12 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         getAlarmCount();
         getNotificationCount();
         getVoiceMsgCount();
+
+        title_event = getResources().getString(R.string.notification_title_event);
+        title_alarm = getResources().getString(R.string.notification_title_alarm);
+        title_notify = getResources().getString(R.string.notification_title_notify);
+        title_voice =  getResources().getString(R.string.notification_title_voice);
+
         UIMessagesNotification.UIGetVoiceMsgListMessageReq dataReq = new UIMessagesNotification.UIGetVoiceMsgListMessageReq();
 
     }
@@ -427,27 +441,27 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         int cnt = Integer.valueOf(count);
         if (type == CommonData.FRAGMENT_EVENT) {
             if (cnt == 0) {
-                mNaviEvent.setText(CommonData.FRAGMENT_EVENT);
+                mNaviEvent.setText(title_event);
             } else {
-                mNaviEvent.setText(CommonData.FRAGMENT_EVENT + "(" + cnt + ")");
+                mNaviEvent.setText(title_event + "(" + cnt + ")");
             }
         } else if (type == CommonData.FRAGMENT_ALARM) {
             if (cnt == 0) {
-                mNaviAlarm.setText(CommonData.FRAGMENT_ALARM);
+                mNaviAlarm.setText(title_alarm);
             } else {
-                mNaviAlarm.setText(CommonData.FRAGMENT_ALARM + "(" + cnt + ")");
+                mNaviAlarm.setText(title_alarm + "(" + cnt + ")");
             }
         } else if (type == CommonData.FRAGMENT_NOTIFICATION) {
             if (cnt == 0) {
-                mNaviNotification.setText(CommonData.FRAGMENT_NOTIFICATION);
+                mNaviNotification.setText(title_notify);
             } else {
-                mNaviNotification.setText(CommonData.FRAGMENT_NOTIFICATION + "(" + cnt + ")");
+                mNaviNotification.setText(title_notify + "(" + cnt + ")");
             }
         } else if (type == CommonData.FRAGMENT_VOICEMSG) {
             if (cnt == 0) {
-                mNaviVoice.setText(CommonData.FRAGMENT_VOICEMSG);
+                mNaviVoice.setText(title_voice);
             } else {
-                mNaviVoice.setText(CommonData.FRAGMENT_VOICEMSG + "(" + cnt + ")");
+                mNaviVoice.setText(title_voice + "(" + cnt + ")");
             }
         }
     }

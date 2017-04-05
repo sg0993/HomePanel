@@ -90,6 +90,7 @@ public class CommonData {
     public static final String JSON_SUBACTION_VALUE_GETSCENARIOCONFIG = "getscenarioconfig";
     public static final String JSON_SUBACTION_VALUE_SETSCENARIOCONFIG = "setscenarioconfig";
     public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTGET = "eventget";
+    public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTCOUNTGET = "eventcountget";
     public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTADD = "eventadd";
     public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTDELETE = "eventdelete";
     public static final String JSON_SUBACTION_VALUE_NOTIFICATIONEVENTUPDATE = "eventupdate";
@@ -133,6 +134,7 @@ public class CommonData {
     public static final String JSON_SUBACTION_VALUE_IPCADD = "ipcadd";
     public static final String JSON_SUBACTION_VALUE_IPCDELETE = "ipcdelete";
     public static final String JSON_SUBACTION_VALUE_IPCUPDATE = "ipcupdate";
+    public static final String JSON_SUBACTION_VALUE_LOCALZONEGET = "localzoneget";
     public static final String JSON_SUBACTION_VALUE_LOCALZONEUPUDATE = "localzoneupdate";
     public static final String JSON_SUBACTION_VALUE_EXTENSIONZONEGET = "extensionzoneget";
     public static final String JSON_SUBACTION_VALUE_EXTENSIONZONEUPDATE = "extensionzoneupdate";
@@ -142,6 +144,8 @@ public class CommonData {
     public static final String JSON_SUBACTION_VALUE_EXTENSIONRELAYDELETE = "extensionrelaydelete";
     public static final String JSON_SUBACTION_VALUE_EXTENSIONMODULEADD = "extensionmoduleadd";
     public static final String JSON_SUBACTION_VALUE_EXTENSIONMODULEDELETE = "extensionmoduledelete";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONZONE = "extensionzone";
+    public static final String JSON_SUBACTION_VALUE_EXTENSIONRELAY = "extensionrelay";
     public static final String JSON_SUBACTION_VALUE_CONTENTLST0x51 = "contentlst0x51";
     public static final String JSON_SUBACTION_VALUE_CONTENTFEE0x53 = "contentfee0x53";
     public static final String JSON_SUBACTION_VALUE_CONTENTBULLETIN0x54 = "contentbulletin0x54";
@@ -241,6 +245,7 @@ public class CommonData {
     public static final String JSON_ERRORCODE_VALUE_PASSWORD="4";
     public static final String JSON_ERRORCODE_VALUE_MSGTO="5";
     public static final String JSON_ERRORCODE_VALUE_TIMEOUT = "6";
+    public static final String JSON_ERRORCODE_VALUE_EXIST="-100";
 
     public static final String JSON_VIDEOPORT_KEY="videoport";
     public static final String JSON_AUDIOPORT_KEY="audioport";
@@ -396,7 +401,6 @@ public class CommonData {
     public static  final  String COMMONDEVICE_TYPE_THERMOSTAT = "thermostat";
     public static  final  String COMMONDEVICE_TYPE_IPC = "ipc";
 
-
     public static  final  String JSON_OPERATIONTYPE_VALUE_ADD = "add";
     public static  final  String JSON_OPERATIONTYPE_VALUE_DELETE = "delete";
     public static  final  String JSON_OPERATIONTYPE_VALUE_UPDATE = "update";
@@ -510,6 +514,7 @@ public class CommonData {
     public static  final  String JSON_KEY_DATE = "date";
     public static final String COLOR_DARKGREY = "#4A4A4A";
     public static final String COLOR_NORMALGREY = "#C6C6C6";
+    public static final String COLOR_SCREENSAVER_TEXT_GREY = "#808080";
 
     //Max Voice Message Count supported
     public static final int MAX_VOICE_RECORD_COUNT = 3;

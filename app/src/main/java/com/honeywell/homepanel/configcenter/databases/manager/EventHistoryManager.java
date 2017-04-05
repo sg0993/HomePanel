@@ -17,7 +17,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by H135901 on 3/16/2017.
@@ -113,6 +112,16 @@ public class EventHistoryManager {
         return device;
     }
 
+    public synchronized int getEventCountByStatus(int status) {
+        Cursor cursor = DbCommonUtil.getByIntField(dbHelper,ConfigConstant.TABLE_EVENTHISTORY,ConfigConstant.COLUMN_READ,status);
+        int count = 0;
+        while(cursor.moveToNext()){
+          count++;
+        }
+        cursor.close();
+        return count;
+    }
+
     public synchronized EventHistory getByUuid(String uuid) {
         if(TextUtils.isEmpty(uuid)){
             return null;
@@ -163,8 +172,8 @@ public class EventHistoryManager {
             return;
         }
         String dataStatus = jsonObject.optString(CommonData.JSON_KEY_DATASTATUS);
-        int start = jsonObject.optInt(CommonData.JSON_KEY_START);
-        int count = jsonObject.optInt(CommonData.JSON_KEY_COUNT);
+        int start = Integer.valueOf(jsonObject.optString(CommonData.JSON_KEY_START));
+        int count = Integer.valueOf(jsonObject.optString(CommonData.JSON_KEY_COUNT));
         JSONArray loopMapArray = new JSONArray();
         int index = 0;
         for (int i = 0; i < lists.size(); i++) {
@@ -173,7 +182,7 @@ public class EventHistoryManager {
                     && !dataStatus.equals(DbCommonUtil.transferReadIntToString(loop.mRead))){
                 continue;
             }
-            if(index < start && index >= start + count){
+            if(index < start || index >= start + count){
                 index++;
                 continue;
             }
@@ -201,6 +210,7 @@ public class EventHistoryManager {
         JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
+            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
             String eventType = loopMapObject.optString(CommonData.JSON_KEY_EVENTTYPE);
             String time = loopMapObject.optString(CommonData.JSON_KEY_TIME);
             String imgname = loopMapObject.optString(CommonData.JSON_KEY_IMAGENAME);
@@ -208,7 +218,7 @@ public class EventHistoryManager {
             String datastatus  = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
             String cardid = loopMapObject.optString(CommonData.JSON_KEY_CARDID);
             String swipeaction = loopMapObject.optString(CommonData.JSON_KEY_SWIPEACTION);
-            long rowId = add(UUID.randomUUID().toString(),time,eventType,
+            long rowId = add(uuid,time,eventType,
                     cardid, swipeaction,imgname, videoname,DbCommonUtil.transferReadStringToInt(datastatus));
             DbCommonUtil.putErrorCodeFromOperate(rowId,loopMapObject);
         }
@@ -234,5 +244,13 @@ public class EventHistoryManager {
             long num = deleteByUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
         }
+    }
+
+    public void eventCountGet(JSONObject jsonObject) throws  JSONException{
+        String statusStr = jsonObject.getString(CommonData.JSON_KEY_DATASTATUS);
+        int dataStatus = DbCommonUtil.transferReadStringToInt(statusStr);
+        int count = getEventCountByStatus(dataStatus);
+        jsonObject.put(CommonData.JSON_KEY_COUNT,""+count);
+        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
     }
 }

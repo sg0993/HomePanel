@@ -21,7 +21,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by H135901 on 3/14/2017.
@@ -210,7 +209,7 @@ public class PeripheralDeviceManager {
             String ip = loopMapObject.optString(CommonData.JSON_IP_KEY);
             String mac = loopMapObject.optString(CommonData.JSON_KEY_MAC);
             String name = type;
-            String moduleUuid = UUID.randomUUID().toString();
+            String moduleUuid = CommonUtils.generateCommonEventUuid();
             long rowId = add(moduleUuid,name,type,ip,mac,version,CommonData.NOTONLINE);
             //TODO add loop automaticlly for relay  and zone,and commondevice
             DbCommonUtil.putErrorCodeFromOperate(rowId,loopMapObject);
@@ -224,7 +223,7 @@ public class PeripheralDeviceManager {
                 }
                 for (int j = 0; j < loopNum; j++) {
                     long _id = 0;
-                    String deviceName = type+j+1;
+                    String deviceName = type+(j+1);
                     String deviceUuid = "";
                     if(type.equals(CommonData.COMMONDEVICE_TYPE_RELAY)){
                         deviceUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_RELAYLOOP_INT,DbCommonUtil.getSequenct(ConfigDatabaseHelper.getInstance(mContext),ConfigConstant.TABLE_RELAYLOOP));

@@ -74,11 +74,20 @@ public class ConfigDispatchCenter implements Runnable{
         else if(CommonData.JSON_SUBACTION_VALUE_GETSCENARIOCONFIG.equals(subAction)){
             ScenarioLoopManager.getInstance(mContext).getScenarioConfig(jsonObject);
         }
+        else if(CommonData.JSON_SUBACTION_VALUE_EVENTCOUNTGET.equals(subAction)){
+            EventHistoryManager.getInstance(mContext).eventCountGet(jsonObject);
+        }
         else if(CommonData.JSON_SUBACTION_VALUE_NOTIFICATIONEVENTGET.equals(subAction)){
             EventHistoryManager.getInstance(mContext).notificationEventGet(jsonObject);
         }
+        else if(CommonData.JSON_SUBACTION_VALUE_ALARMCOUNTGET.equals(subAction)){
+            AlarmHistoryManager.getInstance(mContext).notificationAlarmCountGet(jsonObject);
+        }
         else if(CommonData.JSON_SUBACTION_VALUE_NOTIFICATIONALARMGET.equals(subAction)){
             AlarmHistoryManager.getInstance(mContext).notificationAlarmGet(jsonObject);
+        }
+        else if(CommonData.JSON_SUBACTION_VALUE_VOICEMSGCOUNTGET.equals(subAction)){
+            VoiceMessageManager.getInstance(mContext).notificationVoiceMsgCountGet(jsonObject);
         }
         else if(CommonData.JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGGET.equals(subAction)){
             VoiceMessageManager.getInstance(mContext).notificationMessageGet(jsonObject);
@@ -91,6 +100,9 @@ public class ConfigDispatchCenter implements Runnable{
         }
         else if(CommonData.JSON_SUBACTION_VALUE_IPCGET.equals(subAction)){
             IpcLoopManager.getInstance(mContext).ipcGet(jsonObject);
+        }
+        else if(CommonData.JSON_SUBACTION_VALUE_LOCALZONEGET.equals(subAction)){
+            ZoneLoopManager.getInstance(mContext).localZoneGet(jsonObject);
         }
         else if(CommonData.JSON_SUBACTION_VALUE_EXTENSIONMODULEGET.equals(subAction)){
             PeripheralDeviceManager.getInstance(mContext).getExtensionModuleList(jsonObject);

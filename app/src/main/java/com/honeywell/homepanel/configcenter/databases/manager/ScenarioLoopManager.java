@@ -10,6 +10,7 @@ import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
+import com.honeywell.homepanel.configcenter.databases.domain.CommonDevice;
 import com.honeywell.homepanel.configcenter.databases.domain.ScenarioLoop;
 
 import org.json.JSONArray;
@@ -207,8 +208,13 @@ public class ScenarioLoopManager {
 
     public void setScenarioConfig(JSONObject jsonObject) throws  JSONException{
         String uuid = jsonObject.optString(CommonData.JSON_UUID_KEY);
+        //TODO 暂不支持修改场景名字
         String name = jsonObject.optString(CommonData.JSON_KEY_NAME);
         JSONArray loopMapArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        CommonDevice commonDevice = CommonlDeviceManager.getInstance(mContext).getByUuid(uuid);
+        if(null == commonDevice){
+            return;
+        }
         for (int i = 0; i < loopMapArray.length();i++) {
             long code = -1;
             JSONObject loopMapObject = loopMapArray.getJSONObject(i);
@@ -216,7 +222,13 @@ public class ScenarioLoopManager {
             String operateType = loopMapObject.optString(CommonData.JSON_KEY_OPERATIONTYPE);
             if(operateType.equals(CommonData.JSON_OPERATIONTYPE_VALUE_ADD)){
                 String action = loopMapObject.optString(CommonData.JSON_ACTION_KEY);
-                code = ScenarioLoopManager.getInstance(mContext).add(uuid,name,deviceUuid,action);
+                ScenarioLoop exist = ScenarioLoopManager.getInstance(mContext).getByDeviceUuid(uuid,deviceUuid);
+                if(null == exist){
+                    code = ScenarioLoopManager.getInstance(mContext).add(uuid,commonDevice.mName,deviceUuid,action);
+                }
+                else{
+                    code = Long.valueOf(CommonData.JSON_ERRORCODE_VALUE_EXIST);
+                }
             }
             else if(operateType.equals(CommonData.JSON_OPERATIONTYPE_VALUE_DELETE)){
                 code = ScenarioLoopManager.getInstance(mContext).deleteByDeviceuuid(uuid,deviceUuid);
@@ -224,8 +236,12 @@ public class ScenarioLoopManager {
             else if(operateType.equals(CommonData.JSON_OPERATIONTYPE_VALUE_UPDATE)){
                 String action = loopMapObject.optString(CommonData.JSON_ACTION_KEY);
                 ScenarioLoop loop = ScenarioLoopManager.getInstance(mContext).getByDeviceUuid(uuid,deviceUuid);
-                loop.mName = name;
-                loop.mAction = action;
+              /*  if(jsonObject.has(CommonData.JSON_KEY_NAME)){
+                    loop.mName = name;
+                }*/
+                if(jsonObject.has(CommonData.JSON_ACTION_KEY)){
+                    loop.mAction = action;
+                }
                 code = ScenarioLoopManager.getInstance(mContext).updateByPrimaryId(loop.mId,loop);
             }
             DbCommonUtil.putErrorCodeFromOperate(code,loopMapObject);

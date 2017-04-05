@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
-import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
 import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
@@ -33,7 +32,7 @@ import org.greenrobot.eventbus.ThreadMode;
 @SuppressLint("ValidFragment")
 public class CallLobbyIncomingAndConnected extends Fragment implements View.OnClickListener{
     private String mTitle = "";
-    private static  final  String TAG = "CallNeighborAndioAndVideoConnected";
+    private static  final  String TAG = "CallNeighbor";
     private Context mContext = null;
     private CallBottomBrusher mCallBottomBrusher = new CallBottomBrusher
             (this,R.mipmap.call_incoming_background,R.mipmap.call_incoming_call,"Answer",

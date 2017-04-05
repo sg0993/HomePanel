@@ -241,4 +241,23 @@ public class ZoneLoopManager {
             }
         }
     }
+
+    public void localZoneGet(JSONObject jsonObject) throws  JSONException{
+        List<ZoneLoop>lists = getZoneLoopAllList();
+        if(null == lists){
+            return;
+        }
+        JSONArray loopMapArray = new JSONArray();
+        for (int i = 0; i < lists.size(); i++) {
+            ZoneLoop loop = lists.get(i);
+            if(!TextUtils.isEmpty(loop.mModuleUuid)){
+                break;
+            }
+            JSONObject loopMapObject = new JSONObject();
+            loopToJson(loopMapObject,loop);
+            loopMapArray.put(loopMapObject);
+        }
+        jsonObject.put(CommonData.JSON_LOOPMAP_KEY,loopMapArray);
+        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
+    }
 }
