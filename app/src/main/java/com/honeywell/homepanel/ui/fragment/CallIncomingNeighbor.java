@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,7 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 
 @SuppressLint("ValidFragment")
-public class CallIncomingNeighbor extends Fragment implements View.OnClickListener{
+public class CallIncomingNeighbor extends CallBaseFragment implements View.OnClickListener{
     private String mTitle = "";
     private static  final  String TAG = "CallIncomingNeighbor";
     private Context mContext = null;

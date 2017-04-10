@@ -4,9 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
+import com.honeywell.homepanel.ui.AudioVideoUtil.TextureViewListener;
+import com.honeywell.homepanel.ui.AudioVideoUtil.VideoDecoderThread;
 import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CalRightBrusher;
@@ -30,9 +32,10 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 
 @SuppressLint("ValidFragment")
-public class CallLobbyIncomingAndConnected extends Fragment implements View.OnClickListener{
+public class CallLobbyIncomingAndConnected extends CallBaseFragment implements View.OnClickListener{
     private String mTitle = "";
     private static  final  String TAG = "CallNeighbor";
+
     private Context mContext = null;
     private CallBottomBrusher mCallBottomBrusher = new CallBottomBrusher
             (this,R.mipmap.call_incoming_background,R.mipmap.call_incoming_call,"Answer",
@@ -45,6 +48,13 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
     private CallTopBrusher mCallTopBrusher = new CallTopBrusher(
             "Incomming call.","Lobby"
     );
+
+    //for video
+
+    private TextureView mDecoderView;
+    private TextureViewListener mDecoderTextureListener;
+    private VideoDecoderThread mDecThread;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +73,7 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
         mCallRightBrusher.init(view);
         mCallTopBrusher.init(view);
 
+        startVideoGet();
         return view;
     }
 
@@ -76,6 +87,7 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
         Log.d(TAG,"CallLobbyIncomingAndConnected.onDestroy() 11111111");
+        mDecThread.stop();
         super.onDestroy();
     }
 
@@ -88,6 +100,12 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
     }
 
     private void initViews(View view) {
+        mDecoderView = (TextureView) view.findViewById(R.id.texture_view); // mediacodec
+        // multimedia
+        mDecoderTextureListener = new TextureViewListener();
+        mDecoderView.setSurfaceTextureListener(mDecoderTextureListener);
+        mDecThread = new VideoDecoderThread(mDecoderTextureListener,mVideoPlayQueue);
+        new Thread(mDecThread).start();
     }
     @Override
     public void onClick(View view) {
@@ -102,6 +120,8 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
                     ((CallActivity)getActivity()).setCurFragmentStatus(status);
                     UISendCallMessage.requestForTakeCall(CallActivity.CallBaseInfo);
                     switchToLobbyConnected();
+                    //start audio
+                    startAudio();
                 }
                 else{
                     status = CommonData.CALL_LOBBY_INCOMMING;
@@ -116,6 +136,7 @@ public class CallLobbyIncomingAndConnected extends Fragment implements View.OnCl
                     ((CallActivity)getActivity()).setCurFragmentStatus(CurStatus);
                     UISendCallMessage.requestForHungUp(CallActivity.CallBaseInfo);
                     switchToLobbyConnected();
+                    startAudio();
                 }
                 else{
                     status = CommonData.CALL_LOBBY_INCOMMING;

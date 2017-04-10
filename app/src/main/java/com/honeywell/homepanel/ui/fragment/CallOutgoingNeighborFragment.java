@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +13,8 @@ import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
-import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
-import com.honeywell.homepanel.subphoneuiservice.SubUISvrRequestMgr;
-import com.honeywell.homepanel.subphoneuiservice.utils.Logger;
 import com.honeywell.homepanel.ui.activities.CallActivity;
-import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,9 +26,9 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 
 @SuppressLint("ValidFragment")
-public class CallOutgoingNeighborFragment extends Fragment implements View.OnClickListener{
+public class CallOutgoingNeighborFragment extends CallBaseFragment implements View.OnClickListener{
     private String mTitle = "";
-    private static  final  String TAG = "CallOutgoingNeighborFragment";
+    private static  final  String TAG = "CallOutgoing";
     private Context mContext = null;
 
     private TextView mUnitTv = null;

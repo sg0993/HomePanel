@@ -214,9 +214,10 @@ public class IpDoorCardanager {
             String startTime = loopMapObject.optString(CommonData.JSON_KEY_STARTTIME);
             String expireTime = loopMapObject.optString(CommonData.JSON_KEY_ENDTIME);
             String action = loopMapObject.optString(CommonData.JSON_KEY_SWIPEACTION);
-
-            long rowid = add(CommonUtils.generateCommonEventUuid(),type,name,cardId,startDate,expireDate,startTime,expireTime,action);
+            String uuid = CommonUtils.generateCommonEventUuid();
+            long rowid = add(uuid,type,name,cardId,startDate,expireDate,startTime,expireTime,action);
             DbCommonUtil.putErrorCodeFromOperate(rowid, loopMapObject);
+            loopMapObject.put(CommonData.JSON_UUID_KEY,uuid);
         }
     }
 
@@ -226,7 +227,7 @@ public class IpDoorCardanager {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
             String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
             String type = loopMapObject.optString(CommonData.JSON_KEY_CARDTYPE);
-            String name = loopMapObject.optString(CommonData.JSON_KEY_NAME);
+            String name = loopMapObject.optString(CommonData.JSON_ALIASNAME_KEY);
             String cardId = loopMapObject.optString(CommonData.JSON_KEY_CARDID);
             String startDate = loopMapObject.optString(CommonData.JSON_KEY_STARTDATE);
             String expireDate = loopMapObject.optString(CommonData.JSON_KEY_ENDDATE);

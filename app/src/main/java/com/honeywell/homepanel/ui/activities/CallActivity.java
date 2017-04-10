@@ -1,18 +1,23 @@
 package com.honeywell.homepanel.ui.activities;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.honeywell.homepanel.IAvRtpService;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
@@ -22,6 +27,7 @@ import com.honeywell.homepanel.ui.fragment.CallIncomingNeighbor;
 import com.honeywell.homepanel.ui.fragment.CallLobbyIncomingAndConnected;
 import com.honeywell.homepanel.ui.fragment.CallNeighborAndioAndVideoConnected;
 import com.honeywell.homepanel.ui.fragment.CallOutgoingNeighborFragment;
+import com.honeywell.homepanel.ui.fragment.CallBaseFragment;
 import com.honeywell.homepanel.ui.uicomponent.TopViewBrusher;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,7 +45,7 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
 
     private static  final String TAG = "CallActivity";
     private TopViewBrusher mTopViewBrusher = new TopViewBrusher();
-    private Map<Integer,Fragment> mFragments = new HashMap<Integer, Fragment>();
+    private Map<Integer,CallBaseFragment> mFragments = new HashMap<Integer, CallBaseFragment>();
 
     public int mCurCallStatus = CommonData.CALL_LOBBY_INCOMMING;
     public String mUnit = "100-202";
@@ -49,10 +55,14 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
 
     public static UIBaseCallInfo CallBaseInfo;
 
+    public IAvRtpService mIAvRtpService = null;
+    private ServiceConnection mIAvRtpServiceConnect = new ServiceConnectionImpl();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);//屏幕常亮
         setContentView(R.layout.layout_call);
         getAllParameter(getIntent());
         EventBus.getDefault().register(this);
@@ -60,6 +70,8 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         mTopViewBrusher.init(this);
         fragmentAdd(mCurCallStatus);
         mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
+        CommonUtils.startAndBindService(getApplicationContext(),CommonData.ACTION_AVRTP_SERVICE,mIAvRtpServiceConnect);
     }
 
     private void getAllParameter(Intent intent) {
@@ -84,6 +96,9 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         EventBus.getDefault().unregister(this);
         super.onDestroy();
         mTopViewBrusher.destory();
+        if(null != mIAvRtpService){
+            unbindService(mIAvRtpServiceConnect);
+        }
     }
 
 
@@ -99,7 +114,7 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         transaction.commit();
     }
     private Fragment getNewFragMent(int position) {
-        Fragment fragment = null;
+        CallBaseFragment fragment = null;
         switch (position){
             case CommonData.CALL_OUTGOING_NEIGHBOR:
                 fragment = new CallOutgoingNeighborFragment("" + position);
@@ -197,6 +212,30 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         }
         else{
 
+        }
+    }
+
+    class ServiceConnectionImpl implements ServiceConnection {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            String serviceClassName = name.getClassName();
+            if(serviceClassName.equals(CommonData.ACTION_AVRTP_SERVICE)){
+                mIAvRtpService = IAvRtpService.Stub.asInterface(service);
+                setFragmentAidl();
+            }
+        }
+        public void onServiceDisconnected(ComponentName name) {
+            String serviceClassName = name.getClassName();
+            if(serviceClassName.equals(CommonData.ACTION_AVRTP_SERVICE)){
+                mIAvRtpService = null;
+            }
+        }
+    }
+
+    private void setFragmentAidl() {
+        CallBaseFragment fragment = mFragments.get(getCurFragmentStatus());
+        if(null != fragment && mIAvRtpService != null){
+            fragment.setFragmentAidl(mIAvRtpService);
         }
     }
 }

@@ -164,7 +164,9 @@ public class SpeedDialManager {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
             String type = loopMapObject.optString(CommonData.JSON_TYPE_KEY);
             String dongHo = loopMapObject.optString(CommonData.JSON_DONGHO_KEY);
-            long rowid = add(CommonUtils.generateCommonEventUuid(),type,dongHo);
+            String uuid = CommonUtils.generateCommonEventUuid();
+            long rowid = add(uuid,type,dongHo);
+            loopMapObject.put(CommonData.JSON_UUID_KEY,uuid);
             DbCommonUtil.putErrorCodeFromOperate(rowid, loopMapObject);
         }
     }

@@ -14,6 +14,7 @@
     <string name="subphoneserver">:subphoneserver</string>
     <string name="upgrade">:upgrade</string>
     <string name="watchdog">:watchdog</string>
+    <string name="callfsm">:callfsm</string>
 
     <string name="app_name">HomePanel</string>
 
@@ -26,7 +27,7 @@
     <string name="device_elevator">Elevator</string>
     <string name="device_empty"> </string>
     <string name="devices_cameras_living_room">Living Room</string>
-    <string name="devices_cameras_ipdoor_camera">IP Door Camera</string>
+    <string name="devices_cameras_ipdoor_camera">ip Door Camera</string>
     <string name="devices_cameras_parking">Parking</string>
     <string name="devices_cameras_living_room_time">Image from 10:40 am</string>
     <string name="devices_cameras_ipdoor_camera_time">Image from 10:40 am</string>
@@ -91,14 +92,14 @@
     <string name="engin_top_title">Engineering mode</string>
     <string name="engin_device_role">Device role</string>
     <string name="engin_network">Network setting</string>
-    <string name="engin_serverip">Server IP settiong</string>
+    <string name="engin_serverip">Server ip settiong</string>
     <string name="engin_roomno">Room number</string>
     <string name="engin_zonecfg">Zone configuration</string>
     <string name="engin_relaycfg">Relay configuration</string>
     <string name="engin_elevatorset">Elevator setting</string>
     <string name="engin_ddkset">DDK setting</string>
-    <string name="engin_subphone">IP subphone setting</string>
-    <string name="engin_camera">IP camera setting</string>
+    <string name="engin_subphone">ip subphone setting</string>
+    <string name="engin_camera">ip camera setting</string>
     <string name="engin_antidismantle">Anti-dismantle</string>
     <string name="engin_finaltest">Start final tester</string>
     <string name="engin_restart">Restart</string>
@@ -106,7 +107,7 @@
     <string name="engin_roomno_number">300201002</string>
 
     <string name="network_top_title">Netmask setting</string>
-    <string name="network_IP_addr">IP address</string>
+    <string name="network_IP_addr">ip address</string>
     <string name="network_netmask">Netmask</string>
     <string name="network_gateway">Gateway</string>
     <string name="network_ipaddr_value">159.99.249.247</string>
@@ -144,7 +145,7 @@
     <string name="Password">Password</string>
 
     <string name="elevator_top_title">Elevator setting</string>
-    <string name="elevator_ip">IP</string>
+    <string name="elevator_ip">ip</string>
     <string name="elevator_port">Port</string>
     <string name="elevator_localfloor">Local floor</string>
     <string name="elevator_ip_value">192.171.92.1</string>
@@ -163,14 +164,14 @@
     <string name="relay_wifi_relay_module2">WIFI Relay modules (4)</string>
     <string name="relay_wifi_relay_module_state">online</string>
 
-    <string name="IP_subphone_setting_top_title">IP subphone setting</string>
+    <string name="IP_subphone_setting_top_title">ip subphone setting</string>
     <string name="IP_subphone_setting_alias">Alias</string>
     <string name="IP_subphone_setting_master_phone_ip_address">
-        Master phone IP address</string>
+        Master phone ip address</string>
     <string name="IP_subphone_setting_ip_subphone_id">
-        IP subphone ID</string>
+        ip subphone ID</string>
     <string name="IP_subphone_setting_change_ip_subphone_password">
-        Change IP subphone password</string>
+        Change ip subphone password</string>
     <string name="IP_subphone_setting_change_engin_password">
         Change engineering mode password</string>
     <string name="IP_subphone_setting_alias_value">XXXXXX</string>
@@ -182,13 +183,13 @@
     <string name="door_lock_setting_top_title">Door lock setting</string>
     <string name="door_lock_setting_top_front_door">Front door</string>
     <string name="door_lock_setting_top_back_door">Back door</string>
-    <string name="door_lock_setting_top_front_door_value">IP door camera</string>
+    <string name="door_lock_setting_top_front_door_value">ip door camera</string>
     <string name="door_lock_setting_top_back_door_value">
         Honeywell Momas Key</string>
 
-    <string name="ip_camera_setting_top_title">IP camera setting</string>
-    <string name="ip_camer1">IP camera 1</string>
-    <string name="ip_camer2">IP camera 2</string>
+    <string name="ip_camera_setting_top_title">ip camera setting</string>
+    <string name="ip_camer1">ip camera 1</string>
+    <string name="ip_camer2">ip camera 2</string>
     <string name="ip_camera_setting_alias_name">Alias name</string>
     <string name="ip_camer1_value">192.168.11.1</string>
     <string name="ip_camer2_value">192.168.11.1</string>
@@ -238,10 +239,10 @@
     <string name="local_zone_delay_time_4m30s">4 min 30 seconds</string>
     <string name="local_zone_delay_time_5m">5 min</string>
 
-    <string name="ip_camera_configuration_top_title">IP camera configuration</string>
+    <string name="ip_camera_configuration_top_title">ip camera configuration</string>
     <string name="ip_camera_configuration_alias">Alias</string>
     <string name="ip_camera_configuration_alias_value">XXXXXXX</string>
-    <string name="ip_camera_configuration_ip_address">IP address</string>
+    <string name="ip_camera_configuration_ip_address">ip address</string>
     <string name="ip_camera_configuration_ip_address_value">192.171.92.1</string>
     <string name="ip_camera_configuration_user_name">User name</string>
     <string name="ip_camera_configuration_user_name_value">XXXXXX</string>

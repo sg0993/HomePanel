@@ -2,22 +2,25 @@ package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
+import com.honeywell.homepanel.ui.AudioVideoUtil.CameraWrapper;
+import com.honeywell.homepanel.ui.AudioVideoUtil.TextureViewListener;
+import com.honeywell.homepanel.ui.AudioVideoUtil.VideoDecoderThread;
 import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CalRightBrusher;
@@ -38,7 +41,7 @@ import java.util.TimerTask;
  */
 
 @SuppressLint("ValidFragment")
-public class CallNeighborAndioAndVideoConnected extends Fragment implements View.OnClickListener{
+public class CallNeighborAndioAndVideoConnected extends CallBaseFragment implements View.OnClickListener,CameraWrapper.CamOpenOverCallback{
     private String mTitle = "";
     private static final int MSG_SHOW_ELAPSE_TIME = 100;
     private static  final  String TAG = "CallNeighbor";
@@ -64,7 +67,14 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
 
     private long lastTime = System.currentTimeMillis();
     private Timer mTimer = null;
-    private ImageView lefttop_image = null;
+    private TextureView mCameraTexture = null;
+
+    /******For other video***********/
+    private TextureView mDecoderView;
+    private TextureViewListener mDecoderTextureListener;
+    private VideoDecoderThread mDecThread;
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +94,9 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
         initViews(view);
         changeViewStatus();
         initElapseTimer();
+
+        /*****For other audio show **************/
+        startAudio();
         return view;
     }
 
@@ -107,14 +120,14 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
                 mCallAnimationView.setVisibility(View.VISIBLE);
                 mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,R.mipmap.call_blue_background,R.mipmap.call_video_image);
                 mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,getString(R.string.video));
-                lefttop_image.setVisibility(View.INVISIBLE);
+                mCameraTexture.setVisibility(View.INVISIBLE);
             }
             else{
                 mCallTopView.setVisibility(View.VISIBLE);
                 mCallAnimationView.setVisibility(View.GONE);
                 mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,R.mipmap.call_blue_background,R.mipmap.call_audio_image);
                 mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,getString(R.string.audio));
-                lefttop_image.setVisibility(View.VISIBLE);
+                mCameraTexture.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -130,6 +143,8 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
         Log.d(TAG,"CallNeighborAndioAndVideoConnected.onDestroy() 11111111");
         mTimer.cancel();
         mTimer = null;
+        /****For other video show***********/
+        mDecThread.stop();
         super.onDestroy();
     }
 
@@ -154,7 +169,19 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
         calltime_tv.setText("00:00");
         mCallTopBrusher.setResText(CallTopBrusher.POSITION_TOP,((CallActivity) getActivity()).mUnit);
         mCallTopBrusher.setResText(CallTopBrusher.POSITION_BOTTOM,"00:00");
-        lefttop_image = (ImageView)view.findViewById(R.id.lefttop_image);
+
+        /**********For other video show ***************/
+        mDecoderView = (TextureView) view.findViewById(R.id.textview_other); // mediacodec
+        // multimedia
+        mDecoderTextureListener = new TextureViewListener();
+        mDecoderView.setSurfaceTextureListener(mDecoderTextureListener);
+        mDecThread = new VideoDecoderThread(mDecoderTextureListener,mVideoPlayQueue);
+        new Thread(mDecThread).start();
+        /*************************/
+
+        //for own show
+        mCameraTexture = (TextureView) view.findViewById(R.id.own_textview);
+        mCameraTexture.setSurfaceTextureListener(camTextureListener);
     }
 
     @Override
@@ -170,9 +197,13 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
                 int status = ((CallActivity)getActivity()).getCurFragmentStatus();
                 if(status == CommonData.CALL_CONNECTED_AUDIO_NETGHBOR){
                     status = CommonData.CALL_CONNECTED_VIDEO_NETGHBOR;
+                    //start video
+                    startVideoGet();
                 }
                 else{
                     status = CommonData.CALL_CONNECTED_AUDIO_NETGHBOR;
+                    //stop video
+                    stopVideoGet();
                 }
                 ((CallActivity)getActivity()).setCurFragmentStatus(status);
                 changeViewStatus();
@@ -247,4 +278,59 @@ public class CallNeighborAndioAndVideoConnected extends Fragment implements View
             }
         }
     };
+
+    ///////////////////////  camera texture view listener  ///////////////////////////
+    private TextureView.SurfaceTextureListener camTextureListener = new  TextureView.SurfaceTextureListener() {
+        // 摄像头preview，用于测试视频编码
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
+            Log.d(TAG, "camera onSurfaceTextureAvailable");
+
+            /*if(CheckPermission.shouldAskPermission()) {
+                if(CheckPermission.checkPermission(MainActivity.this)) {
+                    doOpenCamera();
+                } else {
+                    Log.i(TAG, "Get permissions first");
+                }
+            } else {
+                doOpenCamera();
+            }*/
+            doOpenCamera();
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {}
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+            Log.d(TAG, "camera onSurfaceTextureDestroyed");
+            CameraWrapper.getInstance().doStopCamera();
+            return false;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {}
+    };
+
+    //打开camera，异步
+    private void doOpenCamera() {
+        Thread openThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                CameraWrapper.getInstance().doOpenCamera(mIAvrtpService,CallNeighborAndioAndVideoConnected.this);
+            }
+        };
+        openThread.start();
+    }
+
+    @Override
+    public void cameraHasOpened() {
+        // 摄像头打开了，可以开始preview和编码了
+        CameraWrapper.getInstance().doStartPreview(mCameraTexture.getSurfaceTexture()/*, mPreviewRate*/);
+    }
 }

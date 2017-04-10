@@ -1,4 +1,7 @@
 package com.honeywell.homepanel.common;
+
+import android.os.Environment;
+
 /**
  * Created by ellen on 1/24/2017.
  */
@@ -155,6 +158,7 @@ public class CommonData {
     public static final String JSON_SUBACTION_VALUE_MGRFACILITY0x5A = "mgrfacility0x5A";
     public static final String JSON_SUBACTION_VALUE_GETDONGHOBYALIAS0xE1 = "getdonghobyalias0xE1";
     public static final String JSON_SUBACTION_VALUE_GETALIASBYDONGHO0xE2 = "getaliasbydongho0xE2";
+    public static final String JSON_SUBACTION_VALUE_LEGACYCALLOUT = "legacycallout";
 
 
 
@@ -188,7 +192,8 @@ public class CommonData {
 
     public static final String JSON_ELEVATORID_KEY = "elevatorid";
     public static final String JSON_FLOORNO_KEY = "floorno";
-
+    public static final String JSON_ELEVATORIP_KEY = "elevatorip";
+    public static final String JSON_ELEVATORPORT_KEY = "elevatorport";
     public static final String JSON_PHONEIP_KEY="phoneip";
 
     public static final String JSON_PASSWORD_KEY="password";
@@ -245,7 +250,11 @@ public class CommonData {
     public static final String JSON_ERRORCODE_VALUE_PASSWORD="4";
     public static final String JSON_ERRORCODE_VALUE_MSGTO="5";
     public static final String JSON_ERRORCODE_VALUE_TIMEOUT = "6";
+    public static final String JSON_ERRORCODE_VALUE_NOCOMMAND="7";
+    public static final String JSON_ERRORCODE_VALUE_FSMNOEVENT="8";
+    public static final String JSON_ERRORCODE_VALUE_SUBPHONEREPEAT="9";
     public static final String JSON_ERRORCODE_VALUE_EXIST="-100";
+
 
     public static final String JSON_VIDEOPORT_KEY="videoport";
     public static final String JSON_AUDIOPORT_KEY="audioport";
@@ -310,6 +319,7 @@ public class CommonData {
     public static final String JSON_FROMALIASNAME_KEY="fromalias";
     public static final String JSON_TOIP_KEY="toip";
     public static final String JSON_TOALIASNAME_KEY ="toalias";
+    public static final String JSON_FROMRTP_KEY="fromrtp";
 	// Standard Call
     public static final  int SENCES_EDIT = 5;
     public static final String CALL_PHONE_MAIN="0";
@@ -356,6 +366,7 @@ public class CommonData {
     public static final String APPDATABASEFILE = "homepanel.db";
     public static final String ACTION_SUBPHONE_SERVICE = "com.honeywell.homepanel.subphoneuiservice.SubPhoneUIService";
     public static final String ACTION_CONFIG_SERVICE = "com.honeywell.homepanel.configcenter.ConfigService";
+    public static final String ACTION_AVRTP_SERVICE = "com.honeywell.homepanel.avrtp.AvRtp";
 
     public static final String WIFIMODULE_DEFAULT_VERSION ="0.0.1";
 
@@ -371,6 +382,7 @@ public class CommonData {
     public static final int ENGIN_MODE_ROOM_NUMBER = 31;
     public static final int ENGIN_MODE_ZONE_DELAY_TIME =14;
     public static final String ENGIN_MODE_ZONE = "zone type";
+    public static final String ENGIN_MODE_MODULE_UUID = "module_uuid";
     public static final int ENGIN_MODE_LOCAL_ZONE = 10;
     public static final int ENGIN_MODE_EXTENSION_ZONE = 11;
     /**********************Local zone detail******************************/
@@ -440,7 +452,13 @@ public class CommonData {
     public static  final  String JSON_IP_KEY = "ip";
     public static  final  String JSON_USERNAME_KEY = "username";
     public static  final  String JSON_ONLINE_KEY = "online";
-
+    public static  final  String JSON_MAINIP_KEY = "mainip";
+    public static  final  String JSON_MAINPORT_KEY = "mainport";
+    public static  final  String JSON_SUBPHONEID_KEY = "subphoneid";
+    public static  final  String JSON_UNIT_KEY = "unit";
+    public static  final  String JSON_AMSIP_KEY = "amsip";
+    public static  final  String JSON_AMSPORT_KEY = "amsport";
+    public static  final  String JSON_HOMEPANELTYPE_KEY = "homepaneltype";
     public static  final  String ZONETYPE_24H = "24h";
     public static  final  String JSON_KEY_VERSION = "version";
     public static  final  String JSON_KEY_MAC = "mac";
@@ -544,6 +562,10 @@ public class CommonData {
     public final static String ACTION_SERVICE_CONFIG = "com.honeywell.homepanel.configcenter.ConfigService";
     public final static String ACTION_SERVICE_MONITOR = "com.honeywell.homepanel.watchdog.WatchDogService";
 
+
+    //added by ellen
+    public static final String FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/HomePanel/";
+    public static final String AUDIO_PATH = FILE_PATH + "audio/";
 
 
     public static String file_() {
