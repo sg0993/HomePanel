@@ -18,6 +18,7 @@ import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.ui.activities.AdvancedActivity;
 import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.activities.CleaningActivity;
 import com.honeywell.homepanel.ui.activities.DateTimeActivity;
 import com.honeywell.homepanel.ui.activities.LocationActivity;
 import com.honeywell.homepanel.ui.activities.SaveSpeedDialActivity;
@@ -114,6 +115,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
                     startActivity(intent);
                     break;
                 case 6:
+                    Intent intentCleaning = new Intent(getActivity(), CleaningActivity.class);
+                    startActivity(intentCleaning);
                     break;
                 case 7:
                     break;

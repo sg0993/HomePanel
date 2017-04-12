@@ -2,6 +2,7 @@ package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -14,9 +15,11 @@ import android.widget.Toast;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
+import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.AudioVideoUtil.TextureViewListener;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoDecoderThread;
 import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.activities.MainActivity;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CalRightBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
@@ -74,6 +77,8 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         mCallTopBrusher.init(view);
 
         startVideoGet();
+        //for photo one bitmap to sdcard
+        phoneOneFrame();
         return view;
     }
 
@@ -107,10 +112,19 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         mDecThread = new VideoDecoderThread(mDecoderTextureListener,mVideoPlayQueue);
         new Thread(mDecThread).start();
     }
+
+    private void phoneOneFrame() {
+        mDecoderView.postDelayed(new Runnable() {
+            public void run() {
+                Bitmap bitmap = mDecoderView.getBitmap();
+                CommonUtils.saveBitmap(bitmap,CommonUtils.getBitMapName());
+            }
+        }, 5000);
+    }
+
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
-        CallActivity.CallBaseInfo = new UIBaseCallInfo(CommonData.JSON_CALLTYPE_VALUE_LOBBY,((CallActivity) getActivity()).mUnit);
         switch (viewId){
             case R.id.left_btn:
                 Toast.makeText(mContext,"call_left",Toast.LENGTH_SHORT).show();
@@ -118,14 +132,14 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
                 if(status == CommonData.CALL_LOBBY_INCOMMING){
                     status = CommonData.CALL_LOBBY_CONNECTED;
                     ((CallActivity)getActivity()).setCurFragmentStatus(status);
-                    UISendCallMessage.requestForTakeCall(CallActivity.CallBaseInfo);
+                    UISendCallMessage.requestForTakeCall(MainActivity.CallBaseInfo);
                     switchToLobbyConnected();
                     //start audio
                     startAudio();
                 }
                 else{
                     status = CommonData.CALL_LOBBY_INCOMMING;
-                    UISendCallMessage.requestForHungUp(CallActivity.CallBaseInfo);
+                    UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
                     getActivity().finish();
                 }
                 break;
@@ -134,13 +148,13 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
                 if(CurStatus == CommonData.CALL_LOBBY_INCOMMING){
                     CurStatus = CommonData.CALL_LOBBY_CONNECTED;
                     ((CallActivity)getActivity()).setCurFragmentStatus(CurStatus);
-                    UISendCallMessage.requestForHungUp(CallActivity.CallBaseInfo);
+                    UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
                     switchToLobbyConnected();
                     startAudio();
                 }
                 else{
                     status = CommonData.CALL_LOBBY_INCOMMING;
-                    UISendCallMessage.requestForOpenDoor(CallActivity.CallBaseInfo);
+                    UISendCallMessage.requestForOpenDoor(MainActivity.CallBaseInfo);
                     getActivity().finish();
                 }
 
@@ -169,26 +183,19 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(SUISMessagesUICall.SUISCallInMessageEve msg) {
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
-
-        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_EVENT)) {
-            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
-            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
-            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
-            String videocodectype = msg.optString(CommonData.JSON_VIDEOCODEC_KEY, "");
-            String audiocodectype = msg.optString(CommonData.JSON_AUDIOCODEC_KEY, "");
-            CallActivity.CallBaseInfo.setCallUuid(uuid);
-        }
-    }
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISOpenDoorMessageRsp msg) {
         String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
         if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
-            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
-            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
-            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
+            if(Integer.parseInt(errorCode) == 0){
+                System.out.println("SUISOpenDoorMessageRsp success");
+                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+                String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+                String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            }else{
+                System.out.println("SUISOpenDoorMessageRsp failed");
+            }
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -196,9 +203,15 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
         if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
-            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
-            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
-            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
+            if(Integer.parseInt(errorCode) == 0){
+                System.out.println("SUISTakeCallMessageRsp success");
+                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+                String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+                String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            }else{
+                System.out.println("SUISTakeCallMessageRsp failed");
+            }
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -206,7 +219,13 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
         if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
-            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
+            if(Integer.parseInt(errorCode) == 0){
+                System.out.println("SUISHungUpMessageRsp success");
+                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+            }else{
+                System.out.println("SUISHungUpMessageRsp failed");
+            }
 
         }
     }

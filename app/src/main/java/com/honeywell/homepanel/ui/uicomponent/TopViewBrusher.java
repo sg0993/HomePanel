@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,10 +23,9 @@ import java.util.TimerTask;
  */
 
 public class TopViewBrusher {
-
+    private static final String TAG = "TopViewBrusher";
     private static final int TIME_FRESH = 60 * 1000;
     public static final int WHAT_TIME_FRESH = 100;
-
 
     private Context mContext = null;
 
@@ -39,18 +39,21 @@ public class TopViewBrusher {
     private TextView mHealthyTv = null;
     private TextView mArmTv = null;
     private ImageView mWifiImage = null;
-
+    private ImageView mIPdoorcamera = null;
+    private ImageView mConnectionLAN = null;
+    private Activity mCurrentActivity = null;
     private Handler mHandler = new Handler(){
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case  WHAT_TIME_FRESH:
-                    setTime();
+                    updateTopBarStatus(mCurrentActivity);
                     break;
             }
         }
     };
 
     public void init(Activity activity) {
+        mCurrentActivity = activity;
         mContext = activity.getApplicationContext();
         mTopView = activity.findViewById(R.id.top_status);
         mTimeTv = (TextView)activity.findViewById(R.id.timeTv);
@@ -59,9 +62,12 @@ public class TopViewBrusher {
         mHealthyImage = (ImageView) activity.findViewById(R.id.healthyImage);
         mHealthyTv = (TextView)activity.findViewById(R.id.healthyTv);
         mArmTv = (TextView)activity.findViewById(R.id.armTv);
-        mWifiImage = (ImageView) activity.findViewById(R.id.wifiImage);;
+        mWifiImage = (ImageView) activity.findViewById(R.id.wifiImage);
+        mIPdoorcamera = (ImageView) activity.findViewById(R.id.ipdoorcamera);
+        mConnectionLAN = (ImageView) activity.findViewById(R.id.connection_lan);
 
-        mTimeTv.setText(getCurrentTimeString());
+
+//        mTimeTv.setText(getCurrentTimeString());
         mTimer.schedule(new TimerTask() {
             public void run() {
                 mHandler.sendEmptyMessage(WHAT_TIME_FRESH);
@@ -72,7 +78,7 @@ public class TopViewBrusher {
     }
 
 
-    public  void setTop(Context context){
+    public  void setTop(Context context) {
         TopStaus topStatus = TopStaus.getInstance(context);
         if(topStatus.getWeather().equals(CommonData.WEATHER_SUNNY)){
             mWeatherImage.setImageResource(R.mipmap.top_weather_sunny);
@@ -83,9 +89,24 @@ public class TopViewBrusher {
         }
         mHealthyTv.setText(topStatus.getHealthy());
         mArmTv.setText(topStatus.getArmStatus());
-        if(topStatus.getWifiStatus() == CommonData.WIFI_CONNECTED){
+        if(topStatus.getWifiStatus() == CommonData.CONNECTED){
             mWifiImage.setImageResource(R.mipmap.top_wifi_connect);
+        } else {
+            mWifiImage.setVisibility(View.INVISIBLE);
         }
+
+        if(topStatus.getmIPDCStatus() == CommonData.CONNECTED){
+            mIPdoorcamera.setImageResource(R.mipmap.ipdoorcamera);
+        } else {
+            mIPdoorcamera.setVisibility(View.INVISIBLE);
+        }
+
+        if(topStatus.getmServerStatus() == CommonData.CONNECTED){
+            mConnectionLAN.setImageResource(R.mipmap.lan);
+        } else {
+            mConnectionLAN.setVisibility(View.INVISIBLE);
+        }
+
         setTopViewBackground(topStatus.mCurScenario);
     }
 
@@ -98,9 +119,44 @@ public class TopViewBrusher {
         }
     }
 
-    private void setTime() {
-        String time = getCurrentTimeString();
-        mTimeTv.setText(time);
+    private void updateTopBarStatus(Activity activity) {
+        Log.d(TAG, "updateTopBarStatus: ");
+        TopStaus topStatus = TopStaus.getInstance(activity);
+        if(topStatus.getWeather().equals(CommonData.WEATHER_SUNNY)){
+            mWeatherImage.setImageResource(R.mipmap.top_weather_sunny);
+        }
+
+        if(topStatus.getHealthy().equals(CommonData.UNHEALTHY)){
+            mHealthyImage.setImageResource(R.mipmap.top_heathy_unheathy);
+        }
+
+        mTemperatureTv.setText(topStatus.getTemperature() + CommonData.TEMPERATURE_DUSTR);
+
+        mHealthyTv.setText(topStatus.getHealthy());
+
+        mArmTv.setText(topStatus.getArmStatus());
+
+        if(topStatus.getWifiStatus() == CommonData.CONNECTED){
+            mWifiImage.setImageResource(R.mipmap.top_wifi_connect);
+        } else {
+            mWifiImage.setVisibility(View.INVISIBLE);
+        }
+
+        if(topStatus.getmIPDCStatus() == CommonData.CONNECTED){
+            mIPdoorcamera.setImageResource(R.mipmap.ipdoorcamera);
+        } else {
+            mIPdoorcamera.setVisibility(View.INVISIBLE);
+        }
+
+        if(topStatus.getmServerStatus() == CommonData.CONNECTED){
+            mConnectionLAN.setImageResource(R.mipmap.lan);
+        } else {
+            mConnectionLAN.setVisibility(View.INVISIBLE);
+        }
+
+        setTopViewBackground(topStatus.mCurScenario);
+
+        mTimeTv.setText(getCurrentTimeString());
     }
 
     public static String getCurrentTimeString() {

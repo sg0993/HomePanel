@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AudioProcess implements Runnable {
 
-    private final static int Sample_Rate = 8000;//每秒8K个点,需在4000-192000之间，太低或太高都不行，人耳分辨率在20HZ到40KHZ之间
+    public final static int Sample_Rate = 8000;//每秒8K个点,需在4000-192000之间，太低或太高都不行，人耳分辨率在20HZ到40KHZ之间
     private final static int ChannelRecordConfiguration = AudioFormat.CHANNEL_IN_MONO;//单声道
     private final static int ChannelPlayConfiguration = AudioFormat.CHANNEL_OUT_MONO;//单声道
     private final static int AUDIOENCODING = AudioFormat.ENCODING_PCM_16BIT;//一个采样点16比特-2个字节

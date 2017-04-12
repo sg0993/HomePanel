@@ -5,9 +5,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
+import android.media.MediaCodec;
+import android.media.MediaFormat;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +21,14 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.ui.AudioVideoUtil.VideoInfo;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import static android.content.Context.BIND_AUTO_CREATE;
@@ -28,8 +39,10 @@ import static android.content.Context.BIND_AUTO_CREATE;
 
 public class CommonUtils {
 
+    private static final String TAG = "CommonUtils";
+
     public static SeekBar  showCallVolumeDialog(Activity activity, View.OnClickListener onClickListener,
-                      SeekBar.OnSeekBarChangeListener seekBarChangeListener,boolean bSpeaker){
+                                                SeekBar.OnSeekBarChangeListener seekBarChangeListener, boolean bSpeaker){
         final WindowManager manager = activity.getWindowManager();
         Display display = manager.getDefaultDisplay();
         int width = display.getWidth();
@@ -75,6 +88,17 @@ public class CommonUtils {
         context.startService(intent);
         context.bindService(intent, connection, BIND_AUTO_CREATE);
     }
+
+    public static void stopAndUnbindService(Context context,String serviceAction,ServiceConnection connection){
+        if(null == serviceAction || null == connection){
+            return;
+        }
+        Intent intent = new Intent(serviceAction);
+        intent.setPackage(context.getPackageName());
+        context.stopService(intent);
+        context.unbindService(connection);
+    }
+
 
     public static String deleteTrim(String str){//去掉IP字符串前后所有的空格
         while(str.startsWith(" ")){
@@ -137,6 +161,72 @@ public class CommonUtils {
 
     public static String generateCommonEventMsgId() {
         return UUID.randomUUID().toString();
+    }
+	
+	 public static  void saveBitmap(Bitmap bitmap, String bitName){
+        if(null == bitmap || TextUtils.isEmpty(bitName)){
+            Log.e(TAG,TAG + "saveBitmap() null");
+            return;
+        }
+        File  dirFile = new File(CommonData.IMAGE_PATH);
+        if(!dirFile.exists()){
+            dirFile.mkdirs();
+        }
+        File file = new File(dirFile,bitName);
+        if(file.exists()){
+            file.delete();
+        }
+        FileOutputStream out;
+        try{
+            out = new FileOutputStream(file);
+            if(bitmap.compress(Bitmap.CompressFormat.PNG, 90, out)){
+                out.flush();
+                out.close();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static String getBitMapName() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String time = sdf.format(new Date());
+        time += ".png";
+        return time;
+    }
+
+    public static String getVideoRecordName() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String time = sdf.format(new Date());
+        time += ".mp4";
+        return time;
+    }
+
+    public static MediaFormat getVideoFormat(VideoInfo mVideoInfo) {
+        ByteBuffer bb = ByteBuffer.wrap(mVideoInfo.mCsdInfo);
+        MediaFormat media_format = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC,CommonData.VIDEO_WIDTH,CommonData.VIDEO_HEIGHT);
+        media_format.setByteBuffer("csd-0", bb);
+        media_format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, CommonData.VIDEO_WIDTH * CommonData.VIDEO_HEIGHT);
+        media_format.setInteger(MediaFormat.KEY_FRAME_RATE,25);
+        return  media_format;
+    }
+    public static  MediaCodec.BufferInfo getBufferInfo(int length){
+        MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+        info.flags = MediaCodec.BUFFER_FLAG_KEY_FRAME;
+        info.offset = 0;
+        info.size = length;
+        return  info;
+    }
+    public static String convertCFormateString(byte[] asciiBytes) {
+        int cZeroPosition = 0;
+        int arraySize = asciiBytes.length;
+
+        for (; cZeroPosition < arraySize && asciiBytes[cZeroPosition] != 0x00; cZeroPosition++ ) {
+
+        }
+
+        return new String(asciiBytes, 0, cZeroPosition);
     }
 
 }

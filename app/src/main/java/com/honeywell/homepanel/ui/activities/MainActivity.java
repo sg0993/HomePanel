@@ -15,15 +15,22 @@ import android.widget.PopupWindow;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
+import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUIStatusBar;
 import com.honeywell.homepanel.common.Message.ui.AlarmHint;
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.domain.TopStaus;
+import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
+import com.honeywell.homepanel.ui.services.WidgetInfoService;
 import com.honeywell.homepanel.ui.uicomponent.AdapterCallback;
 import com.honeywell.homepanel.ui.uicomponent.AlarmHintPopAdapter;
+import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
 import com.honeywell.homepanel.watchdog.WatchDogService;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +53,10 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
     private Handler mHandler02 = new Handler();
     private final int MILLISECOND_COUNT = 1000;
     private long timePeriod;
-
+    private boolean screenSaverEnabled = false;
+    private Handler mScreenSaverTimerHandler = new Handler();
+    public static UIBaseCallInfo CallBaseInfo = new UIBaseCallInfo();
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,12 +64,21 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
 
         // start watch dog
         startService(new Intent(this, WatchDogService.class));
+        //start top statusbar service
+        startService(new Intent(this, WidgetInfoService.class));
 
         mTopView = findViewById(R.id.top_status);//for test
         mTopView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showpopupwindow(getLayoutInflater(),new AlarmHint(100));
+                SUISMessagesUIStatusBar.SUISConnectStatusMessageEve msg = new SUISMessagesUIStatusBar.SUISConnectStatusMessageEve();
+                try {
+                    msg.put("action", "event111");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                EventBus.getDefault().post(msg);
             }
         });
         mCenterView = findViewById(R.id.main_frameLayout);
@@ -78,13 +97,23 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
             mCenterView.setBackgroundColor(getResources().getColor(R.color.centerbackground_arm));
         }
     }
+	
+	
+    private void screenSaverReset() {
+    if (screenSaverEnabled == true) {
+        Log.d(TAG, "screenSaverReset: ");
+        screenSaverIsRun = false;
+        lastInputEventTime = new Date(System.currentTimeMillis());
+        mScreenSaverTimerHandler.postAtTime(mScreeSaverTimerUpdateTask, MILLISECOND_COUNT);
+        }
+    }
+	
     @Override
     protected void onResume() {
         super.onResume();
         setCenterViewBackground(TopStaus.getInstance(this).mCurScenario);
         Log.d(TAG,"onResume() mCurScenario:"+ TopStaus.getInstance(this).mCurScenario);
-        lastInputEventTime = new Date(System.currentTimeMillis());
-//        mHandler01.postAtTime(mTask01, MILLISECOND_COUNT);
+            screenSaverReset();
     }
     @Override
     protected void onDestroy() {
@@ -109,7 +138,34 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
     public void OnMessageEvent(AlarmHint alarmHint) {
         showpopupwindow(getLayoutInflater(),alarmHint);
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISCallInMessageEve msg) {
+        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
+        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_EVENT)) {
+            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
+            if(Integer.parseInt(errorCode) == 0){
+                System.out.println("SUISCallInMessageEve success");
+                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+                String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+                String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+                String videocodectype = msg.optString(CommonData.JSON_VIDEOCODEC_KEY, "");
+                String audiocodectype = msg.optString(CommonData.JSON_AUDIOCODEC_KEY, "");
+                CallBaseInfo.setCallUuid(uuid);
+                CallBaseInfo.setmCallAliasName(aliasName);
+                CallBaseInfo.setmCallType(callType);
+                CallBaseInfo.setmVideoCodecType(videocodectype);
+                CallBaseInfo.setmAudioCodecType(audiocodectype);
+                Intent intent = new Intent(this, CallActivity.class);
+                intent.putExtra(CommonData.INTENT_KEY_UNIT,aliasName);
+                intent.putExtra(CommonData.INTENT_KEY_CALL_TYPE,callType);
+                startActivity(intent);
+
+            }else{
+                System.out.println("SUISCallInMessageEve failed");
+            }
+        }
+    }
     private ListView mListView = null;
     private List<AlarmHint>mLists = new ArrayList<AlarmHint>();
     private  AlarmHintPopAdapter mAlarmHintPopAdapter = null;
@@ -162,37 +218,21 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
         CommonUtils.setWindowAlpha(getWindow(),1.0f);
     }
 
-    private Runnable mTask01 = new Runnable() {
+    private Runnable mScreeSaverTimerUpdateTask = new Runnable() {
         @Override
         public void run() {
-           /* Date timeNow = new Date(System.currentTimeMillis());
+            Date timeNow = new Date(System.currentTimeMillis());
             timePeriod = (long) timeNow.getTime() - (long) lastInputEventTime.getTime();
-
             float timePeriodSecond = ((float) timePeriod / MILLISECOND_COUNT);
-//            Log.d(TAG, "run: timePeriodSecond = " + timePeriodSecond);
-            if(timePeriodSecond > screenSaverStartTime){
-                if(screenSaverIsRun == false){
-                    mHandler02.postAtTime(mTask02, MILLISECOND_COUNT);
+            Log.d(TAG, "run: timePeriodSecond = " + timePeriodSecond);
+            if(timePeriodSecond > screenSaverStartTime) {
+                if(screenSaverIsRun == false) {
                     screenSaverIsRun = true;
-                }else{
+                    showScreenSaver();
                 }
-            }else{
-                screenSaverIsRun = false;
             }
-            mHandler01.postDelayed(mTask01, MILLISECOND_COUNT);*/
-        }
-    };
 
-    private Runnable mTask02 = new Runnable() {
-        @Override
-        public void run() {
-          /*  // TODO Auto-generated method stub
-            if (screenSaverIsRun == true) {
-                showScreenSaver();
-                mHandler02.postDelayed(mTask02, MILLISECOND_COUNT);
-            } else {
-                mHandler02.removeCallbacks(mTask02);
-            }*/
+            mScreenSaverTimerHandler.postDelayed(mScreeSaverTimerUpdateTask, MILLISECOND_COUNT);// 1 sec update cycle
         }
     };
 

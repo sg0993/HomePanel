@@ -52,6 +52,7 @@ public class HVideoDecoder {
         media_format.setByteBuffer("csd-0", bb);
         media_format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, video_width * video_height);
         media_format.setInteger(MediaFormat.KEY_FRAME_RATE,25);
+
 //        media_format.setInteger(MediaFormat.KEY_DURATION, 63446722);
         try {
             decoder = MediaCodec.createDecoderByType(mimeType);
@@ -112,13 +113,29 @@ public class HVideoDecoder {
                             decodeSuccess = true;
                         }
                         decoder.releaseOutputBuffer(outIndex, true);
+                        
+                      /*  if(judgeIFrame(stream_data)){
+                            
+                        }*/
                         break;
                 }
+  
             } catch (Exception e) {
                 Log.e(TAG, " decoder.dequeueOutputBuffer Exception e = " + e.getMessage());
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean judgeIFrame(byte[] stream_data) {
+        boolean bIFrame = false;
+        if(null != stream_data && stream_data.length > 5){
+            //增强帧06????
+            if(stream_data[4] == 0x41 || stream_data[4] == 0x43 ||stream_data[4] == 0x44 ){
+                bIFrame = true;
+            }
+        }
+        return  bIFrame;
     }
 
     public void closeDecoder() {

@@ -23,8 +23,8 @@ public class CommonData {
     public static final  String ARMSTATUS_ARM = "System Armed";
     public static final  String ARMSTATUS_DISARM = "System Disarmed";
 
-    public static final  int WIFI_CONNECTED = 0;
-    public static final  int WIFI_DISCONNECT = 1;
+    public static final  int CONNECTED = 1;
+    public static final  int DISCONNECT = 0;
     public static final int CHANGE_PASSWORD_LENGTH = 4;
     public static final int SRCURITY_PASSWORD_LENGTH = 6;
 
@@ -61,7 +61,7 @@ public class CommonData {
     public static final String JSON_ACTION_VALUE_REQUEST="request";
     public static final String JSON_ACTION_VALUE_RESPONSE="response";
     public static final String JSON_ACTION_VALUE_EVENT="event";
-
+    //request subaction
     public static final String JSON_SUBACTION_KEY="subaction";
     public static final String JSON_SUBACTION_VALUE_REGISTER="register";
     public static final String JSON_SUBACTION_VALUE_UNREGISTER="unregister";
@@ -156,13 +156,22 @@ public class CommonData {
     public static final String JSON_SUBACTION_VALUE_GETIPBYDONGHO0x57 = "getipbydongho0x57";
     public static final String JSON_SUBACTION_VALUE_GETDONGHOBYIP0x58 = "getdonghobyip0x58";
     public static final String JSON_SUBACTION_VALUE_MGRFACILITY0x5A = "mgrfacility0x5A";
+    public static final String JSON_SUBACTION_VALUE_CONNSTATE0x91 = "connstate0x91";
+    public static final String JSON_SUBACTION_VALUE_GWTIME0x92 = "gwtime0x92";
+    public static final String JSON_SUBACTION_VALUE_AUTH0x93 = "auth0x93";
+    public static final String JSON_SUBACTION_VALUE_SERVERINFO0x94 = "serverinfo0x94";
+    public static final String JSON_SUBACTION_VALUE_SWVERSION0x95 = "swversion0x95";
+    public static final String JSON_SUBACTION_VALUE_CONNECTTOCS0x96 = "connecttocs0x96";
     public static final String JSON_SUBACTION_VALUE_GETDONGHOBYALIAS0xE1 = "getdonghobyalias0xE1";
     public static final String JSON_SUBACTION_VALUE_GETALIASBYDONGHO0xE2 = "getaliasbydongho0xE2";
     public static final String JSON_SUBACTION_VALUE_LEGACYCALLOUT = "legacycallout";
+    //event subaction
+    public static final String JSON_SUBACTION_VALUE_AMSTIME="amstimeevent";
+    public static final String JSON_SUBACTION_VALUE_AMSCONNECT="amsconnect";
 
-
-
-
+    public static final String JSON_STATE_VALUE_KEY="state";
+    public static final String JSON_STATUS_VALUE_ON = "on";
+    public static final String JSON_STATUS_VALUE_OFF= "off";
 
     public static final String JSON_VIDEORATIO_KEY = "videoratio";
     public static final String JSON_VIDEORATIO_VALUE_DEFAULT = "320*240";
@@ -392,6 +401,15 @@ public class CommonData {
     public static final int OPTIONS_DETIAL_RELAY1 = 3;
     public static final int OPTIONS_DETIAL_RELAY2 = 4;
 
+    /**********************IP configuration type******************************/
+    public static final String ENGIN_CONFIG_IP_TYPE = "enginneering mode config IP type";
+    public static final int CONFIG_IP_SERVER = 1;
+    public static final int CONFIG_IP_SELF = 2;
+    public static final int CONFIG_IP_SELF_GATEWAY = 3;
+
+
+
+
     /**********************************event bus broadcast****************************************/
     public static final String INTENT_ACTION_EVENTBUS_MESSAGE = "com.honeywell.homepanel.eventbusmessage";
     public static final String INTENT_EXTRA_JSONMESSAGECLASS_KEY = "jsonmessageclass";
@@ -534,6 +552,18 @@ public class CommonData {
     public static final String COLOR_NORMALGREY = "#C6C6C6";
     public static final String COLOR_SCREENSAVER_TEXT_GREY = "#808080";
 
+    //add by xc for homepanel top status bar
+    public final static String JSON_KEY_SERVER = "server";
+    public final static String JSON_KEY_TEMPERATURE = "temperature";
+    public final static String JSON_KEY_PM25 = "pm2.5";
+    public final static String JSON_SUBACTION_VALUE_TIMEGET = "timeget";
+    public final static String JSON_VALUE_TIMESYNC = "timesync";
+    public final static String JSON_VALUE_OFFLINE = "offline";
+    public final static String JSON_VALUE_ONLINE = "online";
+    public final static String JSON_SUBACTION_VALUE_CONNECTIONSTATUSGET = "connectionstatusget";
+    public final static String JSON_SUBACTION_VALUE_WEATHERGET = "weatherget";
+    public final static String JSON_SUBACTION_VALUE_WEATHERUPDATE = "weatherupdate";
+
     //Max Voice Message Count supported
     public static final int MAX_VOICE_RECORD_COUNT = 3;
     public static final int MAX_NOTIFICATION_BULLTIN_COUNT = 1000;
@@ -566,6 +596,12 @@ public class CommonData {
     //added by ellen
     public static final String FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/HomePanel/";
     public static final String AUDIO_PATH = FILE_PATH + "audio/";
+    public static final String VIDEO_PATH = FILE_PATH + "video/";
+    public static final String IMAGE_PATH = FILE_PATH + "image/";
+
+    public  static  final  int VIDEO_WIDTH = 1920;
+    public  static  final  int VIDEO_HEIGHT = 1200;
+
 
 
     public static String file_() {
@@ -576,4 +612,5 @@ public class CommonData {
     public static int line_() {
         StackTraceElement ste = new Throwable().getStackTrace()[1];
         return ste.getLineNumber();
-    }}
+    }
+}

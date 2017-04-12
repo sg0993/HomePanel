@@ -22,6 +22,7 @@ import com.honeywell.homepanel.ui.AudioVideoUtil.CameraWrapper;
 import com.honeywell.homepanel.ui.AudioVideoUtil.TextureViewListener;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoDecoderThread;
 import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.activities.MainActivity;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CalRightBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
@@ -187,10 +188,9 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
-        CallActivity.CallBaseInfo = new UIBaseCallInfo(CommonData.JSON_CALLTYPE_VALUE_NEIGHBOUR,((CallActivity) getActivity()).mUnit);
         switch (viewId){
             case R.id.left_btn:
-                UISendCallMessage.requestForCallElevator(CallActivity.CallBaseInfo);
+                UISendCallMessage.requestForCallElevator(MainActivity.CallBaseInfo);
                 Toast.makeText(mContext,"call_left",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.middle_btn:
@@ -207,10 +207,10 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
                 }
                 ((CallActivity)getActivity()).setCurFragmentStatus(status);
                 changeViewStatus();
-                UISendCallMessage.requestForVideoAuth(CallActivity.CallBaseInfo);
+                UISendCallMessage.requestForVideoAuth(MainActivity.CallBaseInfo);
                 break;
             case R.id.right_btn:
-                UISendCallMessage.requestForHungUp(CallActivity.CallBaseInfo);
+                UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
                 getActivity().finish();
                 break;
             case R.id.top_btn:
@@ -229,9 +229,15 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
         String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
         if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
-            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
-            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
-            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
+            if(Integer.parseInt(errorCode) == 0){
+                System.out.println("SUISVideoAuthMessageRsp success");
+                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+                String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+                String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            }else{
+                System.out.println("SUISVideoAuthMessageRsp failed");
+            }
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -239,9 +245,15 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
         String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
         if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
-            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
-            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
-            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
+            if(Integer.parseInt(errorCode) == 0){
+                System.out.println("SUISCallElevatorMessageRsp success");
+                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+                String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+                String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+            }else{
+                System.out.println("SUISCallElevatorMessageRsp failed");
+            }
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -249,7 +261,14 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
         String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
         if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
-            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+
+            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
+            if(Integer.parseInt(errorCode) == 0){
+                System.out.println("SUISHungUpMessageRsp success");
+                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+            }else{
+                System.out.println("SUISHungUpMessageRsp failed");
+            }
 
         }
     }

@@ -71,10 +71,12 @@
                 android:src="@mipmap/top_wifi_connect"
                 style="@style/top_imageview"/>
             <ImageView
-                android:src="@mipmap/top_arm_arm"
+                android:id="@+id/ipdoorcamera"
+                android:src="@mipmap/ipdoorcamera"
                 style="@style/top_imageview"/>
             <ImageView
-                android:src="@mipmap/top_usb_connect"
+                android:id="@+id/connection_lan"
+                android:src="@mipmap/lan"
                 style="@style/top_imageview"/>
         </LinearLayout>
 

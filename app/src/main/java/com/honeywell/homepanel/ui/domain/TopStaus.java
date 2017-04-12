@@ -13,11 +13,28 @@ public class TopStaus {
     private static TopStaus instance = null;
     public Context mContext = null;
     private  String mWeather = CommonData.WEATHER_SUNNY;
-    private  int mTemperature = 25;
+    private  int mTemperature = 15;
     private  String healthy = CommonData.UNHEALTHY;
     private  String mArmStatus = CommonData.ARMSTATUS_DISARM;
-    private  int mWifiStatus = CommonData.WIFI_CONNECTED;
+    private  int mWifiStatus = CommonData.DISCONNECT;
+    private  int mServerStatus = CommonData.DISCONNECT;
+    private  int mIPDCStatus = CommonData.DISCONNECT;
 
+    public int getmServerStatus() {
+        return mServerStatus;
+    }
+
+    public void setmServerStatus(int mServerStatus) {
+        this.mServerStatus = mServerStatus;
+    }
+
+    public int getmIPDCStatus() {
+        return mIPDCStatus;
+    }
+
+    public void setmIPDCStatus(int mIPDCStatus) {
+        this.mIPDCStatus = mIPDCStatus;
+    }
 
     public int mCurScenario = CommonData.SCENARIO_AWAY;//CommonData.SCENARIO_HOME;
 

@@ -25,7 +25,7 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus"/>
     <uses-feature android:name="android.hardware.camera.flash"/>
-
+    <permission android:name="android.permission.SET_TIME"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/homepanel"
@@ -311,6 +311,12 @@
             android:screenOrientation="landscape">
         </activity>
 
+        <activity
+            android:name=".ui.activities.CleaningActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+
         <service
             android:name="com.honeywell.homepanel.call.CallService"
             android:exported="false"
@@ -489,6 +495,7 @@
                     android:exported="false"></action>
             </intent-filter>
         </service>
+        <service android:name="com.honeywell.homepanel.ui.services.WidgetInfoService"/>
     </application>
 
 </manifest>

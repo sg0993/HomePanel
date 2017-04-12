@@ -15,6 +15,8 @@ import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
 import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.activities.MainActivity;
+import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,7 +39,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
     private static String UNIT_PRESTR = null;
     private CallAnimationBrusher mAnimationBtusher = new
             CallAnimationBrusher(R.mipmap.call_outgoing_bright,R.mipmap.call_outgoing_dim);
-
+    private UIBaseCallInfo uiBaseCallInfo = new UIBaseCallInfo();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,8 +91,8 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
         int viewId = view.getId();
         switch (viewId){
             case R.id.cancel_btn:
-               // getActivity().finish();
-                CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
+                getActivity().finish();
+                //CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
             default:
                 break;
         }
@@ -100,11 +102,19 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
         String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
 
         if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
-            String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
-            String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
-            String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
-            CallActivity.CallBaseInfo.setCallUuid(uuid);
-            CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
+            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
+            if(Integer.parseInt(errorCode) == 0){
+                System.out.println("SUISCallOutMessageRsp success");
+                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+                String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
+                String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+                MainActivity.CallBaseInfo.setCallUuid(uuid);
+                MainActivity.CallBaseInfo.setmCallAliasName(aliasName);
+                MainActivity.CallBaseInfo.setmCallType(callType);
+                CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
+            }else{
+                System.out.println("SUISCallOutMessageRsp failed");
+            }
         }
     }
 }

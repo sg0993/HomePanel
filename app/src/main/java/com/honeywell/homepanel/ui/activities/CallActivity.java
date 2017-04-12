@@ -53,8 +53,6 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
     private AudioManager mAudioManager = null;
     private boolean mSpeakerAdjust = false;
 
-    public static UIBaseCallInfo CallBaseInfo;
-
     public IAvRtpService mIAvRtpService = null;
     private ServiceConnection mIAvRtpServiceConnect = new ServiceConnectionImpl();
 
