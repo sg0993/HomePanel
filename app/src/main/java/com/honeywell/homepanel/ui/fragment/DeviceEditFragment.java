@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,18 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.IConfigServiceManageUtil;
+import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
+import com.honeywell.homepanel.common.Message.ui.UIMessagesControl;
 import com.honeywell.homepanel.ui.activities.CamerasActivity;
 import com.honeywell.homepanel.ui.activities.IndicatorBoardActivity;
 import com.honeywell.homepanel.ui.uicomponent.DevicesImageAdapter;
 import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
+import com.honeywell.homepanel.ui.uicomponent.UISendLockMessage;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -24,18 +33,20 @@ import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
 
 @SuppressLint("ValidFragment")
 public class DeviceEditFragment extends Fragment implements View.OnClickListener {
+    private String TAG = "DeviceEditFragment";
     private String title = "";
     private PageViewAdapter mPageAdaper = null;
     private ImageView choose_scenarioImageView = null;
     private Context mContext = null;
+    private boolean mStatus = true;
     GridView gridView;
     private static final int[] IMAGES = {R.mipmap.device_elevator3x,
-            R.mipmap.device_camera3x, R.mipmap.device_air3x,R.mipmap.device_white,
-            R.mipmap.device_white,R.mipmap.device_white,R.mipmap.device_white,
+            R.mipmap.device_camera3x, R.mipmap.device_air3x, R.mipmap.device_air3x,
+            R.mipmap.device_white, R.mipmap.device_white, R.mipmap.device_white,
             R.mipmap.device_white};
     private static final int[] TEXTES = {R.string.device_elevator,
-            R.string.device_camera, R.string.device_air,R.string.device_empty,
-            R.string.device_empty, R.string.device_empty,R.string.device_empty,
+            R.string.device_camera, R.string.device_air, R.string.device_lock,
+            R.string.device_empty, R.string.device_empty, R.string.device_empty,
             R.string.device_empty};
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,6 +67,10 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
                 if (position == 1) {
                     startActivity(new Intent(mContext, CamerasActivity.class));
                 }
+                if (position == 3) {
+                    UISendLockMessage.SendLockControlCommand(mStatus);
+                    mStatus = !mStatus;
+                }
             }
         });
         return view;
@@ -65,9 +80,11 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
         super();
         this.title = title;
     }
+
     public DeviceEditFragment() {
         super();
     }
+
     @Override
     public void onClick(View view) {
         int viewId = view.getId();

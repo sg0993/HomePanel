@@ -30,7 +30,7 @@ public class PeripheralDevice implements Parcelable {
 
     @Override
     public String toString() {
-        return "PeripheralDevice{" +
+        return "PeripheralDeviceInfo{" +
                 "mId=" + mId +
                 ", mModuleUuid='" + mModuleUuid + '\'' +
                 ", mName='" + mName + '\'' +

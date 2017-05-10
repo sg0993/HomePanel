@@ -2,6 +2,7 @@ package com.honeywell.homepanel.ui.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -15,14 +16,17 @@ import com.honeywell.homepanel.ui.domain.TopStaus;
  */
 public class ScenarioSelectHintActivity extends Activity implements View.OnClickListener{
 
+    private static final String TAG = "ScenarioSelectHint";
     private ProgressBar mProgressBar;
     private Button mCancelBtn = null;
-    private int mSelect_Scenario = 1;
+    private int mSelect_Scenario = 4;
+    private Runnable mRunable = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_scenarioselecthint);
-        mSelect_Scenario = getIntent().getIntExtra(CommonData.INTENT_KEY_SCENARIO,1);
+        mSelect_Scenario = getIntent().getIntExtra(CommonData.INTENT_KEY_SCENARIO,4);
         initViews();
         Runnable runnable = new Runnable() {
             @Override
@@ -32,11 +36,13 @@ public class ScenarioSelectHintActivity extends Activity implements View.OnClick
                     postDelayed(mProgressBar, this, 20L);
                 }
                 else{
-                    TopStaus.getInstance(ScenarioSelectHintActivity.this).mCurScenario = mSelect_Scenario;
+                    Log.d(TAG,"onCreate() excute  1111111111111111");
+                    TopStaus.getInstance(getApplicationContext()).setCurScenario(mSelect_Scenario);
                     finish();
                 }
             }
         };
+        mRunable = runnable;
         postDelayed(mProgressBar, runnable, 20L);
     }
 
@@ -54,10 +60,18 @@ public class ScenarioSelectHintActivity extends Activity implements View.OnClick
         int viewId = view.getId();
         switch (viewId){
             case R.id.cancel:
+                if(null != mProgressBar && mRunable != null){
+                    mProgressBar.removeCallbacks(mRunable);
+                }
                 finish();
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

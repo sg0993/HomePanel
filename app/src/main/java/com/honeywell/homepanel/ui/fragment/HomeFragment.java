@@ -80,8 +80,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG,"onResume() mCurScenario:"+ TopStaus.getInstance(getActivity()).mCurScenario);
-        setViewTextByScenario(TopStaus.getInstance(getActivity()).mCurScenario);
+        int scenario = TopStaus.getInstance(getActivity().getApplicationContext()).getCurScenario();
+        Log.d(TAG,"onResume() mCurScenario:"+ scenario);
+        setViewTextByScenario(scenario);
     }
 
     private void setViewTextByScenario(int mCurScenario) {
@@ -107,18 +108,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         }
 
         int scenarioResId = 0;
+        int scenarioImgResId = 0;
         switch (mCurScenario){
             case CommonData.SCENARIO_HOME:
                 scenarioResId = R.string.scenario_home;
+                scenarioImgResId = R.mipmap.choose_scenario_home;
                 break;
             case CommonData.SCENARIO_AWAY:
                 scenarioResId = R.string.scenario_away;
+                scenarioImgResId = R.mipmap.choose_scenario_away;
                 break;
             case CommonData.SCENARIO_SLEEP:
                 scenarioResId = R.string.scenario_sleep;
+                scenarioImgResId = R.mipmap.choose_scenario_sleeping;
                 break;
             case CommonData.SCENARIO_WAKEUP:
                 scenarioResId = R.string.scenario_wakeup;
+                scenarioImgResId = R.mipmap.choose_scenario_weakup;
                 break;
             default:
                 break;
@@ -129,8 +135,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         mArmHintHasEventTv.setText(armHint);
         mArmHintNoEventTv.setText(armHint);
-
         mCurrentScenarioTv.setText(currentStr);
+        if (choose_scenarioImageView != null) {
+            choose_scenarioImageView.setImageResource(scenarioImgResId);
+        }
     }
 
     @Override
@@ -200,7 +208,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
                 break;
             case R.id.arm_hint_hasevent:// for test Neighbor Incoming call
-                testCall("100-202",CommonData.CALL_INCOMING_NEIGHBOR);
+                //testCall("100-202",CommonData.CALL_INCOMING_NEIGHBOR);
+                testCall("office",CommonData.CALL_GUARD_INCOMMING);
                 break;
             case R.id.currentscenario:// for test Lobby Incoming call
                 testCall("Lobby",CommonData.CALL_LOBBY_INCOMMING);
@@ -253,7 +262,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         }
         @Override
         public int getCount() {
-            return mEventData.size();
+            if (mEventData != null) {
+                return mEventData.size();
+            }
+            return 0;
         }
         @Override
         public Object getItem(int position) {

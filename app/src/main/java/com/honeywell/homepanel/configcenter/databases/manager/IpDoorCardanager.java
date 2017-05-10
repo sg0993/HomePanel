@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
@@ -187,11 +188,11 @@ public class IpDoorCardanager {
             loopToJson(loopMapObject,loop);
             loopMapArray.put(loopMapObject);
         }
-        jsonObject.put(CommonData.JSON_LOOPMAP_KEY,loopMapArray);
-        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY,loopMapArray);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
     private void loopToJson(JSONObject loopMapObject, IpDoorCard loop) throws JSONException {
-        loopMapObject.put(CommonData.JSON_UUID_KEY,loop.mUuid);
+        loopMapObject.put(CommonJson.JSON_UUID_KEY,loop.mUuid);
         loopMapObject.put(CommonData.JSON_KEY_CARDTYPE,loop.mType);
         loopMapObject.put(CommonData.JSON_KEY_NAME,loop.mName);
         loopMapObject.put(CommonData.JSON_KEY_CARDID,loop.mCardNo);
@@ -203,11 +204,11 @@ public class IpDoorCardanager {
     }
 
     public void cardAdd(JSONObject jsonObject)  throws JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
             String type = loopMapObject.optString(CommonData.JSON_KEY_CARDTYPE);
-            String name = loopMapObject.optString(CommonData.JSON_ALIASNAME_KEY);
+            String name = loopMapObject.optString(CommonJson.JSON_ALIASNAME_KEY);
             String cardId = loopMapObject.optString(CommonData.JSON_KEY_CARDID);
             String startDate = loopMapObject.optString(CommonData.JSON_KEY_STARTDATE);
             String expireDate = loopMapObject.optString(CommonData.JSON_KEY_ENDDATE);
@@ -217,17 +218,17 @@ public class IpDoorCardanager {
             String uuid = CommonUtils.generateCommonEventUuid();
             long rowid = add(uuid,type,name,cardId,startDate,expireDate,startTime,expireTime,action);
             DbCommonUtil.putErrorCodeFromOperate(rowid, loopMapObject);
-            loopMapObject.put(CommonData.JSON_UUID_KEY,uuid);
+            loopMapObject.put(CommonJson.JSON_UUID_KEY,uuid);
         }
     }
 
     public void cardUpdate(JSONObject jsonObject)  throws JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             String type = loopMapObject.optString(CommonData.JSON_KEY_CARDTYPE);
-            String name = loopMapObject.optString(CommonData.JSON_ALIASNAME_KEY);
+            String name = loopMapObject.optString(CommonJson.JSON_ALIASNAME_KEY);
             String cardId = loopMapObject.optString(CommonData.JSON_KEY_CARDID);
             String startDate = loopMapObject.optString(CommonData.JSON_KEY_STARTDATE);
             String expireDate = loopMapObject.optString(CommonData.JSON_KEY_ENDDATE);
@@ -249,10 +250,10 @@ public class IpDoorCardanager {
     }
 
     public void cardDelete(JSONObject jsonObject) throws JSONException {
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             long num = deleteByUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
         }

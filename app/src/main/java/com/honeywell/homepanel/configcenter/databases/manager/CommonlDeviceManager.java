@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
@@ -152,11 +153,11 @@ public class CommonlDeviceManager {
         for (int i = 0; i < lists.size(); i++) {
             CommonDevice loop = lists.get(i);
             JSONObject loopMapObject = new JSONObject();
-            loopMapObject.put(CommonData.JSON_UUID_KEY, loop.mUuid);
+            loopMapObject.put(CommonJson.JSON_UUID_KEY, loop.mUuid);
             loopMapObject.put(CommonData.JSON_KEY_NAME, loop.mName);
             loopMapArray.put(loopMapObject);
         }
-        jsonObject.put(CommonData.JSON_LOOPMAP_KEY, loopMapArray);
-        jsonObject.put(CommonData.JSON_ERRORCODE_KEY, CommonData.JSON_ERRORCODE_VALUE_OK);
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 }

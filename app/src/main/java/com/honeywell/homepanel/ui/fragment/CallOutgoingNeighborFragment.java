@@ -2,6 +2,7 @@ package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -10,14 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
 import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.activities.CallFailedActivity;
 import com.honeywell.homepanel.ui.activities.MainActivity;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
+import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -54,6 +59,9 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
         initViews(view);
         mAnimationBtusher.init(view);
         Log.d(TAG,"CallOutgoingNeighborFragment.onCreateView() 11111111");
+        uiBaseCallInfo.setmCallType(((CallActivity) getActivity()).mCallType);
+        uiBaseCallInfo.setmCallAliasName(((CallActivity) getActivity()).mUnit);
+        UISendCallMessage.requestForCallOut(uiBaseCallInfo);
         return view;
     }
     @Override
@@ -91,30 +99,60 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
         int viewId = view.getId();
         switch (viewId){
             case R.id.cancel_btn:
+                //startActivity(new Intent(getActivity(),MainActivity.class));
+                UISendCallMessage.requestForHungUp(uiBaseCallInfo);
                 getActivity().finish();
-                //CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
             default:
                 break;
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISCallOutMessageRsp msg) {
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
-
-        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
-            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
-            if(Integer.parseInt(errorCode) == 0){
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+        System.out.println("SUISCallOutMessageRsp entering");
+        if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)) {
+            String errorCode = msg.optString(CommonJson.JSON_ERRORCODE_KEY);
+            String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonJson.JSON_ALIASNAME_KEY, "");
+			uiBaseCallInfo.setmCallType(callType);
+			uiBaseCallInfo.setmCallAliasName(aliasName);
+			uiBaseCallInfo.setCallUuid(uuid);
+            System.out.println("SUISCallOutMessageRsp errorCode"+errorCode);
+            if(errorCode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)){
                 System.out.println("SUISCallOutMessageRsp success");
-                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
-                String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
-                String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
-                MainActivity.CallBaseInfo.setCallUuid(uuid);
-                MainActivity.CallBaseInfo.setmCallAliasName(aliasName);
-                MainActivity.CallBaseInfo.setmCallType(callType);
-                CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
             }else{
+                Toast.makeText(getActivity(),"callout failed",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), CallFailedActivity.class);
+                intent.putExtra(CommonData.INTENT_KEY_UNIT,aliasName);
+                startActivity(intent);
                 System.out.println("SUISCallOutMessageRsp failed");
             }
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISCallActivedMessageEve msg) {
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+
+        if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
+            String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonJson.JSON_ALIASNAME_KEY, "");
+            MainActivity.CallBaseInfo.setCallUuid(uuid);
+            MainActivity.CallBaseInfo.setmCallAliasName(aliasName);
+            MainActivity.CallBaseInfo.setmCallType(callType);
+            CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISCallTerminatedMessageEve msg) {
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+
+        if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
+            String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonJson.JSON_ALIASNAME_KEY, "");
+            getActivity().finish();
         }
     }
 }

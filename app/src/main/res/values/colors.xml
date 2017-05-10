@@ -31,7 +31,7 @@
     <color name="black_text_transparent">#3f000000</color>
     <color name="white_text_transparent">#7effffff</color>
     <color name="line_color">#C6C6C6</color>
-    <color name="cleaning_bg">#393939</color>
+    <color name="cleaning_bg">#000000</color>
 
     <!-- Global Buttons Spec -->
     <color name="fill_primary_button_active">#1792E5</color>

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
@@ -72,13 +73,13 @@ public class EventHistoryManager {
         }
         if(!TextUtils.isEmpty(device.mCardEvent)){
             values.put(ConfigConstant.COLUMN_CARDEVENT, device.mCardEvent);
-        }
+        }*/
         if(!TextUtils.isEmpty(device.mImagePath)){
             values.put(ConfigConstant.COLUMN_IMAGEPATH, device.mImagePath);
         }
         if(!TextUtils.isEmpty(device.mVideoPath)){
             values.put(ConfigConstant.COLUMN_VIDEOPATH, device.mVideoPath);
-        }*/
+        }
         if(device.mRead >= 0){
             values.put(ConfigConstant.COLUMN_READ, device.mRead);
         }
@@ -191,12 +192,12 @@ public class EventHistoryManager {
             loopToJson(loopMapObject,loop);
             loopMapArray.put(loopMapObject);
         }
-        jsonObject.put(CommonData.JSON_LOOPMAP_KEY,loopMapArray);
-        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY,loopMapArray);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 
     private void loopToJson(JSONObject loopMapObject, EventHistory loop) throws JSONException {
-        loopMapObject.put(CommonData.JSON_UUID_KEY,loop.mUuid);
+        loopMapObject.put(CommonJson.JSON_UUID_KEY,loop.mUuid);
         loopMapObject.put(CommonData.JSON_KEY_EVENTTYPE,loop.mType);
         loopMapObject.put(CommonData.JSON_KEY_TIME,loop.mTime);
         loopMapObject.put(CommonData.JSON_KEY_IMAGENAME,loop.mImagePath);
@@ -207,10 +208,10 @@ public class EventHistoryManager {
     }
 
     public void notificationEventAdd(JSONObject jsonObject) throws JSONException {
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             String eventType = loopMapObject.optString(CommonData.JSON_KEY_EVENTTYPE);
             String time = loopMapObject.optString(CommonData.JSON_KEY_TIME);
             String imgname = loopMapObject.optString(CommonData.JSON_KEY_IMAGENAME);
@@ -225,22 +226,30 @@ public class EventHistoryManager {
     }
 
     public void notificationEventUpdate(JSONObject jsonObject) throws  JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             String datastatus  = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
             EventHistory loop = getByUuid(uuid);
-            loop.mRead = DbCommonUtil.transferReadStringToInt(datastatus);
+            if(loopMapObject.has(CommonData.JSON_KEY_DATASTATUS)){
+                loop.mRead = DbCommonUtil.transferReadStringToInt(datastatus);
+            }
+            if(loopMapObject.has(CommonData.JSON_KEY_IMAGENAME)){
+                loop.mImagePath = loopMapObject.getString(CommonData.JSON_KEY_IMAGENAME);
+            }
+            if(loopMapObject.has(CommonData.JSON_KEY_VIDEONAME)){
+                loop.mVideoPath = loopMapObject.getString(CommonData.JSON_KEY_VIDEONAME);
+            }
             long num = updateByUuid(uuid,loop);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
         }
     }
     public void notificationEventDelete(JSONObject jsonObject) throws  JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             long num = deleteByUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
         }
@@ -251,6 +260,6 @@ public class EventHistoryManager {
         int dataStatus = DbCommonUtil.transferReadStringToInt(statusStr);
         int count = getEventCountByStatus(dataStatus);
         jsonObject.put(CommonData.JSON_KEY_COUNT,""+count);
-        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 }

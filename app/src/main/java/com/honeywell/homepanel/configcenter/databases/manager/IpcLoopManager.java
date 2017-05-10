@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
@@ -156,25 +157,27 @@ public class IpcLoopManager {
             loopToJson(loopMapObject,loop);
             loopMapArray.put(loopMapObject);
         }
-        jsonObject.put(CommonData.JSON_LOOPMAP_KEY,loopMapArray);
-        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY,loopMapArray);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 
     private void loopToJson(JSONObject loopMapObject, IpcLoop loop) throws JSONException {
-        loopMapObject.put(CommonData.JSON_UUID_KEY,loop.mUuid);
+        loopMapObject.put(CommonJson.JSON_UUID_KEY,loop.mUuid);
         loopMapObject.put(CommonData.JSON_IP_KEY,loop.mIpAddr);
         loopMapObject.put(CommonData.JSON_USERNAME_KEY,loop.mUser);
-        loopMapObject.put(CommonData.JSON_PASSWORD_KEY,loop.mPwd);
+        loopMapObject.put(CommonJson.JSON_PASSWORD_KEY,loop.mPwd);
+        loopMapObject.put(CommonData.JSON_KEY_NAME,loop.mName);
+        loopMapObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 
     public void ipcAdd(JSONObject jsonObject)  throws JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
             String ip = loopMapObject.optString(CommonData.JSON_IP_KEY);
             String userName = loopMapObject.optString(CommonData.JSON_USERNAME_KEY);
-            String pwd = loopMapObject.optString(CommonData.JSON_PASSWORD_KEY);
-            String name = loopMapObject.optString(CommonData.JSON_ALIASNAME_KEY);
+            String pwd = loopMapObject.optString(CommonJson.JSON_PASSWORD_KEY);
+            String name = loopMapObject.optString(CommonJson.JSON_ALIASNAME_KEY);
             String uuid = CommonUtils.generateCommonEventUuid();
             long rowid = add(uuid,name,ip,userName,pwd);
             if(rowid > 0){
@@ -185,22 +188,22 @@ public class IpcLoopManager {
     }
 
     public void ipcUpdate(JSONObject jsonObject)  throws JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
-            String name  = loopMapObject.optString(CommonData.JSON_ALIASNAME_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
+            String name  = loopMapObject.optString(CommonJson.JSON_ALIASNAME_KEY);
             String user  = loopMapObject.optString(CommonData.JSON_USERNAME_KEY);
-            String pwd  = loopMapObject.optString(CommonData.JSON_PASSWORD_KEY);
+            String pwd  = loopMapObject.optString(CommonJson.JSON_PASSWORD_KEY);
             IpcLoop loop = getByUuid(uuid);
-            if(loopMapObject.has(CommonData.JSON_ALIASNAME_KEY)){
+            if(loopMapObject.has(CommonJson.JSON_ALIASNAME_KEY)){
                 loop.mName = name;
                 DbCommonUtil.updateCommonName(mContext,uuid,name);
             }
             if(loopMapObject.has(CommonData.JSON_USERNAME_KEY)){
                 loop.mUser = user;
             }
-            if(loopMapObject.has(CommonData.JSON_PASSWORD_KEY)){
+            if(loopMapObject.has(CommonJson.JSON_PASSWORD_KEY)){
                 loop.mPwd = pwd;
             }
             if(loopMapObject.has(CommonData.JSON_IP_KEY)){
@@ -213,10 +216,10 @@ public class IpcLoopManager {
     }
 
     public void ipcDelete(JSONObject jsonObject) throws JSONException {
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             long num = deleteByUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
             if(num > 0) {

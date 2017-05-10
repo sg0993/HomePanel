@@ -1,9 +1,12 @@
 package com.honeywell.homepanel.ui.activities;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -13,29 +16,29 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
+import com.honeywell.homepanel.IConfigService;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
-import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUIStatusBar;
 import com.honeywell.homepanel.common.Message.ui.AlarmHint;
 import com.honeywell.homepanel.common.utils.CommonUtils;
+import com.honeywell.homepanel.ui.domain.NotificationStatisticInfo;
 import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
-import com.honeywell.homepanel.ui.services.WidgetInfoService;
 import com.honeywell.homepanel.ui.uicomponent.AdapterCallback;
 import com.honeywell.homepanel.ui.uicomponent.AlarmHintPopAdapter;
-import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
 import com.honeywell.homepanel.watchdog.WatchDogService;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
+import static com.honeywell.homepanel.common.CommonJson.JSON_CALLTYPE_VALUE_OFFICE;
 
 public class MainActivity extends BaseActivity implements AdapterCallback,PopupWindow.OnDismissListener{
     private static final String TAG = "MainActivity";
@@ -56,7 +59,9 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
     private boolean screenSaverEnabled = false;
     private Handler mScreenSaverTimerHandler = new Handler();
     public static UIBaseCallInfo CallBaseInfo = new UIBaseCallInfo();
-	
+    private ServiceConnection mIConfigServiceConnect = new DBOperationService();
+    public IConfigService mIConfigService = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,41 +69,41 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
 
         // start watch dog
         startService(new Intent(this, WatchDogService.class));
-        //start top statusbar service
-        startService(new Intent(this, WidgetInfoService.class));
+        //bind database config service
+        CommonUtils.startAndBindService(this, CommonData.ACTION_CONFIG_SERVICE, mIConfigServiceConnect);// using getContext()???
 
         mTopView = findViewById(R.id.top_status);//for test
         mTopView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showpopupwindow(getLayoutInflater(),new AlarmHint(100));
-                SUISMessagesUIStatusBar.SUISConnectStatusMessageEve msg = new SUISMessagesUIStatusBar.SUISConnectStatusMessageEve();
-                try {
-                    msg.put("action", "event111");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                EventBus.getDefault().post(msg);
+           /* showpopupwindow(getLayoutInflater(),new AlarmHint(100));
+            SUISMessagesUIStatusBar.SUISConnectStatusMessageEve msg = new SUISMessagesUIStatusBar.SUISConnectStatusMessageEve();
+            try {
+                msg.put("action", "event111");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            EventBus.getDefault().post(msg);*/
             }
         });
         mCenterView = findViewById(R.id.main_frameLayout);
         content_scrolling = findViewById(R.id.content_scrolling);
-
     }
     @Override
     protected void onStop() {
         super.onStop();
     }
     private void setCenterViewBackground(int curScenario){
-        if(curScenario == CommonData.SCENARIO_HOME || curScenario == CommonData.SCENARIO_WAKEUP){
+        if(curScenario == CommonData.SCENARIO_HOME
+                || curScenario == CommonData.SCENARIO_WAKEUP
+                || curScenario == CommonData.SCENARIO_SLEEP ){
             mCenterView.setBackgroundColor(getResources().getColor(R.color.centerbackground_disarm));
         }
-        else if(curScenario == CommonData.SCENARIO_AWAY || curScenario == CommonData.SCENARIO_SLEEP){
+        else if(curScenario == CommonData.SCENARIO_AWAY ){
             mCenterView.setBackgroundColor(getResources().getColor(R.color.centerbackground_arm));
         }
     }
-	
-	
+
     private void screenSaverReset() {
     if (screenSaverEnabled == true) {
         Log.d(TAG, "screenSaverReset: ");
@@ -111,14 +116,16 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
     @Override
     protected void onResume() {
         super.onResume();
-        setCenterViewBackground(TopStaus.getInstance(this).mCurScenario);
-        Log.d(TAG,"onResume() mCurScenario:"+ TopStaus.getInstance(this).mCurScenario);
+        int mCurScenario  = TopStaus.getInstance(getApplicationContext()).getCurScenario();
+        setCenterViewBackground(mCurScenario);
+        Log.d(TAG,"onResume() mCurScenario:"+ mCurScenario);
             screenSaverReset();
     }
     @Override
     protected void onDestroy() {
         Log.d(TAG,TAG+".onDestroy() 111111");
         super.onDestroy();
+        unbindService(mIConfigServiceConnect);
         if (mpopupWindow != null && mpopupWindow.isShowing()) {
             mpopupWindow.dismiss();
         }
@@ -140,30 +147,37 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISCallInMessageEve msg) {
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
-
-        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_EVENT)) {
-            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
-            if(Integer.parseInt(errorCode) == 0){
-                System.out.println("SUISCallInMessageEve success");
-                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
-                String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
-                String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
-                String videocodectype = msg.optString(CommonData.JSON_VIDEOCODEC_KEY, "");
-                String audiocodectype = msg.optString(CommonData.JSON_AUDIOCODEC_KEY, "");
-                CallBaseInfo.setCallUuid(uuid);
-                CallBaseInfo.setmCallAliasName(aliasName);
-                CallBaseInfo.setmCallType(callType);
-                CallBaseInfo.setmVideoCodecType(videocodectype);
-                CallBaseInfo.setmAudioCodecType(audiocodectype);
-                Intent intent = new Intent(this, CallActivity.class);
-                intent.putExtra(CommonData.INTENT_KEY_UNIT,aliasName);
-                intent.putExtra(CommonData.INTENT_KEY_CALL_TYPE,callType);
-                startActivity(intent);
-
-            }else{
-                System.out.println("SUISCallInMessageEve failed");
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+        System.out.println("SUISCallInMessageEve1111111");
+        if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
+            String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
+            String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");
+            String aliasName = msg.optString(CommonJson.JSON_ALIASNAME_KEY, "");
+            String videocodectype = msg.optString(CommonJson.JSON_VIDEOCODEC_KEY, "");
+            String audiocodectype = msg.optString(CommonJson.JSON_AUDIOCODEC_KEY, "");
+			System.out.println("uuid,callType,aliasName,"+uuid+callType+aliasName);
+            CallBaseInfo.setCallUuid(uuid);
+            CallBaseInfo.setmCallAliasName(aliasName);
+            CallBaseInfo.setmCallType(callType);
+            CallBaseInfo.setmVideoCodecType(videocodectype);
+            CallBaseInfo.setmAudioCodecType(audiocodectype);
+            System.out.println("SUISCallInMessageEve1111111uuid,callType,aliasName,"+uuid+callType+aliasName);
+            Intent intent = new Intent(this, CallActivity.class);
+            intent.putExtra(CommonData.INTENT_KEY_UNIT,aliasName);
+            if(callType.equals(CommonJson.JSON_CALLTYPE_VALUE_NEIGHBOUR)){
+                intent.putExtra(CommonData.INTENT_KEY_CALL_TYPE,CommonData.CALL_INCOMING_NEIGHBOR);
             }
+            else if(callType.equals(CommonJson.JSON_CALLTYPE_VALUE_LOBBY)) {
+                intent.putExtra(CommonData.INTENT_KEY_CALL_TYPE,CommonData.CALL_LOBBY_INCOMMING);
+            }
+            else  if(callType.equals(CommonJson.JSON_CALLTYPE_VALUE_GUARD)||callType.equals(JSON_CALLTYPE_VALUE_OFFICE)){
+                intent.putExtra(CommonData.INTENT_KEY_CALL_TYPE,CommonData.CALL_GUARD_INCOMMING);
+            }
+            else if(callType.equals(CommonJson.JSON_CALLTYPE_VALUE_DOORCAMERA)){
+                intent.putExtra(CommonData.INTENT_KEY_CALL_TYPE,CommonData.CALL_IPDC_INCOMING);
+            }
+            intent.putExtra(CommonData.INTENT_KEY_CALLINFO,CallBaseInfo);
+            startActivity(intent);
         }
     }
     private ListView mListView = null;
@@ -252,8 +266,10 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
 
     public void updateUserActionTime() {
         Date timeNow = new Date(System.currentTimeMillis());
-        timePeriod = timeNow.getTime() - lastInputEventTime.getTime();
-        lastInputEventTime.setTime(timeNow.getTime());
+        if(null != lastInputEventTime){
+            timePeriod = timeNow.getTime() - lastInputEventTime.getTime();
+            lastInputEventTime.setTime(timeNow.getTime());
+        }
     }
 
     /**
@@ -271,4 +287,30 @@ public class MainActivity extends BaseActivity implements AdapterCallback,PopupW
         updateUserActionTime();
         return super.dispatchKeyEvent(event);
     }
+    private void updateIndicator() {
+        super.updateNewMessageIndicator(1);
+    }
+
+    class DBOperationService implements ServiceConnection {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            String serviceClassName = name.getClassName();
+            Log.d(TAG, "onServiceConnected: serviceClassName=" + serviceClassName);
+            if(serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)) {
+                mIConfigService = IConfigService.Stub.asInterface(service);
+                NotificationStatisticInfo temp = NotificationStatisticInfo.getInstance();
+                temp.getDataCountFromDB(mIConfigService);
+                if (temp.hasUnreadMsg()) {
+                    updateIndicator();
+                }
+            }
+        }
+        public void onServiceDisconnected(ComponentName name) {
+            String serviceClassName = name.getClassName();
+            if(serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)){
+                mIConfigService = null;
+            }
+        }
+    }
+
 }

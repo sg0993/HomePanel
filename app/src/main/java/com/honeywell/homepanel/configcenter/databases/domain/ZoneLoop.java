@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class ZoneLoop implements Parcelable {
     public long mId = -1;
     public String mModuleUuid = "";
+    public String mAdapterUuid = "";
     public String mUuid = "";
     public  String mName = "";
     public  int mLoop = 1;
@@ -18,10 +19,11 @@ public class ZoneLoop implements Parcelable {
     public String mZoneType = "";
     public  String mAlarmType = "";
 
-    public ZoneLoop(String mModuleUuid, String mName, String mUuid, int mDelayTime, int mLoop, int mEnabled, String mZoneType, String mAlarmType) {
+    public ZoneLoop(String mModuleUuid, String mUuid, String adapterUuid, String mName, int mDelayTime, int mLoop, int mEnabled, String mZoneType, String mAlarmType) {
         this.mModuleUuid = mModuleUuid;
         this.mName = mName;
         this.mUuid = mUuid;
+        this.mAdapterUuid = adapterUuid;
         this.mDelayTime = mDelayTime;
         this.mLoop = mLoop;
         this.mEnabled = mEnabled;
@@ -56,6 +58,7 @@ public class ZoneLoop implements Parcelable {
         dest.writeLong(this.mId);
         dest.writeString(this.mModuleUuid);
         dest.writeString(this.mUuid);
+        dest.writeString(this.mAdapterUuid);
         dest.writeString(this.mName);
         dest.writeInt(this.mLoop);
         dest.writeInt(this.mDelayTime);
@@ -68,6 +71,7 @@ public class ZoneLoop implements Parcelable {
         this.mId = in.readLong();
         this.mModuleUuid = in.readString();
         this.mUuid = in.readString();
+        this.mAdapterUuid = in.readString();
         this.mName = in.readString();
         this.mLoop = in.readInt();
         this.mDelayTime = in.readInt();

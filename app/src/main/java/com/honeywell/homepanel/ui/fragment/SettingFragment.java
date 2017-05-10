@@ -47,7 +47,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
     private static int[] icon = {R.mipmap.setting_wifi,R.mipmap.setting_location,
             R.mipmap.setting_volume, R.mipmap.setting_date,R.mipmap.setting_account,
             R.mipmap.setting_advanced, R.mipmap.setting_cleaning,R.mipmap.setting_upgrade};
-    private static String[] iconName = {"WIFI","Location","Brightness","Date&Time",
+    private static String[] iconName = {"WIFI","Location","Brightness & Volume","Date&Time",
             "Account Settings","Advanced Settings","Cleaning","Upgrade"};
 
     @Override

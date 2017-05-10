@@ -80,6 +80,9 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper{
             sql = ConfigConstant.createIpDoorCardTable();
             db.execSQL(sql);
 
+            sql = ConfigConstant.createDeviceAdapterTable();
+            db.execSQL(sql);
+
             db.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();

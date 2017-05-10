@@ -54,7 +54,12 @@ public class CameraWrapper {
         for (int i = 0; i < numCameras; i++) {
             Camera.getCameraInfo(i, info);
             if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                mCamera = Camera.open(i);
+                try {
+                    mCamera = Camera.open(i);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             }
         }

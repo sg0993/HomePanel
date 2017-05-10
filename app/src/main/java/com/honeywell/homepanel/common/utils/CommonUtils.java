@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
@@ -22,14 +23,17 @@ import android.widget.SeekBar;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonPath;
+import com.honeywell.homepanel.ui.AudioVideoUtil.HVideoDecoder;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoInfo;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 
@@ -89,8 +93,8 @@ public class CommonUtils {
         context.bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
-    public static void stopAndUnbindService(Context context,String serviceAction,ServiceConnection connection){
-        if(null == serviceAction || null == connection){
+    public static void stopAndUnbindService(Context context, String serviceAction, ServiceConnection connection) {
+        if (null == serviceAction || null == connection || null == context) {
             return;
         }
         Intent intent = new Intent(serviceAction);
@@ -100,24 +104,64 @@ public class CommonUtils {
     }
 
 
-    public static String deleteTrim(String str){//去掉IP字符串前后所有的空格
-        while(str.startsWith(" ")){
-            str= str.substring(1,str.length()).trim();
+    public static String deleteTrim(String str) {//去掉IP字符串前后所有的空格
+        while (str.startsWith(" ")) {
+            str = str.substring(1, str.length()).trim();
         }
-        while(str.endsWith(" ")){
-            str= str.substring(0,str.length()-1).trim();
+        while (str.endsWith(" ")) {
+            str = str.substring(0, str.length() - 1).trim();
         }
         return str;
     }
-    public static boolean isIp(String ip){//判断是否是一个IP
+
+    public static boolean isIp(String ip) {//判断是否是一个IP
         boolean b = false;
         ip = deleteTrim(ip);
-        if(ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")){
+        if (ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
             String s[] = ip.split("\\.");
-            if(Integer.parseInt(s[0])<255)
-                if(Integer.parseInt(s[1])<255)
-                    if(Integer.parseInt(s[2])<255)
-                        if(Integer.parseInt(s[3])<255)
+            if (Integer.parseInt(s[0]) < 255)
+                if (Integer.parseInt(s[1]) < 255)
+                    if (Integer.parseInt(s[2]) < 255)
+                        if (Integer.parseInt(s[3]) < 255)
+                            b = true;
+        }
+        return b;
+    }
+
+    public static boolean isIpv4(String ipAddress) {
+        String ip = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
+                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
+        Pattern pattern = Pattern.compile(ip);
+        Matcher matcher = pattern.matcher(ipAddress);
+        return matcher.matches();
+    }
+
+    public static boolean isValidMac(String mac) {
+        String pattern1="^[A-F0-9]{2}(:[A-F0-9]{2}){5}$";
+        if(Pattern.compile(pattern1).matcher(mac).find()) {
+            return true;
+        }
+
+        String pattern2="^[A-F0-9]{2}(-[A-F0-9]{2}){5}$";
+        if(Pattern.compile(pattern2).matcher(mac).find()) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public static boolean isIpNetmask(String ip) {//判断是否是一个
+        boolean b = false;
+        ip = deleteTrim(ip);
+        if (ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
+            String s[] = ip.split("\\.");
+            if (Integer.parseInt(s[0]) <= 255)
+                if (Integer.parseInt(s[1]) <= 255)
+                    if (Integer.parseInt(s[2]) <= 255)
+                        if (Integer.parseInt(s[3]) <= 255)
                             b = true;
         }
         return b;
@@ -132,23 +176,24 @@ public class CommonUtils {
         return !(!sdcard.exists() || !sdcard.canWrite());
     }
 
-    public static boolean ISNULL(String str){
+    public static boolean ISNULL(String str) {
         boolean bRet = false;
-        if(str == null || str.length() == 0){
+        if (str == null || str.length() == 0) {
             bRet = true;
         }
         return bRet;
     }
 
     public static void rebootPM(Context ctx) {
-        if(null == ctx) {
+        if (null == ctx) {
             return;
         }
         PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
         pm.reboot("null");
     }
+
     public static void recoveryPM(Context ctx) {
-        if(null == ctx) {
+        if (null == ctx) {
             return;
         }
         PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
@@ -162,51 +207,120 @@ public class CommonUtils {
     public static String generateCommonEventMsgId() {
         return UUID.randomUUID().toString();
     }
-	
-	 public static  void saveBitmap(Bitmap bitmap, String bitName){
-        if(null == bitmap || TextUtils.isEmpty(bitName)){
-            Log.e(TAG,TAG + "saveBitmap() null");
-            return;
+
+    public static String saveBitmap(Bitmap bitmap, String bitName) {
+        String filepath = null;
+        if (null == bitmap || TextUtils.isEmpty(bitName)) {
+            Log.e(TAG, TAG + "saveBitmap() null");
+            return filepath;
         }
-        File  dirFile = new File(CommonData.IMAGE_PATH);
-        if(!dirFile.exists()){
+        File dirFile = new File(CommonPath.IMAGE_PATH);
+        if (!dirFile.exists()) {
             dirFile.mkdirs();
         }
-        File file = new File(dirFile,bitName);
-        if(file.exists()){
+        File file = new File(dirFile, bitName);
+        if (file.exists()) {
             file.delete();
         }
+        filepath = file.getAbsolutePath();
+        Log.d(TAG, "saveBitmap: file name:" + filepath);
         FileOutputStream out;
-        try{
+        try {
+            file.createNewFile();
             out = new FileOutputStream(file);
-            if(bitmap.compress(Bitmap.CompressFormat.PNG, 90, out)){
+            if (bitmap.compress(Bitmap.CompressFormat.PNG, 90, out)) {
                 out.flush();
                 out.close();
             }
         }
         catch (Exception e){
+            Log.e(TAG, "saveBitmap: exception11111111111");
             e.printStackTrace();
+            filepath = null;
         }
+        return  filepath;
     }
 
-    public static String getBitMapName() {
+    public static Bitmap getBitmapFromFile(String path,String name, int width, int height) {
+        File file = new File(path,name);
+        BitmapFactory.Options opts = null;
+        if (null != file && file.exists()) {
+            if (width > 0 && height > 0) {
+                opts = new BitmapFactory.Options();
+                opts.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(file.getPath(), opts);
+                final int minSideLength = Math.min(width, height);
+                opts.inSampleSize = computeSampleSize(opts, minSideLength,width * height);
+                opts.inJustDecodeBounds = false;
+                opts.inInputShareable = true;
+                opts.inPurgeable = true;
+            }
+            try {
+                return BitmapFactory.decodeFile(file.getPath(), opts);
+            } catch (OutOfMemoryError e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+    public static int computeSampleSize(BitmapFactory.Options options,int minSideLength, int maxNumOfPixels) {
+        int initialSize = computeInitialSampleSize(options, minSideLength, maxNumOfPixels);
+        int roundedSize;
+        if (initialSize <= 8) {
+            roundedSize = 1;
+            while (roundedSize < initialSize) {
+                roundedSize <<= 1;
+            }
+        } else {
+            roundedSize = (initialSize + 7) / 8 * 8;
+        }
+        return roundedSize;
+    }
+
+    private static int computeInitialSampleSize(BitmapFactory.Options options,int minSideLength, int maxNumOfPixels) {
+        double w = options.outWidth;
+        double h = options.outHeight;
+        int lowerBound = (maxNumOfPixels == -1) ? 1 : (int) Math.ceil(Math.sqrt(w * h / maxNumOfPixels));
+        int upperBound = (minSideLength == -1) ? 128 : (int) Math.min(Math.floor(w / minSideLength),Math.floor(h / minSideLength));
+        if (upperBound < lowerBound) {
+            // return the larger one when there is no overlapping zone.
+            return lowerBound;
+        }
+        if ((maxNumOfPixels == -1) && (minSideLength == -1)) {
+            return 1;
+        } else if (minSideLength == -1) {
+            return lowerBound;
+        } else {
+            return upperBound;
+        }
+    }
+    public static String getLobbyBitMapName() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String time = sdf.format(new Date());
         time += ".png";
         return time;
     }
 
-    public static String getVideoRecordName() {
+    public static String getLobbyVideoRecordName() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String time = sdf.format(new Date());
-        time += ".mp4";
+        time += ".avi";
         return time;
     }
 
+    public static String getIpcBitMapName(String ipcName) {
+        String name = ipcName;
+        if(TextUtils.isEmpty(ipcName)){
+            name = CommonUtils.generateCommonEventUuid();
+        }
+        name += ".png";
+        return name;
+    }
     public static MediaFormat getVideoFormat(VideoInfo mVideoInfo) {
-        ByteBuffer bb = ByteBuffer.wrap(mVideoInfo.mCsdInfo);
+        //ByteBuffer bb = ByteBuffer.wrap(mVideoInfo.mCsdInfo);
         MediaFormat media_format = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC,CommonData.VIDEO_WIDTH,CommonData.VIDEO_HEIGHT);
-        media_format.setByteBuffer("csd-0", bb);
+       // media_format.setByteBuffer("csd-0", bb);
+        HVideoDecoder.setSpsPps(media_format);
         media_format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, CommonData.VIDEO_WIDTH * CommonData.VIDEO_HEIGHT);
         media_format.setInteger(MediaFormat.KEY_FRAME_RATE,25);
         return  media_format;
@@ -228,5 +342,29 @@ public class CommonUtils {
 
         return new String(asciiBytes, 0, cZeroPosition);
     }
+    public static String hexBytesToHexString(byte[] hexBytes) {
+        StringBuilder hexValues = new StringBuilder();
+        for (int i = 0; i < hexBytes.length; i++) {
+            hexValues.append(String.format("%02x", hexBytes[i]));
+        }
 
+        return hexValues.toString();
+    }
+    public static String hexBytesToHexString(byte[] hexBytes, int length) {
+        StringBuilder hexValues = new StringBuilder();
+        length = length>=hexBytes.length? hexBytes.length:length;
+        for (int i = 0; i < length; i++) {
+            hexValues.append(String.format("%02x", hexBytes[i]));
+        }
+
+        return hexValues.toString();
+    }
+    public static byte[] intToByteArray(int a) {
+        return new byte[] {
+                (byte) ((a >> 24) & 0xFF),
+                (byte) ((a >> 16) & 0xFF),
+                (byte) ((a >> 8) & 0xFF),
+                (byte) (a & 0xFF)
+        };
+    }
 }

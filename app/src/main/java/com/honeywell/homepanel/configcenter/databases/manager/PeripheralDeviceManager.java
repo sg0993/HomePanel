@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
@@ -201,7 +202,7 @@ public class PeripheralDeviceManager {
     }
 
     public void extensionModuleAdd(JSONObject jsonObject) throws JSONException {
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
             String type = loopMapObject.optString(CommonData.JSON_TYPE_KEY);
@@ -227,12 +228,13 @@ public class PeripheralDeviceManager {
                     String deviceUuid = "";
                     if(type.equals(CommonData.COMMONDEVICE_TYPE_RELAY)){
                         deviceUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_RELAYLOOP_INT,DbCommonUtil.getSequenct(ConfigDatabaseHelper.getInstance(mContext),ConfigConstant.TABLE_RELAYLOOP));
-                        _id = RelayLoopManager.getInstance(mContext).add(moduleUuid,deviceUuid,deviceName,j+1,0,CommonData.DISENABLE);
+                        _id = RelayLoopManager.getInstance(mContext).add(moduleUuid,deviceUuid,CommonData.DEVADAPTER_RELAY_HEJMODULE_HON,
+                                deviceName,j+1,0,CommonData.DISENABLE);
                     }
                     else if(type.equals(CommonData.COMMONDEVICE_TYPE_ZONE)){
                         deviceUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_ZONELOOP_INT,DbCommonUtil.getSequenct(ConfigDatabaseHelper.getInstance(mContext),ConfigConstant.TABLE_ZONELOOP));
-                        _id = ZoneLoopManager.getInstance(mContext).add(moduleUuid,deviceUuid,deviceName,
-                                j+1,0,CommonData.DISENABLE,CommonData.ZONETYPE_24H,CommonData.ALARMTYPE_EMERGENCY);
+                        _id = ZoneLoopManager.getInstance(mContext).add(moduleUuid,deviceUuid,CommonData.DEVADAPTER_ZONE_HEJMODULE_HON,
+                                deviceName,j+1,0,CommonData.DISENABLE,CommonData.ZONETYPE_24H,CommonData.ALARMTYPE_EMERGENCY);
                     }
                     if(_id > 0){
                         CommonlDeviceManager.getInstance(mContext).add(deviceUuid,deviceName,type);
@@ -254,13 +256,13 @@ public class PeripheralDeviceManager {
             loopToJson(loopMapObject,loop);
             loopMapArray.put(loopMapObject);
         }
-        jsonObject.put(CommonData.JSON_LOOPMAP_KEY, loopMapArray);
-        jsonObject.put(CommonData.JSON_ERRORCODE_KEY, CommonData.JSON_ERRORCODE_VALUE_OK);
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 
     private void loopToJson(JSONObject loopMapObject, PeripheralDevice loop) throws JSONException{
-        loopMapObject.put(CommonData.JSON_UUID_KEY, loop.mModuleUuid);
-        loopMapObject.put(CommonData.JSON_ALIASNAME_KEY, loop.mName);
+        loopMapObject.put(CommonJson.JSON_UUID_KEY, loop.mModuleUuid);
+        loopMapObject.put(CommonJson.JSON_ALIASNAME_KEY, loop.mName);
         loopMapObject.put(CommonData.JSON_ONLINE_KEY, loop.mOnLine+"");
         loopMapObject.put(CommonData.JSON_TYPE_KEY, loop.mType);
         loopMapObject.put(CommonData.JSON_IP_KEY, loop.mIpAddr);
@@ -268,10 +270,10 @@ public class PeripheralDeviceManager {
     }
 
     public void extensionModuleDelete(JSONObject jsonObject) throws JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             PeripheralDevice device = getByModuleUuid(uuid);
             long num = deleteByModuleUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);

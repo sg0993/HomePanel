@@ -2,8 +2,6 @@ package com.honeywell.homepanel.ui.AudioVideoUtil;
 
 import android.util.Log;
 
-import com.honeywell.homepanel.ui.fragment.CallBaseFragment;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +40,24 @@ public class VideoDecoderThread implements  Runnable{
         mRunning = true;
         mDecInit = false;
         VStreamBuffer bufferItem = null;
+
         while (mRunning) {
+            if (null == mDecoder) {
+                if (null != mDecoderTextureListener) {
+                    mDecoder = mDecoderTextureListener.getVideoDecoder();
+                    if (null == mDecoder) {
+                        Log.e(TAG, "----VideoDecoderThread----->  decoder is null ???");
+                        continue;
+                    }
+                    else{
+                        mDecoder.decoder_init(null,320, 240);
+                    }
+                } else {
+                    Log.e(TAG, "----VideoDecoderThread----->  texture is null ???");
+                    continue;
+                }
+            }
+
             try {
                 bufferItem = mVideoPlayQueue.poll(QUEUEPOLLTMOUT, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
@@ -51,7 +66,7 @@ public class VideoDecoderThread implements  Runnable{
             }
             if (null != bufferItem) {
                 // decode
-                if (null == mDecoder) {
+               /* if (null == mDecoder) {
                     if (null != mDecoderTextureListener) {
                         mDecoder = mDecoderTextureListener.getVideoDecoder();
                         if (null == mDecoder) {
@@ -75,7 +90,10 @@ public class VideoDecoderThread implements  Runnable{
                         // 没有得到sps，无法初始化？？
                         continue;
                     }
-                }
+                }*/
+
+
+
                /* if (mLoadingText.getVisibility() == View.VISIBLE && mDecoder.isDecodeSuccess()) {
                     mLoadingText.post(new Runnable() {
                         @Override
@@ -88,8 +106,10 @@ public class VideoDecoderThread implements  Runnable{
                         }
                     });
                 }*/
-                mDecoder.onFrameProcess(bufferItem.StreamData.array(), bufferItem.StreamLen, bufferItem.TimeSTP);
-                Log.i(TAG, "----VideoDecoderThread----->  decode one frame.");
+                if(null != mDecoder){
+                    mDecoder.onFrameProcess(bufferItem.StreamData.array(), bufferItem.StreamLen, bufferItem.TimeSTP);
+                }
+                //Log.i(TAG, "----VideoDecoderThread----->  decode one frame.");
             }
         }
         if (null != mDecoder) {

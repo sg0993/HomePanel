@@ -17,13 +17,13 @@ import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
 import com.honeywell.homepanel.ui.AudioVideoUtil.CameraWrapper;
 import com.honeywell.homepanel.ui.AudioVideoUtil.TextureViewListener;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoDecoderThread;
 import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.activities.MainActivity;
-import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.uicomponent.CalRightBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
@@ -197,8 +197,9 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
                 int status = ((CallActivity)getActivity()).getCurFragmentStatus();
                 if(status == CommonData.CALL_CONNECTED_AUDIO_NETGHBOR){
                     status = CommonData.CALL_CONNECTED_VIDEO_NETGHBOR;
-                    //start video
-                    startVideoGet();
+                    UISendCallMessage.requestForVideoAuth(MainActivity.CallBaseInfo);
+//                    //start video
+//                    startVideoGet();
                 }
                 else{
                     status = CommonData.CALL_CONNECTED_AUDIO_NETGHBOR;
@@ -207,7 +208,6 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
                 }
                 ((CallActivity)getActivity()).setCurFragmentStatus(status);
                 changeViewStatus();
-                UISendCallMessage.requestForVideoAuth(MainActivity.CallBaseInfo);
                 break;
             case R.id.right_btn:
                 UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
@@ -215,7 +215,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
                 break;
             case R.id.top_btn:
                 Toast.makeText(mContext, "bottom_btn", Toast.LENGTH_SHORT).show();
-                ((CallActivity)getActivity()).volumeMic();
+                UISendCallMessage.requestForMute(MainActivity.CallBaseInfo);
                 break;
             case R.id.bottom_btn:
                 ((CallActivity)getActivity()).volumeSpeaker();
@@ -226,50 +226,79 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISVideoAuthMessageRsp msg) {
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
 
-        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
-            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
-            if(Integer.parseInt(errorCode) == 0){
+        if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)) {
+            String errorCode = msg.optString(CommonJson.JSON_ERRORCODE_KEY);
+            if(errorCode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)){
                 System.out.println("SUISVideoAuthMessageRsp success");
-                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
-                String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
-                String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+                String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
+                String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");
+                String aliasName = msg.optString(CommonJson.JSON_ALIASNAME_KEY, "");
+                //start video
+                startVideoGet();
             }else{
+                Toast.makeText(getActivity(),"VideoAuth failed",Toast.LENGTH_SHORT).show();
                 System.out.println("SUISVideoAuthMessageRsp failed");
             }
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISCallElevatorMessageRsp msg) {
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
 
-        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
-            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
-            if(Integer.parseInt(errorCode) == 0){
+        if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)) {
+            String errorCode = msg.optString(CommonJson.JSON_ERRORCODE_KEY);
+            if(errorCode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)){
                 System.out.println("SUISCallElevatorMessageRsp success");
-                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
-                String callType = msg.optString(CommonData.JSON_CALLTYPE_KEY, "");
-                String aliasName = msg.optString(CommonData.JSON_ALIASNAME_KEY, "");
+                String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
+                String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");
+                String aliasName = msg.optString(CommonJson.JSON_ALIASNAME_KEY, "");
             }else{
+                Toast.makeText(getActivity(),"CallElevator failed",Toast.LENGTH_SHORT).show();
                 System.out.println("SUISCallElevatorMessageRsp failed");
             }
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISHungUpMessageRsp msg) {
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
 
-        if (!action.isEmpty() && action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)) {
+        if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)) {
 
-            String errorCode = msg.optString(CommonData.JSON_ERRORCODE_KEY);
-            if(Integer.parseInt(errorCode) == 0){
+            String errorCode = msg.optString(CommonJson.JSON_ERRORCODE_KEY);
+            if(errorCode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)){
                 System.out.println("SUISHungUpMessageRsp success");
-                String uuid = msg.optString(CommonData.JSON_UUID_KEY, "");
+                String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
             }else{
                 System.out.println("SUISHungUpMessageRsp failed");
             }
 
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISMuteMessageRsp msg) {
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+
+        if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)) {
+
+            String errorCode = msg.optString(CommonJson.JSON_ERRORCODE_KEY);
+            if(errorCode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)){
+                System.out.println("SUISMuteMessageRsp success");
+                String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
+                ((CallActivity)getActivity()).volumeMic();
+            }else{
+                System.out.println("SUISMuteMessageRsp failed");
+            }
+
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISCallTerminatedMessageEve msg) {
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+
+        if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
+            getActivity().finish();
         }
     }
     private Handler myHandler = new Handler(){
@@ -300,7 +329,6 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
 
     ///////////////////////  camera texture view listener  ///////////////////////////
     private TextureView.SurfaceTextureListener camTextureListener = new  TextureView.SurfaceTextureListener() {
-        // 摄像头preview，用于测试视频编码
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
             Log.d(TAG, "camera onSurfaceTextureAvailable");
@@ -331,7 +359,6 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
         public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {}
     };
 
-    //打开camera，异步
     private void doOpenCamera() {
         Thread openThread = new Thread() {
             @Override
@@ -349,7 +376,6 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
 
     @Override
     public void cameraHasOpened() {
-        // 摄像头打开了，可以开始preview和编码了
         CameraWrapper.getInstance().doStartPreview(mCameraTexture.getSurfaceTexture()/*, mPreviewRate*/);
     }
 }

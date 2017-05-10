@@ -16,10 +16,12 @@ import android.widget.Button;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.Utils.EventBusWrapper;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUINotification;
 import com.honeywell.homepanel.common.Message.ui.UIMessagesNotification;
 
+import com.honeywell.homepanel.ui.domain.NotificationStatisticInfo;
 import com.honeywell.homepanel.ui.domain.NotifyVoiceEventBusClass;
 
 
@@ -32,8 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static com.honeywell.homepanel.R.string.notification_title_event;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -66,7 +66,6 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     String title_notify = null;
     String title_voice = null;
 
-
     public static Map<String, Integer> unreadCountMap;
 
     public static Integer getUnreadCount(String type) {
@@ -85,6 +84,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+//        updateTitle(3, temp.getEventUnreadCnt());
 
     }
 
@@ -94,6 +94,10 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         initView(view);
         initEvents();
         setSelect(true,0);
+        NotificationStatisticInfo temp = NotificationStatisticInfo.getInstance();
+        updateTitle(1, String.valueOf(temp.getEventUnreadCnt()));
+        updateTitle(2, String.valueOf(temp.getAlarmUnreadCnt()));
+        updateTitle(4, String.valueOf(temp.getVoiceUnreadCnt()));
         return view;
     }
 
@@ -104,10 +108,10 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     }
 
     private void initData() {
-        getEventCount();
-        getAlarmCount();
-        getNotificationCount();
-        getVoiceMsgCount();
+//        getEventCount();
+//        getAlarmCount();
+//        getNotificationCount();
+//        getVoiceMsgCount();
 
         title_event = getResources().getString(R.string.notification_title_event);
         title_alarm = getResources().getString(R.string.notification_title_alarm);
@@ -122,9 +126,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         UIMessagesNotification.UIGetEventsListMessageReq dataReq = new UIMessagesNotification.UIGetEventsListMessageReq();
         UUID msgid = UUID.randomUUID();
         try {
-            dataReq.put(CommonData.JSON_ACTION_KEY, CommonData.JSON_ACTION_VALUE_REQUEST);
-            dataReq.put(CommonData.JSON_SUBACTION_KEY, CommonData.JSON_SUBACTION_VALUE_EVENTCOUNTGET);
-            dataReq.put(CommonData.JSON_MSGID_KEY, msgid);
+            dataReq.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_REQUEST);
+            dataReq.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_EVENTCOUNTGET);
+            dataReq.put(CommonJson.JSON_MSGID_KEY, msgid);
             dataReq.put(CommonData.JSON_KEY_DATASTATUS, CommonData.DATASTATUS_UNREAD);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -136,9 +140,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         UIMessagesNotification.UIGetAlarmListMessageReq dataReq = new UIMessagesNotification.UIGetAlarmListMessageReq();
         UUID msgid = UUID.randomUUID();
         try {
-            dataReq.put(CommonData.JSON_ACTION_KEY, CommonData.JSON_ACTION_VALUE_REQUEST);
-            dataReq.put(CommonData.JSON_SUBACTION_KEY, CommonData.JSON_SUBACTION_VALUE_ALARMCOUNTGET);
-            dataReq.put(CommonData.JSON_MSGID_KEY, msgid);
+            dataReq.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_REQUEST);
+            dataReq.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_ALARMCOUNTGET);
+            dataReq.put(CommonJson.JSON_MSGID_KEY, msgid);
             dataReq.put(CommonData.JSON_KEY_DATASTATUS, CommonData.DATASTATUS_UNREAD);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -150,9 +154,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         UIMessagesNotification.UIGetBulletinListMessageReq dataReq = new UIMessagesNotification.UIGetBulletinListMessageReq();
         UUID msgid = UUID.randomUUID();
         try {
-            dataReq.put(CommonData.JSON_ACTION_KEY, CommonData.JSON_ACTION_VALUE_REQUEST);
-            dataReq.put(CommonData.JSON_SUBACTION_KEY, CommonData.JSON_SUBACTION_VALUE_BULLETINCOUNTGET);
-            dataReq.put(CommonData.JSON_MSGID_KEY, msgid);
+            dataReq.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_REQUEST);
+            dataReq.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_BULLETINCOUNTGET);
+            dataReq.put(CommonJson.JSON_MSGID_KEY, msgid);
             dataReq.put(CommonData.JSON_KEY_DATASTATUS, CommonData.DATASTATUS_UNREAD);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -164,9 +168,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         UIMessagesNotification.UIGetVoiceMsgListMessageReq dataReq = new UIMessagesNotification.UIGetVoiceMsgListMessageReq();
         UUID msgid = UUID.randomUUID();
         try {
-            dataReq.put(CommonData.JSON_ACTION_KEY, CommonData.JSON_ACTION_VALUE_REQUEST);
-            dataReq.put(CommonData.JSON_SUBACTION_KEY, CommonData.JSON_SUBACTION_VALUE_VOICEMSGCOUNTGET);
-            dataReq.put(CommonData.JSON_MSGID_KEY, msgid);
+            dataReq.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_REQUEST);
+            dataReq.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_VOICEMSGCOUNTGET);
+            dataReq.put(CommonJson.JSON_MSGID_KEY, msgid);
             dataReq.put(CommonData.JSON_KEY_DATASTATUS, CommonData.DATASTATUS_UNREAD);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -347,19 +351,19 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUINotification.SUISGetEventsListMessageRsp msg) {
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
-        String subaction = msg.optString(CommonData.JSON_SUBACTION_KEY, "");
-        String msgid = msg.optString(CommonData.JSON_MSGID_KEY, "");
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+        String subaction = msg.optString(CommonJson.JSON_SUBACTION_KEY, "");
+        String msgid = msg.optString(CommonJson.JSON_MSGID_KEY, "");
 
         if (msgid == "" || action == "" || subaction == "") {
             return;
         }
 
-        if ( (action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)
-                && subaction.equals(CommonData.JSON_SUBACTION_VALUE_EVENTCOUNTGET))) {
-            String errorcode = msg.optString(CommonData.JSON_ERRORCODE_KEY, "");
+        if ( (action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
+                && subaction.equals(CommonJson.JSON_SUBACTION_VALUE_EVENTCOUNTGET))) {
+            String errorcode = msg.optString(CommonJson.JSON_ERRORCODE_KEY, "");
             String datastatus = msg.optString(CommonData.DATASTATUS_UNREAD, "");
-            if ( (errorcode == CommonData.JSON_ERRORCODE_VALUE_OK) && (datastatus == CommonData.DATASTATUS_UNREAD) ) {
+            if ( (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
                 setUnreadCount(CommonData.FRAGMENT_EVENT, Integer.valueOf(count));
             }
@@ -369,19 +373,19 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(UIMessagesNotification.UIGetAlarmListMessageReq msg) {
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
-        String subaction = msg.optString(CommonData.JSON_SUBACTION_KEY, "");
-        String msgid = msg.optString(CommonData.JSON_MSGID_KEY, "");
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+        String subaction = msg.optString(CommonJson.JSON_SUBACTION_KEY, "");
+        String msgid = msg.optString(CommonJson.JSON_MSGID_KEY, "");
 
         if (msgid == "" || action == "" || subaction == "") {
             return;
         }
 
-        if ( (action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)
-                && subaction.equals(CommonData.JSON_SUBACTION_VALUE_ALARMCOUNTGET))) {
-            String errorcode = msg.optString(CommonData.JSON_ERRORCODE_KEY, "");
+        if ( (action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
+                && subaction.equals(CommonJson.JSON_SUBACTION_VALUE_ALARMCOUNTGET))) {
+            String errorcode = msg.optString(CommonJson.JSON_ERRORCODE_KEY, "");
             String datastatus = msg.optString(CommonData.DATASTATUS_UNREAD, "");
-            if ( (errorcode == CommonData.JSON_ERRORCODE_VALUE_OK) && (datastatus == CommonData.DATASTATUS_UNREAD) ) {
+            if ( (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
                 setUnreadCount(CommonData.FRAGMENT_ALARM, Integer.valueOf(count));
             }
@@ -392,19 +396,19 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(UIMessagesNotification.UIGetBulletinListMessageReq msg) {
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
-        String subaction = msg.optString(CommonData.JSON_SUBACTION_KEY, "");
-        String msgid = msg.optString(CommonData.JSON_MSGID_KEY, "");
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+        String subaction = msg.optString(CommonJson.JSON_SUBACTION_KEY, "");
+        String msgid = msg.optString(CommonJson.JSON_MSGID_KEY, "");
 
         if (msgid == "" || action == "" || subaction == "") {
             return;
         }
 
-        if ( (action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)
-                && subaction.equals(CommonData.JSON_SUBACTION_VALUE_NOTIFICATIONCOUNTGET))) {
-            String errorcode = msg.optString(CommonData.JSON_ERRORCODE_KEY, "");
+        if ( (action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
+                && subaction.equals(CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONCOUNTGET))) {
+            String errorcode = msg.optString(CommonJson.JSON_ERRORCODE_KEY, "");
             String datastatus = msg.optString(CommonData.DATASTATUS_UNREAD, "");
-            if ( (errorcode == CommonData.JSON_ERRORCODE_VALUE_OK) && (datastatus == CommonData.DATASTATUS_UNREAD) ) {
+            if ( (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
                 setUnreadCount(CommonData.FRAGMENT_NOTIFICATION, Integer.valueOf(count));
             }
@@ -415,49 +419,48 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(UIMessagesNotification.UIGetVoiceMsgListMessageReq msg) {
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
-        String subaction = msg.optString(CommonData.JSON_SUBACTION_KEY, "");
-        String msgid = msg.optString(CommonData.JSON_MSGID_KEY, "");
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+        String subaction = msg.optString(CommonJson.JSON_SUBACTION_KEY, "");
+        String msgid = msg.optString(CommonJson.JSON_MSGID_KEY, "");
 
         if (msgid == "" || action == "" || subaction == "") {
             return;
         }
 
-        if ( (action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)
-                && subaction.equals(CommonData.JSON_SUBACTION_VALUE_VOICEMSGCOUNTGET))) {
-            String errorcode = msg.optString(CommonData.JSON_ERRORCODE_KEY, "");
+        if ( (action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
+                && subaction.equals(CommonJson.JSON_SUBACTION_VALUE_VOICEMSGCOUNTGET))) {
+            String errorcode = msg.optString(CommonJson.JSON_ERRORCODE_KEY, "");
             String datastatus = msg.optString(CommonData.DATASTATUS_UNREAD, "");
-            if ( (errorcode == CommonData.JSON_ERRORCODE_VALUE_OK) && (datastatus == CommonData.DATASTATUS_UNREAD) ) {
+            if ( (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
                 setUnreadCount(CommonData.FRAGMENT_VOICEMSG, Integer.valueOf(count));
             }
         }
-
     }
 
 
     @Override
-    public void updateTitle(String type, String count) {
+    public synchronized void updateTitle(int type, String count) {
         int cnt = Integer.valueOf(count);
-        if (type == CommonData.FRAGMENT_EVENT) {
+        if (type == 1) {
             if (cnt == 0) {
                 mNaviEvent.setText(title_event);
             } else {
                 mNaviEvent.setText(title_event + "(" + cnt + ")");
             }
-        } else if (type == CommonData.FRAGMENT_ALARM) {
+        } else if (type == 2) {
             if (cnt == 0) {
                 mNaviAlarm.setText(title_alarm);
             } else {
                 mNaviAlarm.setText(title_alarm + "(" + cnt + ")");
             }
-        } else if (type == CommonData.FRAGMENT_NOTIFICATION) {
+        } else if (type == 3) {
             if (cnt == 0) {
                 mNaviNotification.setText(title_notify);
             } else {
                 mNaviNotification.setText(title_notify + "(" + cnt + ")");
             }
-        } else if (type == CommonData.FRAGMENT_VOICEMSG) {
+        } else if (type == 4) {
             if (cnt == 0) {
                 mNaviVoice.setText(title_voice);
             } else {

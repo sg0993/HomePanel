@@ -9,4 +9,7 @@
 
 
     <dimen name="left_event_width">400dp</dimen>
+    <dimen name="engineering_text_above_size">18sp</dimen>
+    <dimen name="engineering_text_below_size">16sp</dimen>
+    <dimen name="engineering_marginLeft">18dp</dimen>
 </resources>

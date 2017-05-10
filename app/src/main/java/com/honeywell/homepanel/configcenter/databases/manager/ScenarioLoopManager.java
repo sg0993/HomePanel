@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
@@ -190,7 +191,7 @@ public class ScenarioLoopManager {
     /*******************For Protocal*******************************************/
 
     public void getScenarioConfig(JSONObject jsonObject)  throws JSONException{
-        List<ScenarioLoop>lists = getByUuid(jsonObject.optString(CommonData.JSON_UUID_KEY));
+        List<ScenarioLoop>lists = getByUuid(jsonObject.optString(CommonJson.JSON_UUID_KEY));
         if(null == lists){
             return;
         }
@@ -201,16 +202,16 @@ public class ScenarioLoopManager {
             DbCommonUtil.putKeyValueToJson(mContext,loop.mDeviceUuid,loopMapObject);
             loopMapArray.put(loopMapObject);
         }
-        jsonObject.put(CommonData.JSON_LOOPMAP_KEY,loopMapArray);
-        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY,loopMapArray);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 
 
     public void setScenarioConfig(JSONObject jsonObject) throws  JSONException{
-        String uuid = jsonObject.optString(CommonData.JSON_UUID_KEY);
+        String uuid = jsonObject.optString(CommonJson.JSON_UUID_KEY);
         //TODO 暂不支持修改场景名字
         String name = jsonObject.optString(CommonData.JSON_KEY_NAME);
-        JSONArray loopMapArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray loopMapArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         CommonDevice commonDevice = CommonlDeviceManager.getInstance(mContext).getByUuid(uuid);
         if(null == commonDevice){
             return;
@@ -218,28 +219,28 @@ public class ScenarioLoopManager {
         for (int i = 0; i < loopMapArray.length();i++) {
             long code = -1;
             JSONObject loopMapObject = loopMapArray.getJSONObject(i);
-            String deviceUuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String deviceUuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             String operateType = loopMapObject.optString(CommonData.JSON_KEY_OPERATIONTYPE);
             if(operateType.equals(CommonData.JSON_OPERATIONTYPE_VALUE_ADD)){
-                String action = loopMapObject.optString(CommonData.JSON_ACTION_KEY);
+                String action = loopMapObject.optString(CommonJson.JSON_ACTION_KEY);
                 ScenarioLoop exist = ScenarioLoopManager.getInstance(mContext).getByDeviceUuid(uuid,deviceUuid);
                 if(null == exist){
                     code = ScenarioLoopManager.getInstance(mContext).add(uuid,commonDevice.mName,deviceUuid,action);
                 }
                 else{
-                    code = Long.valueOf(CommonData.JSON_ERRORCODE_VALUE_EXIST);
+                    code = Long.valueOf(CommonJson.JSON_ERRORCODE_VALUE_EXIST);
                 }
             }
             else if(operateType.equals(CommonData.JSON_OPERATIONTYPE_VALUE_DELETE)){
                 code = ScenarioLoopManager.getInstance(mContext).deleteByDeviceuuid(uuid,deviceUuid);
             }
             else if(operateType.equals(CommonData.JSON_OPERATIONTYPE_VALUE_UPDATE)){
-                String action = loopMapObject.optString(CommonData.JSON_ACTION_KEY);
+                String action = loopMapObject.optString(CommonJson.JSON_ACTION_KEY);
                 ScenarioLoop loop = ScenarioLoopManager.getInstance(mContext).getByDeviceUuid(uuid,deviceUuid);
               /*  if(jsonObject.has(CommonData.JSON_KEY_NAME)){
                     loop.mName = name;
                 }*/
-                if(jsonObject.has(CommonData.JSON_ACTION_KEY)){
+                if(jsonObject.has(CommonJson.JSON_ACTION_KEY)){
                     loop.mAction = action;
                 }
                 code = ScenarioLoopManager.getInstance(mContext).updateByPrimaryId(loop.mId,loop);

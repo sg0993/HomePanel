@@ -1,22 +1,26 @@
 package com.honeywell.homepanel.ui.activities;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.honeywell.homepanel.R;
-import com.honeywell.homepanel.Utils.EventBusWrapper;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUINotification;
-import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUIStatusBar;
-import com.honeywell.homepanel.common.Message.ui.UIMessagesNotification;
 import com.honeywell.homepanel.ui.domain.mainNavigationStatusStruct;
 import com.honeywell.homepanel.ui.fragment.DeviceEditFragment;
 import com.honeywell.homepanel.ui.fragment.DialFragment;
@@ -29,15 +33,11 @@ import com.honeywell.homepanel.ui.uicomponent.TopViewBrusher;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by H135901 on 1/24/2017.
@@ -45,6 +45,7 @@ import java.util.UUID;
 
 public abstract class BaseActivity extends FragmentActivity implements View.OnClickListener{
     private static final String TAG = "BaseActivity";
+    private static final int PERMISSIONS_REQUEST_ALL = 0;
     private static int mLeftCurPage = CommonData.LEFT_SELECT_HOME;
     private static int mLeftPrePage = CommonData.LEFT_SELECT_HOME;
     private List<View>mLeftViews = new ArrayList<View>();
@@ -62,23 +63,50 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         fragmentAdd(true,mLeftCurPage);
         setLeftNavifation(mLeftCurPage);
         updateNewMessageIndicator(0);
-        getUnreadCount();
     }
 
-    private void getUnreadCount() {
-        jsonSendRequest(CommonData.JSON_SUBACTION_VALUE_EVENTCOUNTGET);
-        jsonSendRequest(CommonData.JSON_SUBACTION_VALUE_ALARMCOUNTGET);
-        jsonSendRequest(CommonData.JSON_SUBACTION_VALUE_BULLETINCOUNTGET);
-        jsonSendRequest(CommonData.JSON_SUBACTION_VALUE_VOICEMSGCOUNTGET);
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        requestAllPermission(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE
+                , Manifest.permission.READ_PHONE_STATE
+                , Manifest.permission.CAMERA
+                , Manifest.permission.RECORD_AUDIO});
     }
 
+    private void requestAllPermission(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_ALL);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions
+            , @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ALL:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0) {
+                    for (int grantResult : grantResults) {
+                        if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_ALL);
+                            Snackbar.make(getWindow().getDecorView(), "1111111111111111", Snackbar.LENGTH_LONG).show();
+                            break;
+                        }
+                    }
+                }
+            break;
+        }
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         //setLeftNavifation(mLeftCurPage);
-
         mTopViewBrusher.setTop(getApplicationContext());
     }
     @Override
@@ -102,7 +130,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         else {
             transaction.replace(R.id.main_frameLayout, fragment);
         }
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
     private Fragment getNewFragMent(int position) {
         Fragment fragment = null;
@@ -165,7 +193,6 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     protected abstract int getContent();
 
     private void initLeftPage() {
-        Log.d(TAG,"initLeftPage() 11111111111111");
         switch (mLeftCurPage){
             case CommonData.LEFT_SELECT_HOME:
                 mLeftImages.get(mLeftCurPage).setImageResource(R.mipmap.home_select);
@@ -210,7 +237,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         }
     }
 
-    private void updateNewMessageIndicator(int unreadCount)
+    public void updateNewMessageIndicator(int unreadCount)
     {
         if (unreadCount > 0) {
             mMsgIndicator.setVisibility(View.VISIBLE);
@@ -219,29 +246,14 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         }
     }
 
-    public void jsonSendRequest(String subaction) {
-        JSONObject dataReq = new JSONObject();
-        try {
-            dataReq.put(CommonData.JSON_ACTION_KEY, CommonData.JSON_ACTION_VALUE_REQUEST);
-            dataReq.put(CommonData.JSON_SUBACTION_KEY, subaction);
-            dataReq.put(CommonData.JSON_MSGID_KEY, UUID.randomUUID());
-            dataReq.put(CommonData.JSON_KEY_DATASTATUS, CommonData.DATASTATUS_UNREAD);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        EventBusWrapper.emitMessageToEventBus(dataReq);
-        Log.d(TAG, "jsonSendRequest: >> " + dataReq.toString());
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUINotification.SUISEventsUnreadCountMessageRsp msg) {
-//        jsonParse((Object) msg);
-        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
-        String subaction = msg.optString(CommonData.JSON_SUBACTION_KEY, "");
-        String msgid = msg.optString(CommonData.JSON_MSGID_KEY, "");
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+        String subaction = msg.optString(CommonJson.JSON_SUBACTION_KEY, "");
+        String msgid = msg.optString(CommonJson.JSON_MSGID_KEY, "");
 
-        if (    !action.equals(CommonData.JSON_ACTION_VALUE_RESPONSE)
-                || !subaction.equals(CommonData.JSON_SUBACTION_VALUE_NOTIFICATIONEVENTCOUNTGET)) {
+        if (    !action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
+                || !subaction.equals(CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONEVENTCOUNTGET)) {
             return;
         }
 
@@ -274,22 +286,6 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     {
 
     }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void OnMessageEvent(SUISMessagesUIStatusBar.SUISConnectStatusMessageEve msg)
-//    {
-//        String action = msg.optString(CommonData.JSON_ACTION_KEY, "");
-//        String subaction = msg.optString(CommonData.JSON_SUBACTION_KEY, "");
-//        if (action.equals(CommonData.JSON_ACTION_VALUE_EVENT) && subaction.equals(CommonData.JSON_VALUE_CONNECTIONSTATUSGET)) {
-//            String server = msg.optString(CommonData.JSON_KEY_SERVER, "");
-//            if (server.equals(CommonData.JSON_VALUE_ONLINE)) {
-//
-//                Log.d(TAG, "OnMessageEvent: online event");
-//            } else {
-//                Log.d(TAG, "OnMessageEvent: offline event");
-//            }
-//        }
-//    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(mainNavigationStatusStruct msg) {//receive bulletin msg

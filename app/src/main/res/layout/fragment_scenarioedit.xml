@@ -13,19 +13,15 @@
         android:background="@android:color/white"
         android:orientation="vertical"
         tools:context=".ui.activities.MainActivity">
-
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/pressblue"
+            android:layout_height="62dp"
             android:gravity="center"
             android:text="Scences"
+            style="@style/notification_navi"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            tools:ignore="HardcodedText" />
-
+            android:textSize="20sp"/>
         <LinearLayout
             android:orientation="vertical"
             android:background="@color/white"
@@ -48,10 +44,11 @@
                 android:listSelector="@null"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="1dp" />
-            <View
-                android:background="#C6C6C6"
+            <Button
+                android:background="@color/line_color"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"/>
+                android:layout_height="2dp">
+            </Button>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

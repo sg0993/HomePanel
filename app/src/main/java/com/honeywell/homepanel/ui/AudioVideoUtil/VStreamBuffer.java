@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 public class VStreamBuffer {
     public ByteBuffer StreamData = null;
     public int StreamLen;
-    public long TimeSTP;
+    public long TimeSTP = 0;
     public String UUID;
 
     public VStreamBuffer(byte[] data) {

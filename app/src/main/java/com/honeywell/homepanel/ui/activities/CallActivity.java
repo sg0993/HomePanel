@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -18,22 +19,30 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.honeywell.homepanel.IAvRtpService;
+import com.honeywell.homepanel.IConfigService;
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.utils.CommonUtils;
-import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
+import com.honeywell.homepanel.ui.fragment.CalIpDcIncomingAndConnected;
+import com.honeywell.homepanel.ui.fragment.CallBaseFragment;
+import com.honeywell.homepanel.ui.fragment.CallGuardIncomingAndConnected;
 import com.honeywell.homepanel.ui.fragment.CallIncomingNeighbor;
 import com.honeywell.homepanel.ui.fragment.CallLobbyIncomingAndConnected;
 import com.honeywell.homepanel.ui.fragment.CallNeighborAndioAndVideoConnected;
 import com.honeywell.homepanel.ui.fragment.CallOutgoingNeighborFragment;
-import com.honeywell.homepanel.ui.fragment.CallBaseFragment;
 import com.honeywell.homepanel.ui.uicomponent.TopViewBrusher;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,12 +58,16 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
 
     public int mCurCallStatus = CommonData.CALL_LOBBY_INCOMMING;
     public String mUnit = "100-202";
-
+    public String mFormatText = "";
+    public String mCallType = "";
     private AudioManager mAudioManager = null;
     private boolean mSpeakerAdjust = false;
 
     public IAvRtpService mIAvRtpService = null;
     private ServiceConnection mIAvRtpServiceConnect = new ServiceConnectionImpl();
+
+    public IConfigService mIConfigService = null;
+    private ServiceConnection mIConfigServiceConnect = new ServiceConnectionImpl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +83,33 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 
         CommonUtils.startAndBindService(getApplicationContext(),CommonData.ACTION_AVRTP_SERVICE,mIAvRtpServiceConnect);
+        CommonUtils.startAndBindService(getApplicationContext(),CommonData.ACTION_CONFIG_SERVICE,mIConfigServiceConnect);
+    }
+
+    private JSONObject getCallInitJsonObject() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(CommonJson.JSON_ACTION_KEY,CommonJson.JSON_ACTION_VALUE_EVENT);
+            jsonObject.put(CommonJson.JSON_SUBACTION_KEY,CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONEVENTADD);
+            JSONArray jsonArray = new JSONArray();
+            JSONObject mapObject = new JSONObject();
+            mapObject.put(CommonJson.JSON_UUID_KEY,MainActivity.CallBaseInfo.getCallUuid());
+            mapObject.put(CommonData.JSON_KEY_EVENTTYPE,MainActivity.CallBaseInfo.getCallType());
+            mapObject.put(CommonData.JSON_KEY_TIME,getCalltime());
+            mapObject.put(CommonData.JSON_KEY_DATASTATUS,CommonData.DATASTATUS_UNREAD);
+            jsonArray.put(mapObject);
+            jsonObject.put(CommonJson.JSON_LOOPMAP_KEY,jsonArray);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  jsonObject;
+    }
+
+
+    public String getCalltime(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String time = sdf.format(new Date());
+        return time;
     }
 
     private void getAllParameter(Intent intent) {
@@ -78,6 +118,12 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         }
         if(intent.hasExtra(CommonData.INTENT_KEY_UNIT)){
             mUnit = intent.getStringExtra(CommonData.INTENT_KEY_UNIT);
+        }
+        if(intent.hasExtra(CommonData.INTENT_KEY_TEXTFORMAT)){
+            mFormatText = intent.getStringExtra(CommonData.INTENT_KEY_TEXTFORMAT);
+        }
+        if(intent.hasExtra(CommonJson.JSON_CALLTYPE_KEY)){
+            mCallType = intent.getStringExtra(CommonJson.JSON_CALLTYPE_KEY);
         }
         Log.d(TAG,"getAllParameter() mCurCallStatus:"+mCurCallStatus+",mUnit:"+mUnit +",,,1111111");
     }
@@ -94,8 +140,11 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         EventBus.getDefault().unregister(this);
         super.onDestroy();
         mTopViewBrusher.destory();
-        if(null != mIAvRtpService){
-            unbindService(mIAvRtpServiceConnect);
+        if(null != mIAvRtpServiceConnect){
+            getApplicationContext().unbindService(mIAvRtpServiceConnect);
+        }
+        if(null != mIConfigServiceConnect){
+            getApplicationContext().unbindService(mIConfigServiceConnect);
         }
     }
 
@@ -108,6 +157,7 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         if(null == fragment){
             fragment = getNewFragMent(position);
         }
+        LogMgr.e("fragment==null:"+(fragment==null)+" transaction == null:"+(transaction==null));
         transaction.replace(R.id.main_frameLayout, fragment);
         transaction.commit();
     }
@@ -131,6 +181,15 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
                 break;
             case CommonData.CALL_LOBBY_CONNECTED:
                 fragment = new CallLobbyIncomingAndConnected("" + position);////
+                break;
+            case CommonData.CALL_GUARD_INCOMMING:
+            case CommonData.CALL_GUARD_CONNECTED:
+            case CommonData.CALL_GUART_OUTGOING:
+                fragment = new CallGuardIncomingAndConnected("" + position);
+                break;
+            case CommonData.CALL_IPDC_INCOMING:
+            case CommonData.CALL_IPDC_CONNECTED:
+                fragment = new CalIpDcIncomingAndConnected("" + position);
                 break;
             default:
                 break;
@@ -221,11 +280,21 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
                 mIAvRtpService = IAvRtpService.Stub.asInterface(service);
                 setFragmentAidl();
             }
+            else if(serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)){
+                mIConfigService = IConfigService.Stub.asInterface(service);
+                if(mCurCallStatus == CommonData.CALL_LOBBY_INCOMMING ||
+                        mCurCallStatus == CommonData.CALL_IPDC_INCOMING){
+                    saveCallHistory(getCallInitJsonObject());
+                }
+            }
         }
         public void onServiceDisconnected(ComponentName name) {
             String serviceClassName = name.getClassName();
             if(serviceClassName.equals(CommonData.ACTION_AVRTP_SERVICE)){
                 mIAvRtpService = null;
+            }
+            else if(serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)){
+                mIConfigService = null;
             }
         }
     }
@@ -233,7 +302,18 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
     private void setFragmentAidl() {
         CallBaseFragment fragment = mFragments.get(getCurFragmentStatus());
         if(null != fragment && mIAvRtpService != null){
-            fragment.setFragmentAidl(mIAvRtpService);
+            fragment.setFragmentAidl(mIAvRtpService,getApplicationContext());
+        }
+    }
+
+
+    public  void saveCallHistory(JSONObject jsonObject){
+        if(null != mIConfigService){
+            try {
+                mIConfigService.putToDBManager(jsonObject.toString().getBytes());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

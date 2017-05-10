@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
@@ -148,34 +149,34 @@ public class SpeedDialManager {
             loopToJson(loopMapObject,loop);
             loopMapArray.put(loopMapObject);
         }
-        jsonObject.put(CommonData.JSON_LOOPMAP_KEY,loopMapArray);
-        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY,loopMapArray);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 
     private void loopToJson(JSONObject loopMapObject, SpeedDial loop) throws JSONException {
-        loopMapObject.put(CommonData.JSON_UUID_KEY,loop.mUuid);
+        loopMapObject.put(CommonJson.JSON_UUID_KEY,loop.mUuid);
         loopMapObject.put(CommonData.JSON_TYPE_KEY,loop.mType);
         loopMapObject.put(CommonData.JSON_DONGHO_KEY,loop.mDongHo);
     }
 
     public void speeddialAdd(JSONObject jsonObject)  throws JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
             String type = loopMapObject.optString(CommonData.JSON_TYPE_KEY);
             String dongHo = loopMapObject.optString(CommonData.JSON_DONGHO_KEY);
             String uuid = CommonUtils.generateCommonEventUuid();
             long rowid = add(uuid,type,dongHo);
-            loopMapObject.put(CommonData.JSON_UUID_KEY,uuid);
+            loopMapObject.put(CommonJson.JSON_UUID_KEY,uuid);
             DbCommonUtil.putErrorCodeFromOperate(rowid, loopMapObject);
         }
     }
 
     public void speeddialUpdate(JSONObject jsonObject)  throws JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             String dongHo  = loopMapObject.optString(CommonData.JSON_DONGHO_KEY);
             SpeedDial loop = getByUuid(uuid);
             loop.mDongHo = dongHo;
@@ -185,10 +186,10 @@ public class SpeedDialManager {
     }
 
     public void speeddialDelete(JSONObject jsonObject) throws JSONException {
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             long num = deleteByUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
         }

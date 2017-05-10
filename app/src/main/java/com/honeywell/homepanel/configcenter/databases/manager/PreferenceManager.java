@@ -13,6 +13,22 @@ import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
 public class PreferenceManager {
     public static final String HOMEPANEL_CONFIG_NAME = "homepanelconfig";
 
+    public static synchronized void putBooleanConfig(Context context, String key, boolean value) {
+        if (context == null || TextUtils.isEmpty(key)) {
+            return;
+        }
+        SharedPreferences preferences = context.getSharedPreferences(HOMEPANEL_CONFIG_NAME, Context.MODE_PRIVATE);
+        preferences.edit().putBoolean(key, value).apply();
+    }
+
+    public static synchronized boolean getBooleanConfig(Context context, String key) {
+        if (context == null || TextUtils.isEmpty(key)) {
+            return false;
+        }
+        SharedPreferences preferences = context.getSharedPreferences(HOMEPANEL_CONFIG_NAME, Context.MODE_PRIVATE);
+        return preferences.getBoolean(key, false);
+    }
+
     public static synchronized  void putIntConfig(Context context, String key, int value){
         if(null == context || TextUtils.isEmpty(key)){
             return;

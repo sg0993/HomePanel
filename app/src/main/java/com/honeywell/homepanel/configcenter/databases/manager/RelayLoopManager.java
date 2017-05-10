@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
@@ -39,9 +40,10 @@ public class RelayLoopManager {
         dbHelper= ConfigDatabaseHelper.getInstance(mContext);
     }
 
-    public synchronized long add(String moduleUuid,String uuid,String name,int loop,int delayTime,int enabled){
+    public synchronized long add(String moduleUuid,String uuid,String adapterUuid,String name,int loop,int delayTime,int enabled){
         ContentValues values = new ContentValuesFactory()
                 .put(ConfigConstant.COLUMN_MODULEUUID, moduleUuid)
+                .put(ConfigConstant.COLUMN_ADAPTERUUID, adapterUuid)
                 .put(ConfigConstant.COLUMN_UUID, uuid)
                 .put(ConfigConstant.COLUMN_NAME, name)
                 .put(ConfigConstant.COLUMN_LOOP, loop)
@@ -70,6 +72,10 @@ public class RelayLoopManager {
         if(device.mDelayTime > 0){
             values.put(ConfigConstant.COLUMN_DELAYTIME, device.mDelayTime);
         }
+        if(!TextUtils.isEmpty(device.mAdapterUuid)) {
+            values.put(ConfigConstant.COLUMN_ADAPTERUUID, device.mAdapterUuid);
+        }
+
         values.put(ConfigConstant.COLUMN_ENABLED, device.mEnabled);
         return values;
     }
@@ -137,7 +143,7 @@ public class RelayLoopManager {
         device.mLoop = cursor.getInt(cursor.getColumnIndex(ConfigConstant.COLUMN_LOOP));
         device.mDelayTime = cursor.getInt(cursor.getColumnIndex(ConfigConstant.COLUMN_DELAYTIME));
         device.mEnabled = cursor.getInt(cursor.getColumnIndex(ConfigConstant.COLUMN_ENABLED));
-        //device.mUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_UUID));
+        device.mAdapterUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_ADAPTERUUID));
         device.mUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_RELAYLOOP_INT,device.mId);
         return device;
     }
@@ -159,7 +165,7 @@ public class RelayLoopManager {
         return  relayLoops;
     }
     public void extensionRelayGet(JSONObject jsonObject)throws JSONException {
-        List<RelayLoop>lists = getByModuleUuid(jsonObject.getString(CommonData.JSON_UUID_KEY));
+        List<RelayLoop>lists = getByModuleUuid(jsonObject.getString(CommonJson.JSON_UUID_KEY));
         if(null == lists){
             return;
         }
@@ -170,35 +176,37 @@ public class RelayLoopManager {
             loopToJson(loopMapObject,loop);
             loopMapArray.put(loopMapObject);
         }
-        jsonObject.put(CommonData.JSON_LOOPMAP_KEY,loopMapArray);
-        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,CommonData.JSON_ERRORCODE_VALUE_OK);
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY,loopMapArray);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
     private void loopToJson(JSONObject loopMapObject, RelayLoop loop) throws  JSONException{
-        loopMapObject.put(CommonData.JSON_UUID_KEY,loop.mUuid);
-        loopMapObject.put(CommonData.JSON_ALIASNAME_KEY,loop.mName);
+        loopMapObject.put(CommonJson.JSON_UUID_KEY,loop.mUuid);
+        loopMapObject.put(CommonJson.JSON_ALIASNAME_KEY,loop.mName);
         loopMapObject.put(CommonData.JSON_KEY_LOOP,loop.mLoop);
         loopMapObject.put(CommonData.JSON_KEY_DELAYTIME,loop.mDelayTime+"");
         loopMapObject.put(CommonData.JSON_KEY_ENABLE,loop.mEnabled+"");
+        loopMapObject.put(CommonData.JSON_KEY_ADAPTERUUID, loop.mAdapterUuid);
+        loopMapObject.put(CommonData.JSON_KEY_MODULEUUID, loop.mModuleUuid);
     }
 
     public void relayUpdate(JSONObject jsonObject) throws  JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             RelayLoop loop = getByUuid(uuid);
             loopForUpdate(loop,loopMapObject);
             long num = updateByUuid(uuid,loop);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
-            if(num > 0 && loopMapObject.has(CommonData.JSON_ALIASNAME_KEY)){
-                DbCommonUtil.updateCommonName(mContext,uuid,loopMapObject.getString(CommonData.JSON_ALIASNAME_KEY));
+            if(num > 0 && loopMapObject.has(CommonJson.JSON_ALIASNAME_KEY)){
+                DbCommonUtil.updateCommonName(mContext,uuid,loopMapObject.getString(CommonJson.JSON_ALIASNAME_KEY));
             }
         }
     }
 
     private void loopForUpdate(RelayLoop loop, JSONObject loopMapObject) {
-        if(loopMapObject.has(CommonData.JSON_ALIASNAME_KEY)) {
-            loop.mName = loopMapObject.optString(CommonData.JSON_ALIASNAME_KEY);
+        if(loopMapObject.has(CommonJson.JSON_ALIASNAME_KEY)) {
+            loop.mName = loopMapObject.optString(CommonJson.JSON_ALIASNAME_KEY);
         }
         if(loopMapObject.has(CommonData.JSON_KEY_DELAYTIME)){
             loop.mDelayTime = Integer.valueOf(loopMapObject.optString(CommonData.JSON_KEY_DELAYTIME));
@@ -206,18 +214,58 @@ public class RelayLoopManager {
         if(loopMapObject.has(CommonData.JSON_KEY_ENABLE)){
             loop.mEnabled = Integer.valueOf(loopMapObject.optString(CommonData.JSON_KEY_ENABLE));
         }
+        if(loopMapObject.has(CommonData.JSON_KEY_ADAPTERUUID)){
+            loop.mAdapterUuid = loopMapObject.optString(CommonData.JSON_KEY_ADAPTERUUID);
+        }
     }
 
     public void relayDelete(JSONObject jsonObject) throws  JSONException{
-        JSONArray jsonArray = jsonObject.getJSONArray(CommonData.JSON_LOOPMAP_KEY);
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String uuid = loopMapObject.optString(CommonData.JSON_UUID_KEY);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             long num = deleteByUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
             if(num > 0){
                 CommonlDeviceManager.getInstance(mContext).deleteByUuid(uuid);
             }
+        }
+    }
+
+    public void getDeviceLoopDetailsInfo(JSONObject jsonObject) {
+        JSONArray loopMapArray = jsonObject.optJSONArray(CommonJson.JSON_LOOPMAP_KEY);
+        Cursor cursor = DbCommonUtil.getDeviceLoopDetails(dbHelper, ConfigConstant.TABLE_RELAYLOOP);
+
+        // Use the original jsonArray if JSONObject contains one, construct new JSONArray otherwise
+        if (loopMapArray == null) {
+            loopMapArray = new JSONArray();
+        }
+
+        // query loop from database and fill json object
+        while(cursor.moveToNext()){
+            try {
+                RelayLoop loop = fillDefault(cursor);
+                JSONObject loopMapObject = new JSONObject();
+                String devLoopType = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_TYPE));
+
+                loopMapObject.put(CommonData.JSON_TYPE_KEY, devLoopType);
+                loopToJson(loopMapObject, loop);
+
+                loopMapArray.put(loopMapObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // close cursor
+        cursor.close();
+
+        // updatet jsonObject passed in
+        try {
+            jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
+            jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

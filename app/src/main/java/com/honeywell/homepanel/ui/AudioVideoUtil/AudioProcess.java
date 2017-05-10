@@ -6,14 +6,12 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.honeywell.homepanel.IAvRtpService;
-import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonPath;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,7 +45,8 @@ public class AudioProcess implements Runnable {
 
     //IPVDP only support 160 bytes per package
     private byte[] mRestData = null;
-    private final static int BYTESENDLEN = 160;
+    //private final static int BYTESENDLEN = 160;
+    private final static int BYTESENDLEN = 320;
 
     private int mSeq = 0;
     private long mTs = 0;
@@ -62,7 +61,7 @@ public class AudioProcess implements Runnable {
         mP2PUUID = p2pUUid;
         mContext = context;
         //在这里我们创建一个文件，用于保存录制内容
-        File fpath = new File(CommonData.AUDIO_PATH);
+        File fpath = new File(CommonPath.AUDIO_PATH);
         if (!fpath.exists()) {
             fpath.mkdirs();//创建文件夹
         }
@@ -164,7 +163,7 @@ public class AudioProcess implements Runnable {
     private void startPhoneMicRecord() throws Exception {
         mSeq = 0;
         mTs = 0;
-        DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(audioFile)));
+        //DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(audioFile)));
         mAudioRecord.startRecording();
 
         int restLength = 0;
@@ -174,9 +173,9 @@ public class AudioProcess implements Runnable {
             }
             byte[] compressedVoice = new byte[mRecBufferSize];
             int num = mAudioRecord.read(compressedVoice, 0, mRecBufferSize);
-            dos.write(compressedVoice, 0, num);
+            //dos.write(compressedVoice, 0, num);
 
-            byte[] writePCMData = new byte[num / 2];
+           /* byte[] writePCMData = new byte[num / 2];
             int length = 0;
             for (int f = 0; f < num / 2; f++) {
                 int a = compressedVoice[f * 2];
@@ -185,7 +184,12 @@ public class AudioProcess implements Runnable {
                 byte data = s16_to_alaw(ab);
                 writePCMData[length] = data;
                 length++;
-            }
+            }*/
+            //byte[] writePCMData = new byte[num];
+            byte[] writePCMData = compressedVoice;
+            int length = num;
+
+
             int totalLength = restLength + length;
             byte[] totalData = new byte[totalLength];
             if (restLength > 0) {
@@ -194,11 +198,17 @@ public class AudioProcess implements Runnable {
             System.arraycopy(writePCMData, 0, totalData, restLength, length);
 
             int count = totalLength / BYTESENDLEN;
-            Log.i(TAG, "sendCallByteDataAById count =" + count + " , mP2PUUID = " + mP2PUUID);
+            //Log.i(TAG, "startPhoneMicRecord() start 11111111 ");
             for (int i = 0; i < count; i++) {
                 byte[] sendData = new byte[BYTESENDLEN];
                 System.arraycopy(totalData, i * BYTESENDLEN, sendData, 0, BYTESENDLEN);
-                if (!TextUtils.isEmpty(mP2PUUID)) {
+
+
+                if(null != mIAvRtpService){
+                    //Log.i(TAG, "startPhoneMicRecord() start 22222222 ");
+                    mIAvRtpService.setAudioFrame(sendData);
+                }
+                /*if (!TextUtils.isEmpty(mP2PUUID)) {
                     mSeq++;
                     mTs += BYTESENDLEN;
                     byte[] sendData2 = new byte[BYTESENDLEN + 12];
@@ -210,16 +220,16 @@ public class AudioProcess implements Runnable {
                     if(null != mIAvRtpService){
                         mIAvRtpService.setAudioFrame(sendData2);
                     }
-                    /*P2PConn.sendCallByteDataAById(sendData2, BYTESENDLEN + 12, mP2PUUID);*/
+                    *//*P2PConn.sendCallByteDataAById(sendData2, BYTESENDLEN + 12, mP2PUUID);*//*
                     Log.i(TAG, "12345    P2PConn.sendCallByteDataAById(sendData, BYTESENDLEN, mP2PUUID);");
-                }
+                }*/
             }
             restLength = (totalLength - count * BYTESENDLEN);
             mRestData = new byte[restLength];
             System.arraycopy(totalData, count * BYTESENDLEN, mRestData, 0, restLength);
 
         }
-        dos.close();
+        //dos.close();
     }
 
     public static String bytes2HexString(byte[] b, int length) {
@@ -366,6 +376,7 @@ public class AudioProcess implements Runnable {
         byte[] gsmdata;
         //开始
         mAudioTrack.play();
+        DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(audioFile)));
         try {
             while ((!Thread.interrupted()) && !mStoped) {
                 if (mStoped) {
@@ -377,7 +388,7 @@ public class AudioProcess implements Runnable {
                     Log.e(TAG, "----startPhoneSpkPlay-----> InterruptedException e " + e.getMessage());
                     continue;
                 }
-                if (null != gsmdata) {
+                /*if (null != gsmdata) {
                     numBytesRead = gsmdata.length;
                     if (numBytesRead >= 0) {
                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -391,8 +402,14 @@ public class AudioProcess implements Runnable {
                         byte[] array = outputStream.toByteArray();
                         mAudioTrack.write(array, 0, array.length);//往track中写数据
                     }
+                }*/
+                if(null != gsmdata && gsmdata.length > 0){
+                    //Log.d(TAG, "startPhoneSpkPlay: gsmdata.length::::"+gsmdata.length+",,,,22222");
+                    dos.write(gsmdata, 0, gsmdata.length);
+                    mAudioTrack.write(gsmdata, 0, gsmdata.length);//往track中写数据
                 }
             }
+            dos.close();
         } catch (Exception e) {
             Log.e(TAG, "startPhoneSpkPlay Exception e =" + e.getMessage(), e);
         }
@@ -400,14 +417,14 @@ public class AudioProcess implements Runnable {
 
 
     public void stopPhoneRecordAndPlay() throws Exception {
-        Log.e(TAG, "stopPhoneRecordAndPlay ");
+        Log.d(TAG, "stopPhoneRecordAndPlay ");
         mStoped = true;
         // stop record
         if (null != mAudioRecord) {
             mAudioRecord.stop();
             mAudioRecord.release();
             mAudioRecord = null;
-            Log.e(TAG, "stopPhoneRecordAndPlay mAudioRecord.stop()");
+            Log.d(TAG, "stopPhoneRecordAndPlay mAudioRecord.stop()");
         }
         // stop play
         if (null != mAudioTrack) {

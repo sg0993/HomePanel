@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
@@ -78,6 +79,7 @@ public class DbCommonUtil {
         }
         return num;
     }
+
     public static int updateByPrimaryId(Context context, ConfigDatabaseHelper dbHelper,String table,ContentValues values,long primaryId) {
         if(primaryId <= 0){
             return -1;
@@ -94,6 +96,7 @@ public class DbCommonUtil {
         }
         return num;
     }
+
     public static  int updateByStringFiled(Context context, ConfigDatabaseHelper dbHelper, String table, ContentValues values, String columnName, String uuid) {
         int num = -1;
         if(TextUtils.isEmpty(uuid)){
@@ -110,18 +113,45 @@ public class DbCommonUtil {
         }
         return num;
     }
+
+    /*
+    replace value contains in column if uuid is not null, otherwise replace all values locate in column
+     */
+    public static int updateFieldByUUID(Context context,ConfigDatabaseHelper dbHelper, String table, ContentValues values, String uuid) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int num = -1;
+
+        try {
+            if(TextUtils.isEmpty(uuid)){
+                num = db.update(table,values,null,null);
+            } else {
+                num = db.update(table,values,ConfigConstant.COLUMN_UUID + "=?",new String[] {uuid});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(num > 0){
+            PreferenceManager.updateVersionId(context);
+        }
+
+        return num;
+    }
+
     public static  Cursor getByPrimaryId(ConfigDatabaseHelper dbHelper,String table,long primaryId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(table,null, ConfigConstant.COLUMN_ID + "=?",
                 new String[] { String.valueOf(primaryId) }, null, null, null, null);
         return  cursor;
     }
+
     public static  Cursor getByStringField(ConfigDatabaseHelper dbHelper, String table, String columnName, String uuid) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(table,null,columnName + "=?",
                 new String[] { uuid }, null, null, null, null);
         return  cursor;
     }
+
     public static  Cursor getByIntField(ConfigDatabaseHelper dbHelper, String table, String columnName, int status) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(table,null,columnName + "=?",
@@ -155,7 +185,18 @@ public class DbCommonUtil {
         return  (seq + 1);
     }
 
-   
+    public static  Cursor getDeviceLoopDetails(ConfigDatabaseHelper dbHelper, String table) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        StringBuilder sb = new StringBuilder().append("select A1.").append(ConfigConstant.COLUMN_TYPE).append(", A2.* from ")
+                .append(ConfigConstant.TABLE_COMMONDEVICE).append(" A1,").append(table).append(" A2 ")
+                .append("where A1.").append(ConfigConstant.COLUMN_UUID).append(" = A2.").append(ConfigConstant.COLUMN_UUID)
+                .append(";");
+
+        Cursor cursor = db.rawQuery(sb.toString(), null);
+        return  cursor;
+    }
+
     public static String generateDeviceUuid(int tableInt, long primaryId) {
         String uuid = String.valueOf(tableInt);
         if(uuid.length() == 1){
@@ -191,8 +232,8 @@ public class DbCommonUtil {
         switch (tableInt){
             case ConfigConstant.TABLE_ZONELOOP_INT:
                 ZoneLoop zoneLoop = ZoneLoopManager.getInstance(mContext).getByPrimaryId(primaryId);
-                jsonObject.put(CommonData.JSON_UUID_KEY,zoneLoop.mUuid);
-                jsonObject.put(CommonData.JSON_ALIASNAME_KEY,zoneLoop.mName);
+                jsonObject.put(CommonJson.JSON_UUID_KEY,zoneLoop.mUuid);
+                jsonObject.put(CommonJson.JSON_ALIASNAME_KEY,zoneLoop.mName);
                 jsonObject.put(CommonData.JSON_KEY_ZONETYPE,zoneLoop.mZoneType);
                 jsonObject.put(CommonData.JSON_KEY_ALARMTYPE,zoneLoop.mAlarmType);
                 jsonObject.put(CommonData.JSON_KEY_ENABLE,zoneLoop.mEnabled+"");
@@ -200,8 +241,8 @@ public class DbCommonUtil {
                 break;
             case ConfigConstant.TABLE_RELAYLOOP_INT:
                 RelayLoop relayLoop = RelayLoopManager.getInstance(mContext).getByPrimaryId(primaryId);
-                jsonObject.put(CommonData.JSON_UUID_KEY,relayLoop.mUuid);
-                jsonObject.put(CommonData.JSON_ALIASNAME_KEY,relayLoop.mName);
+                jsonObject.put(CommonJson.JSON_UUID_KEY,relayLoop.mUuid);
+                jsonObject.put(CommonJson.JSON_ALIASNAME_KEY,relayLoop.mName);
                 jsonObject.put(CommonData.JSON_KEY_LOOP,relayLoop.mLoop);
                 jsonObject.put(CommonData.JSON_KEY_ENABLE,relayLoop.mEnabled+"");
                 jsonObject.put(CommonData.JSON_KEY_DELAYTIME,relayLoop.mDelayTime+"");
@@ -212,14 +253,14 @@ public class DbCommonUtil {
     }
 
     public static void putErrorCodeFromOperate(long numOrRowid,JSONObject jsonObject) throws JSONException {
-        String code = CommonData.JSON_ERRORCODE_VALUE_FAIL;
+        String code = CommonJson.JSON_ERRORCODE_VALUE_FAIL;
         if(numOrRowid > 0){
-            code = CommonData.JSON_ERRORCODE_VALUE_OK;
+            code = CommonJson.JSON_ERRORCODE_VALUE_OK;
         }
-        else if(numOrRowid == Long.valueOf(CommonData.JSON_ERRORCODE_VALUE_EXIST)){
-            code = CommonData.JSON_ERRORCODE_VALUE_EXIST;
+        else if(numOrRowid == Long.valueOf(CommonJson.JSON_ERRORCODE_VALUE_EXIST)){
+            code = CommonJson.JSON_ERRORCODE_VALUE_EXIST;
         }
-        jsonObject.put(CommonData.JSON_ERRORCODE_KEY,code);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY,code);
     }
 
     public static  long getCount(SQLiteDatabase db,String tableName){
@@ -252,7 +293,8 @@ public class DbCommonUtil {
         }
         return status;
     }
-    public  static  void updateCommonName(Context context,String uuid,String name) {
+
+    public static void updateCommonName(Context context,String uuid,String name) {
         CommonDevice commonDevice = CommonlDeviceManager.getInstance(context).getByUuid(uuid);
         commonDevice.mName = name;
         CommonlDeviceManager.getInstance(context).updateByUuid(uuid, commonDevice);

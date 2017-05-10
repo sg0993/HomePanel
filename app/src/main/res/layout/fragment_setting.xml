@@ -10,14 +10,12 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="68dp"
-        android:background="@color/pressblue"
+        android:layout_height="65dp"
         android:gravity="center"
         android:text="Settings"
+        style="@style/notification_navi"
         android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        tools:ignore="HardcodedText" />
+        android:textSize="20sp"/>
     <LinearLayout
         android:background="@color/white"
         android:orientation="vertical"
