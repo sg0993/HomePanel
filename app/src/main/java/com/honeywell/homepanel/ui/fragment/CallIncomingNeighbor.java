@@ -57,6 +57,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
         View view = inflater.inflate(R.layout.fragment_incomingcall_neighbor, null);
         initViews(view);
         Log.d(TAG,"CallIncomingNeighbor.onCreateView() 11111111");
+        startPlayRing(CALL_RING_NEIGHPHONE);
         mCallAnimationBrusher.init(view);
         mCallBottomBrusher.init(view);
         mCallBottomBrusher.setVisible(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,View.GONE);
@@ -96,11 +97,13 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
         switch (viewId){
             case R.id.left_btn:
                 UISendCallMessage.requestForTakeCall(MainActivity.CallBaseInfo);
+                stopPlayRing();
                 CallActivity.switchFragmentInFragment(this,CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
                 break;
             case R.id.right_btn:
                 //getActivity().finish();
                 UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
+                stopPlayRing();
                 EventBus.getDefault().post(new AlarmHint(mTestAlarmCount++));
                 break;
             default:
@@ -115,7 +118,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISCallTerminatedMessageEve msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
-
+        stopPlayRing();
         if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
             getActivity().finish();
         }

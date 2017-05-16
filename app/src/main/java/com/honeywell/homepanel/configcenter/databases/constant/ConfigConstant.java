@@ -21,6 +21,7 @@ public class ConfigConstant {
     public static final String TABLE_SPEEDDIAL = "speeddial";
     public static final String TABLE_IPDOORCARD = "ipdoorcard";
     public static final String TABLE_DEVICEADAPTER = "deviceadapter";
+    public static final String TABLE_LOCALDEVICE = "localdevice";
 
     public static final int TABLE_PERIPHERALDEVICE_INT = 0;
     public static final int TABLE_COMMONDEVICE_INT = 1;
@@ -34,6 +35,7 @@ public class ConfigConstant {
     public static final int TABLE_SPEEDDIAL_INT = 9;
     public static final int TABLE_IPDOORCARD_INT = 10;
     public static final int TABLE_DEVICEADAPTER_INT = 11;
+    public static final int TABLE_LOCALDEVICE_INT = 12;
 
 
 
@@ -42,11 +44,13 @@ public class ConfigConstant {
     public final static String COLUMN_UUID = "uuid";//str
     public final static String COLUMN_NAME = "name";//str
     public final static String COLUMN_MODULEUUID = "moduleuuid";//str
-    public final static String COLUMN_ADAPTERUUID = "adapteruuid";
+    public final static String COLUMN_ADAPTERNAME = "adaptername";
     public final static String COLUMN_TYPE = "type";//str
     public static final String COLUMN_LOOP = "loop";
     public static final String COLUMN_DELAYTIME = "delaytime";
     public static final String COLUMN_ENABLED = "enabled";
+    public static final String COLUMN_PHYSICTYPE = "physictype";
+    public static final String COLUMN_CONFIGURATION = "configuration";
 
     public static final String COLUMN_ZONETYPE = "zonetype";
     public static final String COLUMN_ALARMTYPE = "alarmtype";
@@ -76,8 +80,10 @@ public class ConfigConstant {
     public final static String COLUMN_PERIPHERALDEVICE_TYPE = COLUMN_TYPE;//int,
     public final static String COLUMN_PERIPHERALDEVICE_ONLINE = "online";//int
     public final static String COLUMN_PERIPHERALDEVICE_IP = COLUMN_IPADDR;//str
+    public final static String COLUMN_PERIPHERALDEVICE_PORT = "port";//byte
     public final static String COLUMN_PERIPHERALDEVICE_MAC = "mac_addr";//str
     public final static String COLUMN_PERIPHERALDEVICE_VERSION = "version";//byte
+    public final static String COLUMN_PERIPHERALDEVICE_MODEL = "model";//byte
 
     //home panel config key
     public static final String KEY_DBVERSIONID = "dbversionid";
@@ -104,7 +110,13 @@ public class ConfigConstant {
 
     public static final  String[] DEFAULT_SCENARIO_NAME = {"回家","离家","睡眠","起床"};
 
-    public  static final int HOMEPANEL_ZONE_COUNT = 8;
+    // 13 IOs
+    public static final int HOMEPANEL_LOCALIO_HONZONES_COUNT = 10;
+    public static final int HOMEPANEL_LOCALIO_HONDOORBELL_COUNT = 1;
+    public static final int HOMEPANEL_LOCALIO_HONEMERGENCY_COUNT = 1;
+    public static final int HOMEPANEL_LOCALIO_HONTAMPER_COUNT = 1;
+    public static final int HOMEPANEL_LOCALIO_COUNT = HOMEPANEL_LOCALIO_HONZONES_COUNT + HOMEPANEL_LOCALIO_HONDOORBELL_COUNT
+            + HOMEPANEL_LOCALIO_HONEMERGENCY_COUNT + HOMEPANEL_LOCALIO_HONTAMPER_COUNT;
 
     public static SparseArray<String> mTableNameMap;
     static {
@@ -133,6 +145,7 @@ public class ConfigConstant {
                 + COLUMN_MODULEUUID + " nvarchar(128), "
                 + COLUMN_NAME + " nvarchar(64), "
                 + COLUMN_PERIPHERALDEVICE_TYPE + " nvarchar(32), "
+                + COLUMN_PERIPHERALDEVICE_MODEL + " nvarchar(32), "
                 + COLUMN_PERIPHERALDEVICE_IP + " nvarchar(32), "
                 + COLUMN_PERIPHERALDEVICE_MAC + " nvarchar(64), "
                 + COLUMN_PERIPHERALDEVICE_ONLINE + " INTEGER, "
@@ -154,7 +167,7 @@ public class ConfigConstant {
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_MODULEUUID + " nvarchar(128), "
                 + COLUMN_UUID + " nvarchar(128), "
-                + COLUMN_ADAPTERUUID + " nvarchar(128), "
+                + COLUMN_ADAPTERNAME + " nvarchar(128), "
                 + COLUMN_NAME + " nvarchar(64), "
                 + COLUMN_LOOP + " INTEGER, "
                 + COLUMN_DELAYTIME + " INTEGER, "
@@ -167,7 +180,7 @@ public class ConfigConstant {
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_MODULEUUID + " nvarchar(128), "
                 + COLUMN_UUID + " nvarchar(128), "
-                + COLUMN_ADAPTERUUID + " nvarchar(128), "
+                + COLUMN_ADAPTERNAME + " nvarchar(128), "
                 + COLUMN_NAME + " nvarchar(64), "
                 + COLUMN_LOOP + " INTEGER, "
                 + COLUMN_DELAYTIME + " INTEGER, "
@@ -264,6 +277,19 @@ public class ConfigConstant {
                 + COLUMN_NAME + " nvarchar(64) unique, "
                 + COLUMN_DESCRIPTION + " nvarchar(128), "
                 + COLUMN_ENABLED + " INTEGER "
+                + ") ";
+    }
+
+    public static  String createLocalDeviceTable() {
+        return "CREATE TABLE IF NOT EXISTS " + TABLE_LOCALDEVICE + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_UUID + " nvarchar(128), "
+                + COLUMN_NAME + " nvarchar(64), "
+                + COLUMN_TYPE + " nvarchar(32) , "
+                + COLUMN_PHYSICTYPE + " nvarchar(32) unique, "
+                + COLUMN_ADAPTERNAME + " nvarchar(128), "
+                + COLUMN_ENABLED + " INTEGER, "
+                + COLUMN_CONFIGURATION + " nvarchar(1024) "
                 + ") ";
     }
 }

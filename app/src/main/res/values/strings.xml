@@ -90,39 +90,43 @@
     <string name="audio">Audio</string>
     <string name="video">Video</string>
 
-    <string name="engin_top_title">Engineering Mode</string>
-    <string name="engin_device_role">Device Role</string>
-    <string name="engin_network">Network Setting</string>
-    <string name="engin_serverip">Server Ip Settiong</string>
-    <string name="engin_roomno">Room Number</string>
-    <string name="engin_zonecfg">Zone Configuration</string>
-    <string name="engin_relaycfg">Relay Configuration</string>
-    <string name="engin_elevatorset">Elevator Setting</string>
-    <string name="engin_ddkset">Door Lock Setting</string>
-    <string name="engin_subphone">Ip Subphone Setting</string>
-    <string name="engin_masterphone">Ip Masterphone Setting</string>
-    <string name="engin_camera">Ip Camera Setting</string>
-    <string name="engin_antidismantle">Anti-Dismantle</string>
-    <string name="engin_finaltest">Start Final Tester</string>
+    <string name="engin_top_title">Engineering mode</string>
+    <string name="engin_device_role">Device role</string>
+    <string name="engin_network">Network setting</string>
+    <string name="engin_serverip">Server Ip settiong</string>
+    <string name="engin_roomno">Room number</string>
+    <string name="engin_zonecfg">Zone configuration</string>
+    <string name="engin_relaycfg">Relay configuration</string>
+    <string name="engin_elevatorset">Elevator cetting</string>
+    <string name="engin_ddkset">Door lock cetting</string>
+    <string name="engin_subphone">Ip subphone setting</string>
+    <string name="engin_masterphone">Ip masterphone setting</string>
+    <string name="engin_camera">Ip camera setting</string>
+    <string name="engin_antidismantle">Anti-dismantle</string>
+    <string name="engin_finaltest">Start final tester</string>
     <string name="engin_restart">Restart</string>
     <string name="engin_serverip_addr">159.99.249.40</string>
     <string name="engin_roomno_number">300201002</string>
+    <string name="engin_ipdc_front_version">IP Door Camera Front Version</string>
+    <string name="engin_ipdc_back_version">IP Door Camera Back Version</string>
 
-    <string name="network_top_title">Netmask Setting</string>
-    <string name="network_IP_addr">Ip Address</string>
+    <string name="network_top_title">Netmask setting</string>
+    <string name="network_IP_addr">IP address</string>
     <string name="network_netmask">Netmask</string>
     <string name="network_gateway">Gateway</string>
     <string name="network_ipaddr_value">159.99.249.247</string>
     <string name="network_netmask_value">255.255.255.0</string>
     <string name="network_gateway_value">159.99.249.1</string>
 
-    <string name="zone_top_title">Zone Configuration</string>
-    <string name="zone_local_zone">Local Zone</string>
-    <string name="zone_extension_zone">Extension Zone</string>
+    <string name="zone_top_title">Zone configuration</string>
+    <string name="zone_local_zone">Local zone</string>
+    <string name="zone_extension_zone">Extension zone</string>
     <string name="title_activity_wifi_configure">WifiConfigureActivity</string>
     <string name="wifi_configure">Wi-Fi configuration</string>
+    <string name="wifi_scan_access_points">Scan access points</string>
+    <string name="wifi_configuration">Wi-Fi configuration</string>
     <string name="title_activity_location">LocationActivity</string>
-    <string name="location">Set Location</string>
+    <string name="location">Set location</string>
     <string name="title_activity_date_time">DateTimeActivity</string>
     <string name="date">Date&amp;Time</string>
     <string name="title_activity_advanced">AdvancedActivity</string>
@@ -162,12 +166,12 @@
     <string name="title_activity_wifi_connect">WifiConnectActivity</string>
 
     <string name="relay_top_title">Relay configuration</string>
-    <string name="relay_alias">Relay Alias</string>
+    <string name="relay_alias">Alias</string>
     <string name="relay_wifi_relay_module">WIFI Relay modules (8)</string>
     <string name="relay_wifi_relay_module2">WIFI Relay modules (4)</string>
     <string name="relay_wifi_relay_module_state">online</string>
 
-    <string name="IP_subphone_setting_top_title">Ip Subphone Setting</string>
+    <string name="IP_subphone_setting_top_title">Ip subphone setting</string>
     <string name="IP_subphone_setting_alias">Alias</string>
     <string name="IP_subphone_setting_master_phone_ip_address">
         Master Phone Ip Address</string>
@@ -179,21 +183,21 @@
         Change Engineering Mode Password</string>
     <string name="IP_subphone_setting_alias_value">XXXXXX</string>
     <string name="IP_subphone_setting_master_phone_ip_address_value">
-        192.168.98.1</string>
+       XXXXXX</string>
     <string name="IP_subphone_setting_ip_subphone_id_value">
-        2</string>
+       XX</string>
 
-    <string name="door_lock_setting_top_title">Door Lock Setting</string>
+    <string name="door_lock_setting_top_title">Door lock setting</string>
     <string name="door_lock_setting_top_front_door">Front Door</string>
     <string name="door_lock_setting_top_back_door">Back Door</string>
     <string name="door_lock_setting_top_front_door_value">Ip Door Camera</string>
     <string name="door_lock_setting_top_back_door_value">
         Honeywell Momas Key</string>
 
-    <string name="ip_camera_setting_top_title">Ip Camera Setting</string>
+    <string name="ip_camera_setting_top_title">Ip camera setting</string>
     <string name="ip_camer1">Ip Camera 1</string>
     <string name="ip_camer2">Ip Camera 2</string>
-    <string name="ip_camera_setting_alias_name">Alias Name</string>
+    <string name="ip_camera_setting_alias_name">Alias name</string>
     <string name="ip_camer1_value">192.168.11.1</string>
     <string name="ip_camer2_value">192.168.11.1</string>
     <string name="alias_name_value">192.158.112.11</string>
@@ -247,12 +251,12 @@
     <string name="local_zone_delay_time_4m30s">4 min 30 seconds</string>
     <string name="local_zone_delay_time_5m">5 min</string>
 
-    <string name="ip_camera_configuration_top_title">Ip Camera Configuration</string>
+    <string name="ip_camera_configuration_top_title">Ip camera configuration</string>
     <string name="ip_camera_configuration_alias">Alias</string>
     <string name="ip_camera_configuration_alias_value">XXXXXXX</string>
-    <string name="ip_camera_configuration_ip_address">Ip Address</string>
-    <string name="ip_camera_configuration_ip_address_value">192.171.92.1</string>
-    <string name="ip_camera_configuration_user_name">User Name</string>
+    <string name="ip_camera_configuration_ip_address">IP address</string>
+    <string name="ip_camera_configuration_ip_address_value">XXXXXXX</string>
+    <string name="ip_camera_configuration_user_name">User name</string>
     <string name="ip_camera_configuration_user_name_value">XXXXXX</string>
     <string name="ip_camera_configuration_password">Password</string>
     <string name="ip_camera_configuration_password_value">XXXXXX</string>
@@ -260,4 +264,9 @@
     <string name="Incorrect_input">Incorrect input</string>
     <string name="unknown">unknown</string>
     <string name="title_activity_text_add_config">TextAddConfigActivity</string>
+    <string name="title_activity_device_bind">DeviceBindActivity</string>
+
+    <string name="filenoexsit">视频文件不存在!</string>
+    <string name="waitforexit">正在退出，请稍候！</string>
+    <string name="hint">提示</string>
 </resources>

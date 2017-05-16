@@ -1,21 +1,27 @@
 package com.honeywell.homepanel.ui.AudioVideoUtil;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
+import android.os.RemoteException;
 import android.util.Log;
 
 import com.honeywell.homepanel.IAvRtpService;
+import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonPath;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +43,7 @@ public class AudioProcess implements Runnable {
     private int mRecBufferSize = 0;
     private int mPlayBufferSize = 0;
     private Thread mPlayThread = null, mRecordThread = null;
+    private Thread mRecordFromFileThread = null;
     private static final int MAX_QUEUE_SIZE = 200;
     public BlockingQueue<byte[]> mPlayQueue = new LinkedBlockingQueue<byte[]>(MAX_QUEUE_SIZE);
     private String mP2PUUID = null;
@@ -83,7 +90,6 @@ public class AudioProcess implements Runnable {
     public void startPhoneRecordAndPlay() throws Exception {
         initAudioHardware();
         mStoped = false;
-
         //start record Thread
         mRecordThread = new Thread(new Runnable() {
             @Override
@@ -103,6 +109,31 @@ public class AudioProcess implements Runnable {
         mPlayThread.start();
     }
 
+    public void startPhoneRecordFromFileThread() {
+        mStoped = false;
+        mRecordFromFileThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                startPhoneRecordFromFile();
+            }
+        });
+        mRecordFromFileThread.start();
+    }
+    public void stopPhoneRecordFromFileThread() {
+        mStoped = true;
+        if (null != mRecordFromFileThread) {
+            mRecordFromFileThread.interrupt();
+        }
+    }
+    public void waitPhoneRecordFromFileThread() {
+        try {
+            if (null != mRecordFromFileThread) {
+                mRecordFromFileThread.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     private void initAudioHardware() throws Exception {
         //根据采样率，单双声道 ，采样精度来得到frame的大小。 注意，按照数字音频的知识，这个算出来的是一秒钟buffer的大小。我们得到一个满足最小要求的缓冲区大小
         /*
@@ -160,6 +191,30 @@ public class AudioProcess implements Runnable {
         }
     }
 
+    private void startPhoneRecordFromFile() {
+        Log.d(TAG, "startPhoneRecordFromFile: ");
+        try {
+            InputStream in = mContext.getResources().openRawResource(R.raw.audoreply);;
+            byte[] readBuf = new byte[BYTESENDLEN];
+            int ret;
+            while (((ret = in.read(readBuf)) != -1) && !Thread.interrupted() && !mStoped) {
+                if (mStoped) {
+                    break;
+                }
+
+                if (ret == BYTESENDLEN) {
+                    mIAvRtpService.setAudioFrame(readBuf);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void startPhoneMicRecord() throws Exception {
         mSeq = 0;
         mTs = 0;
@@ -167,6 +222,7 @@ public class AudioProcess implements Runnable {
         mAudioRecord.startRecording();
 
         int restLength = 0;
+
         while ((!Thread.interrupted()) && !mStoped) {
             if (mStoped) {
                 break;

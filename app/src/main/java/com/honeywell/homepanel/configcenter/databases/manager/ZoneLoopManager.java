@@ -45,7 +45,7 @@ public class ZoneLoopManager {
         ContentValues values = new ContentValuesFactory()
                 .put(ConfigConstant.COLUMN_MODULEUUID, moduleUuid)
                 .put(ConfigConstant.COLUMN_UUID, uuid)
-                .put(ConfigConstant.COLUMN_ADAPTERUUID, adapterUuid)
+                .put(ConfigConstant.COLUMN_ADAPTERNAME, adapterUuid)
                 .put(ConfigConstant.COLUMN_NAME, name)
                 .put(ConfigConstant.COLUMN_LOOP, loop)
                 .put(ConfigConstant.COLUMN_DELAYTIME, delayTime)
@@ -83,7 +83,7 @@ public class ZoneLoopManager {
             values.put(ConfigConstant.COLUMN_ALARMTYPE, device.mAlarmType);
         }
         if(!TextUtils.isEmpty(device.mAdapterUuid)) {
-            values.put(ConfigConstant.COLUMN_ADAPTERUUID, device.mAdapterUuid);
+            values.put(ConfigConstant.COLUMN_ADAPTERNAME, device.mAdapterUuid);
         }
 
         return values;
@@ -165,7 +165,7 @@ public class ZoneLoopManager {
         }
         ZoneLoop device = new ZoneLoop();
         device.mModuleUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_MODULEUUID));
-        device.mAdapterUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_ADAPTERUUID));
+        device.mAdapterUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_ADAPTERNAME));
         device.mName = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_NAME));
         device.mId = cursor.getLong(cursor.getColumnIndex(ConfigConstant.COLUMN_ID));
         device.mLoop = cursor.getInt(cursor.getColumnIndex(ConfigConstant.COLUMN_LOOP));
@@ -208,8 +208,8 @@ public class ZoneLoopManager {
         if(loopMapObject.has(CommonData.JSON_KEY_ENABLE)){
             loop.mEnabled = Integer.valueOf(loopMapObject.optString(CommonData.JSON_KEY_ENABLE));
         }
-        if(loopMapObject.has(CommonData.JSON_KEY_ADAPTERUUID)){
-            loop.mAdapterUuid = loopMapObject.optString(CommonData.JSON_KEY_ADAPTERUUID, "");
+        if(loopMapObject.has(CommonData.JSON_KEY_ADAPTERNAME)){
+            loop.mAdapterUuid = loopMapObject.optString(CommonData.JSON_KEY_ADAPTERNAME, "");
         }
         if(loopMapObject.has(CommonData.JSON_KEY_MODULEUUID)){
             loop.mModuleUuid = loopMapObject.optString(CommonData.JSON_KEY_MODULEUUID, "");
@@ -239,7 +239,7 @@ public class ZoneLoopManager {
         loopMapObject.put(CommonData.JSON_KEY_ENABLE,loop.mEnabled+"");
         loopMapObject.put(CommonData.JSON_KEY_ZONETYPE,loop.mZoneType);
         loopMapObject.put(CommonData.JSON_KEY_ALARMTYPE,loop.mAlarmType);
-        loopMapObject.put(CommonData.JSON_KEY_ADAPTERUUID, loop.mAdapterUuid);
+        loopMapObject.put(CommonData.JSON_KEY_ADAPTERNAME, loop.mAdapterUuid);
         loopMapObject.put(CommonData.JSON_KEY_MODULEUUID, loop.mModuleUuid);
     }
 
@@ -275,9 +275,9 @@ public class ZoneLoopManager {
         jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 
-    public void getDeviceLoopDetailsInfo(JSONObject jsonObject) {
+    public void getDeviceLoopDetailsInfo(JSONObject jsonObject) throws JSONException {
         JSONArray loopMapArray = jsonObject.optJSONArray(CommonJson.JSON_LOOPMAP_KEY);
-        Cursor cursor = DbCommonUtil.getDeviceLoopDetails(dbHelper, ConfigConstant.TABLE_RELAYLOOP);
+        Cursor cursor = DbCommonUtil.getDeviceLoopDetails(dbHelper, ConfigConstant.TABLE_ZONELOOP);
 
         // Use the original jsonArray if JSONObject contains one, construct new JSONArray otherwise
         if (loopMapArray == null) {
@@ -286,29 +286,21 @@ public class ZoneLoopManager {
 
         // query loop from database and fill json object
         while(cursor.moveToNext()){
-            try {
-                ZoneLoop loop = fillDefault(cursor);
-                JSONObject loopMapObject = new JSONObject();
-                String devLoopType = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_TYPE));
+            ZoneLoop loop = fillDefault(cursor);
+            JSONObject loopMapObject = new JSONObject();
+            String devLoopType = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_TYPE));
 
-                loopMapObject.put(CommonData.JSON_TYPE_KEY, devLoopType);
-                loopToJson(loopMapObject, loop);
+            loopMapObject.put(CommonData.JSON_TYPE_KEY, devLoopType);
+            loopToJson(loopMapObject, loop);
 
-                loopMapArray.put(loopMapObject);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            loopMapArray.put(loopMapObject);
         }
 
         // close cursor
         cursor.close();
 
         // updatet jsonObject passed in
-        try {
-            jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
-            jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 }

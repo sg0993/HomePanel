@@ -23,7 +23,7 @@ import com.honeywell.homepanel.ui.activities.DateTimeActivity;
 import com.honeywell.homepanel.ui.activities.LocationActivity;
 import com.honeywell.homepanel.ui.activities.SaveSpeedDialActivity;
 import com.honeywell.homepanel.ui.activities.SettingBrightVolumeAdjustment;
-import com.honeywell.homepanel.ui.activities.WifiConfigureActivity;
+import com.honeywell.homepanel.ui.activities.WiFiConfigurationActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -93,7 +93,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
         ) {
             switch (arg2) {
                 case 0:
-                    Intent intent1 = new Intent(getActivity(), WifiConfigureActivity.class);
+                    Intent intent1 = new Intent(getActivity(), WiFiConfigurationActivity.class);
                     startActivity(intent1);
                     break;
                 case 1:

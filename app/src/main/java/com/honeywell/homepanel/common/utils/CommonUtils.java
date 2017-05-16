@@ -241,6 +241,28 @@ public class CommonUtils {
         return  filepath;
     }
 
+    public static Bitmap getBitmapFromFile(String name, int width, int height) {
+        File file = new File(name);
+        BitmapFactory.Options opts = null;
+        if (null != file && file.exists()) {
+            if (width > 0 && height > 0) {
+                opts = new BitmapFactory.Options();
+                opts.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(file.getPath(), opts);
+                final int minSideLength = Math.min(width, height);
+                opts.inSampleSize = computeSampleSize(opts, minSideLength,width * height);
+                opts.inJustDecodeBounds = false;
+                opts.inInputShareable = true;
+                opts.inPurgeable = true;
+            }
+            try {
+                return BitmapFactory.decodeFile(file.getPath(), opts);
+            } catch (OutOfMemoryError e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
     public static Bitmap getBitmapFromFile(String path,String name, int width, int height) {
         File file = new File(path,name);
         BitmapFactory.Options opts = null;
@@ -295,14 +317,14 @@ public class CommonUtils {
         }
     }
     public static String getLobbyBitMapName() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat(CommonData.TIME_STR_FORMAT);
         String time = sdf.format(new Date());
         time += ".png";
         return time;
     }
 
     public static String getLobbyVideoRecordName() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat(CommonData.TIME_STR_FORMAT);
         String time = sdf.format(new Date());
         time += ".avi";
         return time;
@@ -366,5 +388,22 @@ public class CommonUtils {
                 (byte) ((a >> 8) & 0xFF),
                 (byte) (a & 0xFF)
         };
+    }
+
+ public  static  void deleteOneFile(String fileName){
+        if(!TextUtils.isEmpty(fileName)){
+            File file = new File(fileName);
+            if(file.exists()){
+                file.delete();
+            }
+        }
+    }
+    public static String convertNativeModuleType(String nativeType) {
+        if (nativeType.contains("RELAY") || nativeType.contains("relay")) {
+            return CommonData.JSON_MODULE_NAME_RELAY;
+        } else if (nativeType.contains("ALARM") || nativeType.contains("alarm")) {
+            return CommonData.JSON_MODULE_NAME_ALARM;
+        }
+        return CommonData.JSON_MODULE_NAME_UNKNOW;
     }
 }

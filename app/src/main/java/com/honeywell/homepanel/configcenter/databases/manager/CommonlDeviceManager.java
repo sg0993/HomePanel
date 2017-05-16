@@ -118,6 +118,18 @@ public class CommonlDeviceManager {
         return device;
     }
 
+    private CommonDevice fillDefault(Cursor cursor) {
+        if(null == cursor){
+            return null;
+        }
+        CommonDevice device = new CommonDevice();
+        device.mType = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_TYPE));
+        device.mName = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_NAME));
+        device.mId = cursor.getLong(cursor.getColumnIndex(ConfigConstant.COLUMN_ID));
+        device.mUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_UUID));
+        return device;
+    }
+
     public synchronized List<CommonDevice> getCommonDeviceList() {
         List<CommonDevice> commonDevices = null;
         Cursor cursor = DbCommonUtil.getAll(dbHelper,ConfigConstant.TABLE_COMMONDEVICE);
@@ -132,16 +144,22 @@ public class CommonlDeviceManager {
         return commonDevices;
     }
 
-    private CommonDevice fillDefault(Cursor cursor) {
-        if(null == cursor){
-            return null;
+    public synchronized void getCommonDeviceList(JSONObject jsonObject) throws JSONException {
+        JSONArray loopMapArray = new JSONArray();
+        List<CommonDevice> commonDevices = getCommonDeviceList();
+
+        for (int i = 0; i < commonDevices.size(); i++) {
+            CommonDevice loop = commonDevices.get(i);
+            JSONObject loopMapObject = new JSONObject();
+
+            loopMapObject.put(CommonJson.JSON_UUID_KEY, loop.mUuid);
+            loopMapObject.put(CommonData.JSON_KEY_NAME, loop.mName);
+            loopMapObject.put(CommonData.JSON_TYPE_KEY, loop.mType);
+            loopMapArray.put(loopMapObject);
         }
-        CommonDevice device = new CommonDevice();
-        device.mType = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_TYPE));
-        device.mName = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_NAME));
-        device.mId = cursor.getLong(cursor.getColumnIndex(ConfigConstant.COLUMN_ID));
-        device.mUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_UUID));
-        return device;
+
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
+        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 
     public void getScenarioList(JSONObject jsonObject) throws JSONException {
@@ -157,6 +175,7 @@ public class CommonlDeviceManager {
             loopMapObject.put(CommonData.JSON_KEY_NAME, loop.mName);
             loopMapArray.put(loopMapObject);
         }
+
         jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
         jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }

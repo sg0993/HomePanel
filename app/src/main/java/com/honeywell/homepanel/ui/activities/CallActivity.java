@@ -33,6 +33,7 @@ import com.honeywell.homepanel.ui.fragment.CallIncomingNeighbor;
 import com.honeywell.homepanel.ui.fragment.CallLobbyIncomingAndConnected;
 import com.honeywell.homepanel.ui.fragment.CallNeighborAndioAndVideoConnected;
 import com.honeywell.homepanel.ui.fragment.CallOutgoingNeighborFragment;
+import com.honeywell.homepanel.ui.fragment.CallSubponeIncomingAndConnected;
 import com.honeywell.homepanel.ui.uicomponent.TopViewBrusher;
 
 import org.greenrobot.eventbus.EventBus;
@@ -94,7 +95,7 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
             JSONArray jsonArray = new JSONArray();
             JSONObject mapObject = new JSONObject();
             mapObject.put(CommonJson.JSON_UUID_KEY,MainActivity.CallBaseInfo.getCallUuid());
-            mapObject.put(CommonData.JSON_KEY_EVENTTYPE,MainActivity.CallBaseInfo.getCallType());
+            mapObject.put(CommonData.JSON_KEY_EVENTTYPE,CommonData.JSON_VALUE_VISITOR);
             mapObject.put(CommonData.JSON_KEY_TIME,getCalltime());
             mapObject.put(CommonData.JSON_KEY_DATASTATUS,CommonData.DATASTATUS_UNREAD);
             jsonArray.put(mapObject);
@@ -159,7 +160,7 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         }
         LogMgr.e("fragment==null:"+(fragment==null)+" transaction == null:"+(transaction==null));
         transaction.replace(R.id.main_frameLayout, fragment);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
     private Fragment getNewFragMent(int position) {
         CallBaseFragment fragment = null;
@@ -171,10 +172,12 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
                 fragment = new CallIncomingNeighbor("" + position);
                 break;
             case CommonData.CALL_CONNECTED_AUDIO_NETGHBOR:
-                fragment = new CallNeighborAndioAndVideoConnected("" + position);/**********/
+                fragment = new CallNeighborAndioAndVideoConnected("" + position);
+			    fragment.setFragmentAidl(mIAvRtpService,getApplicationContext());
                 break;
             case CommonData.CALL_CONNECTED_VIDEO_NETGHBOR:
-                fragment = new CallNeighborAndioAndVideoConnected("" + position);/**********/
+                fragment = new CallNeighborAndioAndVideoConnected("" + position);
+				fragment.setFragmentAidl(mIAvRtpService,getApplicationContext());
                 break;
             case CommonData.CALL_LOBBY_INCOMMING:
                 fragment = new CallLobbyIncomingAndConnected("" + position);////
@@ -190,6 +193,11 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
             case CommonData.CALL_IPDC_INCOMING:
             case CommonData.CALL_IPDC_CONNECTED:
                 fragment = new CalIpDcIncomingAndConnected("" + position);
+                break;
+            case CommonData.CALL_SUBPHONE_INCOMMING:
+            case CommonData.CALL_SUBPHONE_CONNECTED:
+            case CommonData.CALL_SUBPHONE_OUTGOING:
+                fragment = new CallSubponeIncomingAndConnected("" + position);
                 break;
             default:
                 break;

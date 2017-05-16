@@ -108,6 +108,7 @@ public class TopViewBrusher {
 
 
     public  void setTop(Context context) {
+        Log.d(TAG, "setTop: 11111111111");
         updateWeather();
         TopStaus topStatus = TopStaus.getInstance(context);
 
@@ -218,25 +219,31 @@ public class TopViewBrusher {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(SUISMessagesUIStatusBar.SUISConnectStatusMessageEve msg)
-    {
+    public void OnMessageEvent(SUISMessagesUIStatusBar.SUISConnectStatusMessageEve msg) {
+        Log.d(TAG, TAG+ ",OnMessageEvent: SUISConnectStatusMessageEve:"+msg.toString()+",,,11111111");
         setTop(mCurrentActivity);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(SUISMessagesUIStatusBar.SUISDateTimeInfoUpdateMessageEve msg)
-    {
+    public void OnMessageEvent(SUISMessagesUIStatusBar.SUISubPhoneConnectStatusMessageEve msg) {
+        Log.d(TAG, TAG+ ",OnMessageEvent: SUISubPhoneConnectStatusMessageEve:"+msg.toString()+",,,11111111");
         setTop(mCurrentActivity);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(SUISMessagesUIStatusBar.SUISWeatherInfoUpdateMessageEve msg)
-    {
+    public void OnMessageEvent(SUISMessagesUIStatusBar.SUISDateTimeInfoUpdateMessageEve msg) {
+        Log.d(TAG, TAG+ ",OnMessageEvent: SUISDateTimeInfoUpdateMessageEve:"+msg.toString()+",,,11111111");
+        setTop(mCurrentActivity);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUIStatusBar.SUISWeatherInfoUpdateMessageEve msg) {
+        Log.d(TAG, TAG+ ",OnMessageEvent: SUISWeatherInfoUpdateMessageEve:"+msg.toString()+",,,11111111");
         setTop(mCurrentActivity);
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(NetworkMsg msg)
-    {
+    public void OnMessageEvent(NetworkMsg msg) {
+        Log.d(TAG, TAG+ ",OnMessageEvent: NetworkMsg:"+msg.toString()+",,,11111111");
         if (msg.getWifiStatus() == 1) {
             TopStaus.getInstance(mCurrentActivity).setWifiStatus(CommonData.CONNECTED);
         } else if (msg.getWifiStatus() == 0){
@@ -246,5 +253,11 @@ public class TopViewBrusher {
     }
 
 
+
+    /*@Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUIStatusBar.SUISWeatherInfoUpdateMessageEve msg) {
+        Log.d(TAG, TAG+ ",OnMessageEvent: SUISWeatherInfoUpdateMessageEve:"+msg.toString()+",,,11111111");
+        setTop(mCurrentActivity);
+    }*/
 
 }

@@ -8,33 +8,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.honeywell.homepanel.common.Message.MessageEvent;
-import com.honeywell.homepanel.ui.activities.MainActivity;
-import com.honeywell.homepanel.ui.fragment.SpeedDialFragment;
-import com.honeywell.homepanel.ui.fragment.SubphoneFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -85,7 +71,7 @@ public class DialFragment extends Fragment implements View.OnClickListener{
 //        speeddial.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_dark_pressed));
         speeddial.setTextColor(Color.parseColor(BLACK_GREY));
         ft.replace(R.id.fragment_content, new SpeedDialFragment());
-        ft.commit();
+        ft.commitAllowingStateLoss();
         return view;
     }
 
@@ -194,7 +180,7 @@ public class DialFragment extends Fragment implements View.OnClickListener{
             default:
                 break;
         }
-        ft.commit();
+        ft.commitAllowingStateLoss();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

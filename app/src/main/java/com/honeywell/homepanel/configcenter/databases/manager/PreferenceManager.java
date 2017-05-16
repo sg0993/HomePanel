@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.configcenter.ConfigDispatchCenter;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
 
 /**
@@ -19,6 +21,8 @@ public class PreferenceManager {
         }
         SharedPreferences preferences = context.getSharedPreferences(HOMEPANEL_CONFIG_NAME, Context.MODE_PRIVATE);
         preferences.edit().putBoolean(key, value).apply();
+
+        onPrivateConfigurationChanged(key);
     }
 
     public static synchronized boolean getBooleanConfig(Context context, String key) {
@@ -35,6 +39,8 @@ public class PreferenceManager {
         }
         SharedPreferences preferences = context.getSharedPreferences(HOMEPANEL_CONFIG_NAME,Context.MODE_PRIVATE);
         preferences.edit().putInt(key,value).apply();
+
+        onPrivateConfigurationChanged(key);
     }
 
     public static synchronized void putStringConfig(Context context, String key, String value){
@@ -43,6 +49,8 @@ public class PreferenceManager {
         }
         SharedPreferences preferences = context.getSharedPreferences(HOMEPANEL_CONFIG_NAME,Context.MODE_PRIVATE);
         preferences.edit().putString(key,value).apply();
+
+        onPrivateConfigurationChanged(key);
     }
 
     public static synchronized int getIntConfig(Context context,String key){
@@ -72,5 +80,11 @@ public class PreferenceManager {
         int versionId = getIntConfig(context, ConfigConstant.KEY_DBVERSIONID);
         versionId += 1;
         putIntConfig(context,ConfigConstant.KEY_DBVERSIONID,versionId);
+    }
+
+    public static void onPrivateConfigurationChanged(String contentTitle){
+        if (!TextUtils.isEmpty(contentTitle)) {
+            ConfigDispatchCenter.getInstance().broadcastConfigurationUpdated(CommonData.JSON_CONFIGDATA_CATEGORY_PRIVATE, contentTitle);
+        }
     }
 }

@@ -204,8 +204,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 //testCall("100-202",CommonData.CALL_OUTGOING_NEIGHBOR);
                 ArrayList<MenuCity> lists = PlistUtil.getDefaultCities(getActivity().getApplicationContext());
                 Log.d(TAG,"size :" + lists.size() +",,,1111111111");
-
-
                 break;
             case R.id.arm_hint_hasevent:// for test Neighbor Incoming call
                 //testCall("100-202",CommonData.CALL_INCOMING_NEIGHBOR);

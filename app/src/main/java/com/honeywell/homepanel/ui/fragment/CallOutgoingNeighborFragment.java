@@ -59,6 +59,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
         initViews(view);
         mAnimationBtusher.init(view);
         Log.d(TAG,"CallOutgoingNeighborFragment.onCreateView() 11111111");
+        startPlayRing(CALL_RING_OUT);
         uiBaseCallInfo.setmCallType(((CallActivity) getActivity()).mCallType);
         uiBaseCallInfo.setmCallAliasName(((CallActivity) getActivity()).mUnit);
         UISendCallMessage.requestForCallOut(uiBaseCallInfo);
@@ -101,6 +102,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
             case R.id.cancel_btn:
                 //startActivity(new Intent(getActivity(),MainActivity.class));
                 UISendCallMessage.requestForHungUp(uiBaseCallInfo);
+                stopPlayRing();
                 getActivity().finish();
             default:
                 break;
@@ -122,6 +124,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
             if(errorCode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)){
                 System.out.println("SUISCallOutMessageRsp success");
             }else{
+                stopPlayRing();
                 Toast.makeText(getActivity(),"callout failed",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), CallFailedActivity.class);
                 intent.putExtra(CommonData.INTENT_KEY_UNIT,aliasName);
@@ -133,7 +136,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISCallActivedMessageEve msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
-
+        stopPlayRing();
         if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
             String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
             String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");
@@ -147,7 +150,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISCallTerminatedMessageEve msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
-
+        stopPlayRing();
         if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
             String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
             String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");

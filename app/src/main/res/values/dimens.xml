@@ -12,4 +12,6 @@
     <dimen name="engineering_text_above_size">18sp</dimen>
     <dimen name="engineering_text_below_size">16sp</dimen>
     <dimen name="engineering_marginLeft">18dp</dimen>
+    <dimen name="wifi_scan_access">-5dp</dimen>
+    <dimen name="date_select">-15dp</dimen>
 </resources>

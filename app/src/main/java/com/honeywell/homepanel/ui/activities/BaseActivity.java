@@ -66,6 +66,12 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState: 111111111111111111");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         requestAllPermission(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE

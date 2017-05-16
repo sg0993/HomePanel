@@ -4,9 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
+import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
@@ -51,8 +53,25 @@ public class EventHistoryManager {
                 .put(ConfigConstant.COLUMN_IMAGEPATH,imagePath)
                 .put(ConfigConstant.COLUMN_VIDEOPATH,videoPath)
                 .put(ConfigConstant.COLUMN_READ,read).getValues();
-        //TODO 加条数限制
+        
+       if(DbCommonUtil.getCount(dbHelper.getWritableDatabase(),
+               ConfigConstant.TABLE_EVENTHISTORY) >= CommonData.CALL_HISTORY_MAX_COUNT){
+           long _id = DbCommonUtil.getFirstRecord(dbHelper,ConfigConstant.TABLE_EVENTHISTORY);
+           Log.d(TAG, "add: _id:"+_id);
+           if(_id > 0){
+                deleteFirstHistoryImage(_id);
+                DbCommonUtil.deleteByPrimaryId(mContext,dbHelper,ConfigConstant.TABLE_EVENTHISTORY,_id);
+           }
+       }
         return DbCommonUtil.add(mContext,dbHelper,ConfigConstant.TABLE_EVENTHISTORY,values);
+    }
+
+    private void deleteFirstHistoryImage(long id) {
+        EventHistory history = getByPrimaryId(id);
+        if(null != history){
+            CommonUtils.deleteOneFile(history.mImagePath);
+            CommonUtils.deleteOneFile(history.mVideoPath);
+        }
     }
 
     public synchronized int deleteByUuid(String uuid) {
@@ -79,6 +98,9 @@ public class EventHistoryManager {
         }
         if(!TextUtils.isEmpty(device.mVideoPath)){
             values.put(ConfigConstant.COLUMN_VIDEOPATH, device.mVideoPath);
+        }
+        if(!TextUtils.isEmpty(device.mType)){
+            values.put(ConfigConstant.COLUMN_TYPE, device.mType);
         }
         if(device.mRead >= 0){
             values.put(ConfigConstant.COLUMN_READ, device.mRead);
@@ -205,6 +227,7 @@ public class EventHistoryManager {
         loopMapObject.put(CommonData.JSON_KEY_DATASTATUS,DbCommonUtil.transferReadIntToString(loop.mRead));
         loopMapObject.put(CommonData.JSON_KEY_CARDID,loop.mCardNo);
         loopMapObject.put(CommonData.JSON_KEY_SWIPEACTION,loop.mCardEvent);
+        loopMapObject.put(CommonJson.JSON_ERRORCODE_KEY,CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 
     public void notificationEventAdd(JSONObject jsonObject) throws JSONException {
@@ -240,6 +263,9 @@ public class EventHistoryManager {
             }
             if(loopMapObject.has(CommonData.JSON_KEY_VIDEONAME)){
                 loop.mVideoPath = loopMapObject.getString(CommonData.JSON_KEY_VIDEONAME);
+            }
+            if(loopMapObject.has(CommonData.JSON_KEY_EVENTTYPE)){
+                loop.mType = loopMapObject.getString(CommonData.JSON_KEY_EVENTTYPE);
             }
             long num = updateByUuid(uuid,loop);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);

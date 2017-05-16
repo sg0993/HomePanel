@@ -1,8 +1,10 @@
 package com.honeywell.homepanel.configcenter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
+import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.configcenter.databases.domain.EventDataElement;
 import com.honeywell.homepanel.configcenter.databases.manager.AdapterManager;
@@ -11,6 +13,7 @@ import com.honeywell.homepanel.configcenter.databases.manager.CommonlDeviceManag
 import com.honeywell.homepanel.configcenter.databases.manager.EventHistoryManager;
 import com.honeywell.homepanel.configcenter.databases.manager.IpDoorCardanager;
 import com.honeywell.homepanel.configcenter.databases.manager.IpcLoopManager;
+import com.honeywell.homepanel.configcenter.databases.manager.LocalDeviceManager;
 import com.honeywell.homepanel.configcenter.databases.manager.PeripheralDeviceManager;
 import com.honeywell.homepanel.configcenter.databases.manager.RelayLoopManager;
 import com.honeywell.homepanel.configcenter.databases.manager.ScenarioLoopManager;
@@ -39,6 +42,10 @@ public class ConfigDispatchCenter implements Runnable{
         if(mInstance == null){
             mInstance = new ConfigDispatchCenter(context);
         }
+        return mInstance;
+    }
+
+    public static synchronized ConfigDispatchCenter getInstance() {
         return mInstance;
     }
 
@@ -104,7 +111,8 @@ public class ConfigDispatchCenter implements Runnable{
             IpcLoopManager.getInstance(mContext).ipcGet(jsonObject);
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_LOCALZONEGET.equals(subAction)){
-            ZoneLoopManager.getInstance(mContext).localZoneGet(jsonObject);
+            //ZoneLoopManager.getInstance(mContext).localZoneGet(jsonObject);
+            LocalDeviceManager.getInstance(mContext).getLocalZoneDetails(jsonObject);
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_EXTENSIONMODULEGET.equals(subAction)){
             PeripheralDeviceManager.getInstance(mContext).getExtensionModuleList(jsonObject);
@@ -117,6 +125,9 @@ public class ConfigDispatchCenter implements Runnable{
         }
         else if (CommonJson.JSON_SUBACTION_VALUE_GETALLDEVICEDETAILS.equals(subAction)){
             getAllDeviceDetailsInfo(jsonObject);
+        }
+        else if (CommonJson.JSON_SUBACTION_VALUE_GETALLCOMMONDEVICES.equals(subAction)) {
+            CommonlDeviceManager.getInstance(mContext).getCommonDeviceList(jsonObject);
         }
         else if (CommonJson.JSON_SUBACTION_VALUE_GETDEVICEADAPTER.equals(subAction)) {
             AdapterManager.getInstance(mContext).getAvaliableAdapters(jsonObject);
@@ -187,18 +198,20 @@ public class ConfigDispatchCenter implements Runnable{
         else if(CommonJson.JSON_SUBACTION_VALUE_IPCDELETE.equals(subAction)){
             IpcLoopManager.getInstance(mContext).ipcDelete(jsonObject);
         }
-        else if(CommonJson.JSON_SUBACTION_VALUE_LOCALZONEUPUDATE.equals(subAction)
-                || CommonJson.JSON_SUBACTION_VALUE_EXTENSIONZONEUPDATE.equals(subAction)){
+        else if(CommonJson.JSON_SUBACTION_VALUE_EXTENSIONZONEUPDATE.equals(subAction)){
             ZoneLoopManager.getInstance(mContext).zoneUpdate(jsonObject);
         }
+        else if(CommonJson.JSON_SUBACTION_VALUE_LOCALZONEUPUDATE.equals(subAction)) {
+            LocalDeviceManager.getInstance(mContext).updateDevice(jsonObject);
+        }
         else if(CommonJson.JSON_SUBACTION_VALUE_EXTENSIONZONEDELETE.equals(subAction)){
-            ZoneLoopManager.getInstance(mContext).extensionZoneDelete(jsonObject);
+            //ZoneLoopManager.getInstance(mContext).extensionZoneDelete(jsonObject);
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_EXTENSIONRELAYUPDATE.equals(subAction)){
             RelayLoopManager.getInstance(mContext).relayUpdate(jsonObject);
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_EXTENSIONRELAYDELETE.equals(subAction)){
-            RelayLoopManager.getInstance(mContext).relayDelete(jsonObject);
+            //RelayLoopManager.getInstance(mContext).relayDelete(jsonObject);
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_EXTENSIONMODULEADD.equals(subAction)){
             PeripheralDeviceManager.getInstance(mContext).extensionModuleAdd(jsonObject);
@@ -214,11 +227,27 @@ public class ConfigDispatchCenter implements Runnable{
         return jsonObject.toString().getBytes();
     }
 
-    private void getAllDeviceDetailsInfo(JSONObject jsonObject) {
+    private void getAllDeviceDetailsInfo(JSONObject jsonObject) throws JSONException {
+        Log.d(TAG, "getAllDeviceDetailsInfo...");
+
         // get relay loop details info
         RelayLoopManager.getInstance(mContext).getDeviceLoopDetailsInfo(jsonObject);
 
         // get zone loop details info
         ZoneLoopManager.getInstance(mContext).getDeviceLoopDetailsInfo(jsonObject);
+
+        // get local device details
+        LocalDeviceManager.getInstance(mContext).getDeviceLoopDetailsInfo(jsonObject);
+    }
+
+    public void broadcastConfigurationUpdated(String category, String content) {
+        Intent intent = new Intent();
+        intent.setAction(CommonData.INTENT_ACTION_CONFIGINFO_CHANGED);
+        intent.putExtra(CommonData.JSON_CONFIGDATA_CATEGORY_KEY, category);
+        intent.putExtra(CommonData.JSON_CONFIGDATA_CONFIGNAME_KEY, content);
+
+        mContext.sendBroadcast(intent);
+
+        Log.d(TAG, "broadcastConfigurationUpdated, content:" + content);
     }
 }

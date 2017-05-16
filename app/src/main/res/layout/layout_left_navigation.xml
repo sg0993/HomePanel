@@ -44,12 +44,12 @@
                 android:src="@mipmap/message" />
             <ImageView
                 android:layout_toRightOf="@+id/message_image"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
                 android:id="@+id/message_indicator"
                 android:layout_alignParentRight="true"
-                android:layout_width="18px"
-                android:layout_height="18px"
+                android:layout_width="12px"
+                android:layout_height="12px"
                 android:src="@drawable/msg_indicator"/>
         </RelativeLayout>
         <RelativeLayout

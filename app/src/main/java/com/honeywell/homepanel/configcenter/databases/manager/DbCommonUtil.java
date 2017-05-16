@@ -9,15 +9,19 @@ import android.util.Log;
 
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
+import com.honeywell.homepanel.configcenter.ConfigDispatchCenter;
 import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
 import com.honeywell.homepanel.configcenter.databases.domain.CommonDevice;
 import com.honeywell.homepanel.configcenter.databases.domain.RelayLoop;
 import com.honeywell.homepanel.configcenter.databases.domain.ZoneLoop;
+import com.honeywell.homepanel.logserver.LogDatabaseHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by H135901 on 3/15/2017.
@@ -36,7 +40,7 @@ public class DbCommonUtil {
             e.printStackTrace();
         }
         if(rowId > 0){
-            PreferenceManager.updateVersionId(context);
+            onPublicConfigurationChanged(context, table);
         }
         return  rowId;
     }
@@ -54,10 +58,12 @@ public class DbCommonUtil {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        if(num > 0){
+        } finally {
             db.endTransaction();
-            PreferenceManager.updateVersionId(context);
+        }
+
+        if(num > 0){
+            onPublicConfigurationChanged(context, table);
         }
         return num;
     }
@@ -72,10 +78,12 @@ public class DbCommonUtil {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        if(num > 0){
+        } finally {
             db.endTransaction();
-            PreferenceManager.updateVersionId(context);
+        }
+
+        if(num > 0){
+            onPublicConfigurationChanged(context, table);
         }
         return num;
     }
@@ -92,7 +100,7 @@ public class DbCommonUtil {
             e.printStackTrace();
         }
         if(num > 0){
-            PreferenceManager.updateVersionId(context);
+            onPublicConfigurationChanged(context, table);
         }
         return num;
     }
@@ -109,7 +117,7 @@ public class DbCommonUtil {
             e.printStackTrace();
         }
         if(num > 0){
-            PreferenceManager.updateVersionId(context);
+            onPublicConfigurationChanged(context, table);
         }
         return num;
     }
@@ -132,7 +140,7 @@ public class DbCommonUtil {
         }
 
         if(num > 0){
-            PreferenceManager.updateVersionId(context);
+            onPublicConfigurationChanged(context, table);
         }
 
         return num;
@@ -172,14 +180,17 @@ public class DbCommonUtil {
     }
 
     public static  long getSequenct(ConfigDatabaseHelper dbHelper,String table) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        return getSequenct(dbHelper.getReadableDatabase(), table);
+    }
+
+    public static  long getSequenct(SQLiteDatabase db,String table) {
         Cursor cursor = db.query("sqlite_sequence",null, null, null, null, null,null, null);
         long seq = 0;
         while(cursor.moveToNext()){
-           if(cursor.getString(cursor.getColumnIndex("name")).equals(table)){
-               seq = cursor.getLong(cursor.getColumnIndex("seq"));
-               break;
-           }
+            if(cursor.getString(cursor.getColumnIndex("name")).equals(table)){
+                seq = cursor.getLong(cursor.getColumnIndex("seq"));
+                break;
+            }
         }
         cursor.close();
         return  (seq + 1);
@@ -274,9 +285,26 @@ public class DbCommonUtil {
             result = cursor.getLong(0);
             cursor.close();
         }
-        Log.d(TAG, "getCount() result:" + result + ",,111111111");
+        Log.d(TAG, "getCount: result:"+result);
         return result;
     }
+
+    public static long getFirstRecord(ConfigDatabaseHelper dbHelper,String tableName) {
+        long _id = -1;
+        if(null == dbHelper || TextUtils.isEmpty(tableName)){
+            return  _id;
+        }
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(tableName, null, null, null, null, null, LogDatabaseHelper.COLUMN_ID +" asc", null);
+        while(cursor.moveToNext()){
+            _id = cursor.getLong(cursor.getColumnIndex(LogDatabaseHelper.COLUMN_ID));
+            break;
+        }
+        cursor.close();
+        Log.d(TAG, "getFirstRecord() first _id:"+ _id+",,,11111");
+        return _id;
+    }
+
 
     public  static  String transferReadIntToString(int read){
         String status = CommonData.DATASTATUS_UNREAD;
@@ -298,5 +326,32 @@ public class DbCommonUtil {
         CommonDevice commonDevice = CommonlDeviceManager.getInstance(context).getByUuid(uuid);
         commonDevice.mName = name;
         CommonlDeviceManager.getInstance(context).updateByUuid(uuid, commonDevice);
+    }
+
+    public static void onPublicConfigurationChanged(Context context, String table){
+        PreferenceManager.updateVersionId(context);
+
+        if (!TextUtils.isEmpty(table)) {
+            ArrayList<String> configContent = convertTableNameToConfigTitle(table);
+
+            for (int index = 0; index < configContent.size(); index ++) {
+                ConfigDispatchCenter.getInstance().broadcastConfigurationUpdated(CommonData.JSON_CONFIGDATA_CATEGORY_PUBLIC,
+                        configContent.get(index));
+            }
+        }
+    }
+
+    private static ArrayList<String> convertTableNameToConfigTitle(String dbTable) {
+        ArrayList<String> names = new ArrayList<String>();
+
+        if ( ConfigConstant.TABLE_LOCALDEVICE.equals(dbTable)
+                || ConfigConstant.TABLE_DEVICEADAPTER.equals(dbTable)
+                || ConfigConstant.TABLE_PERIPHERALDEVICE.equals(dbTable)
+                || ConfigConstant.TABLE_RELAYLOOP.equals(dbTable)
+                || ConfigConstant.TABLE_ZONELOOP.equals(dbTable)) {
+            names.add(CommonData.JSON_CONFIGDATA_CONFIGNAME_COMMONDEVLIST);
+        }
+
+        return names;
     }
 }

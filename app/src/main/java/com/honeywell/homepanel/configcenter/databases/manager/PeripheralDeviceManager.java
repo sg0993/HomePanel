@@ -44,7 +44,7 @@ public class PeripheralDeviceManager {
         dbHelper= ConfigDatabaseHelper.getInstance(mContext);
     }
 
-    public synchronized long add(String moduleUuid,String name,String type, String ipAddr,String macAddr,String version,int onLine){
+    public synchronized long add(String moduleUuid,String name,String type, String model, String ipAddr,String macAddr,String version,int onLine){
         ContentValues values = new ContentValuesFactory()
                 .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_TYPE, type)
                 .put(ConfigConstant.COLUMN_NAME, name)
@@ -52,7 +52,9 @@ public class PeripheralDeviceManager {
                 .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_MAC, macAddr)
                 .put(ConfigConstant.COLUMN_MODULEUUID,moduleUuid)
                 .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_ONLINE,onLine)
-                .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_VERSION, version).getValues();
+                .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_VERSION, version)
+                .put(ConfigConstant.COLUMN_PERIPHERALDEVICE_MODEL, model)
+                .getValues();
 
         return DbCommonUtil.add(mContext,dbHelper,ConfigConstant.TABLE_PERIPHERALDEVICE,values);
     }
@@ -121,7 +123,7 @@ public class PeripheralDeviceManager {
             e.printStackTrace();
         }
         if(num > 0 && !updateOnline){
-            PreferenceManager.updateVersionId(mContext);
+            DbCommonUtil.onPublicConfigurationChanged(mContext, ConfigConstant.TABLE_PERIPHERALDEVICE);
         }
         return num;
     }
@@ -140,7 +142,7 @@ public class PeripheralDeviceManager {
             e.printStackTrace();
         }
         if(num > 0 && !updateOnline){
-            PreferenceManager.updateVersionId(mContext);
+            DbCommonUtil.onPublicConfigurationChanged(mContext, ConfigConstant.TABLE_PERIPHERALDEVICE);
         }
         return num;
     }
@@ -209,23 +211,20 @@ public class PeripheralDeviceManager {
             String version = loopMapObject.optString(CommonData.JSON_KEY_VERSION);
             String ip = loopMapObject.optString(CommonData.JSON_IP_KEY);
             String mac = loopMapObject.optString(CommonData.JSON_KEY_MAC);
-            String name = type;
+            String model = loopMapObject.optString(CommonData.JSON_KEY_MODEL);
+            int loopNum = Integer.parseInt(loopMapObject.optString(CommonData.JSON_KEY_LOOP, "0"));
             String moduleUuid = CommonUtils.generateCommonEventUuid();
-            long rowId = add(moduleUuid,name,type,ip,mac,version,CommonData.NOTONLINE);
-            //TODO add loop automaticlly for relay  and zone,and commondevice
+            String name = type;
+
+            long rowId = add(moduleUuid,name,type,model,ip,mac,version,CommonData.NOTONLINE);
+            //add loop automaticlly for relay  and zone,and commondevice
             DbCommonUtil.putErrorCodeFromOperate(rowId,loopMapObject);
             if(rowId > 0){
-               int loopNum = CommonData.RELAY_LOOP_NUM;
-                if(type.equals(CommonData.COMMONDEVICE_TYPE_RELAY)){
-                    loopNum = CommonData.RELAY_LOOP_NUM;
-                }
-                else if(type.equals(CommonData.COMMONDEVICE_TYPE_ZONE)){
-                    loopNum = CommonData.ZONE_LOOP_NUM;
-                }
                 for (int j = 0; j < loopNum; j++) {
                     long _id = 0;
-                    String deviceName = type+(j+1);
                     String deviceUuid = "";
+                    String deviceName = name+ moduleUuid+ (j+1);
+
                     if(type.equals(CommonData.COMMONDEVICE_TYPE_RELAY)){
                         deviceUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_RELAYLOOP_INT,DbCommonUtil.getSequenct(ConfigDatabaseHelper.getInstance(mContext),ConfigConstant.TABLE_RELAYLOOP));
                         _id = RelayLoopManager.getInstance(mContext).add(moduleUuid,deviceUuid,CommonData.DEVADAPTER_RELAY_HEJMODULE_HON,
@@ -234,8 +233,9 @@ public class PeripheralDeviceManager {
                     else if(type.equals(CommonData.COMMONDEVICE_TYPE_ZONE)){
                         deviceUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_ZONELOOP_INT,DbCommonUtil.getSequenct(ConfigDatabaseHelper.getInstance(mContext),ConfigConstant.TABLE_ZONELOOP));
                         _id = ZoneLoopManager.getInstance(mContext).add(moduleUuid,deviceUuid,CommonData.DEVADAPTER_ZONE_HEJMODULE_HON,
-                                deviceName,j+1,0,CommonData.DISENABLE,CommonData.ZONETYPE_24H,CommonData.ALARMTYPE_EMERGENCY);
+                                deviceName,j+1,0,CommonData.DISENABLE,CommonData.ZONETYPE_INSTANT,CommonData.ALARMTYPE_INTRUSION);
                     }
+
                     if(_id > 0){
                         CommonlDeviceManager.getInstance(mContext).add(deviceUuid,deviceName,type);
                     }

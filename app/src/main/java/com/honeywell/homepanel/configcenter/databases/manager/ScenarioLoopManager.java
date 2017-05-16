@@ -69,7 +69,7 @@ public class ScenarioLoopManager {
             e.printStackTrace();
         }
         if(num > 0){
-           PreferenceManager.updateVersionId(mContext);
+            DbCommonUtil.onPublicConfigurationChanged(mContext, ConfigConstant.TABLE_SCENARIO);
         }
         return num;
     }

@@ -56,6 +56,9 @@ public class CommonData {
     public static final String INTENT_KEY_UNIT = "unit";
 	public static final String INTENT_KEY_TEXTFORMAT = "formattext";
 
+
+    public static final String INTENT_KEY_VIDEOPATH = "videopath";
+
     /******************any call status************************************/
     public static final int CALL_OUTGOING_NEIGHBOR = 0;/*邻里呼出*/
     public static final int CALL_INCOMING_NEIGHBOR = 1;/*邻里&PCGuard呼入*/
@@ -70,9 +73,19 @@ public class CommonData {
     public static final int CALL_IPDC_INCOMING = 9;//ipdc incomming
     public static final int CALL_IPDC_CONNECTED = 10;//ipdc  connect
 
+    public static final int CALL_SUBPHONE_INCOMMING = 11;//suhphone incomming
+    public static final int CALL_SUBPHONE_CONNECTED = 12;//suhphone  connect
+    public static final int CALL_SUBPHONE_OUTGOING = 13;
+
     /************************added by ellen end**********************************/
     public static final String INTENT_CARD_ALIAS = "card_alias";
     public static final String INTENT_CARD_ID = "card_id";
+    public static final String INTENT_CARD_START_DATE = "card_start_date";
+    public static final String INTENT_CARD_END_DATE = "card_end_date";
+    public static final String INTENT_CARD_START_TIME = "card_start_time";
+    public static final String INTENT_CARD_END_TIME = "card_end_time";
+
+
     public static final String INTENT_KEY_CARD_TYPE = "card_type";
     public static final String INTENT_KEY_CARD_FRAGMENT = "card_fragment";
     public static final String CARD_PERMANENT = "permanent";
@@ -186,6 +199,7 @@ public class CommonData {
     public static final String ALIAS_CONFIG_TYPE = "enginneering mode device alias type";
     public static final int CONFIG_RELAY_ALIAS = 21;
     public static final int CONFIG_EXTERNAL_ZONE_ALIAS = 22;
+    public static final int CONFIG_LOCAL_ZONE_ALIAS = 23;
 
     /**********************Zone connection type******************************/
     public static final String ZONE_CONNECTION_TYPE = "enginneering mode zone connection type";
@@ -208,6 +222,7 @@ public class CommonData {
     public static final String COMMONDEVICE_TYPE_IPC = "ipc";
     public static final String COMMONDEVICE_TYPE_ELEVATOR = "elevator";
     public static final String COMMONDEVICE_TYPE_LOCK = "lock";
+    public static final String COMMONDEVICE_TYPE_DOORBELL = "doorbell";
 
     public static final String JSON_OPERATIONTYPE_VALUE_ADD = "add";
     public static final String JSON_OPERATIONTYPE_VALUE_DELETE = "delete";
@@ -219,6 +234,7 @@ public class CommonData {
     public static final String JSON_KEY_ENABLE = "enable";
     public static final String JSON_KEY_DELAYTIME = "delaytime";
     public static final String JSON_KEY_LOOP = "loop";
+    public static final String JSON_KEY_MODEL = "model";
     public static final String JSON_KEY_OPERATIONTYPE = "operationtype";
     public static final String JSON_KEY_DATASTATUS = "datastatus";
     public static final String JSON_KEY_START = "start";
@@ -238,7 +254,7 @@ public class CommonData {
     public static final String JSON_KEY_DURATION = "duration";
     public static final String JSON_TYPE_KEY = "type";
     public static final String JSON_KEY_DESCRIPTION = "description";
-    public static final String JSON_KEY_ADAPTERUUID = "adapteruuid";
+    public static final String JSON_KEY_ADAPTERNAME = "adapteruuid";
     public static final String JSON_KEY_MODULEUUID = "moduleuuid";
 
 
@@ -249,12 +265,14 @@ public class CommonData {
     public static final String JSON_KEY_ENDTIME = "endtime";
     public static final String JSON_KEY_CITY = "city";
     public static final String JSON_IP_KEY = "ip";
+    public static final String JSON_PORT_KEY = "port";
     public static final String JSON_USERNAME_KEY = "username";
     public static final String JSON_ONLINE_KEY = "online";
     public static final String JSON_MAINIP_KEY = "mainip";
     public static final String JSON_PANELALIAS_KEY = "panelalias";
     public static final String JSON_MAINPORT_KEY = "mainport";
     public static final String JSON_SUBPHONEID_KEY = "subphoneid";
+    public static final String JSON_SUBPHONENAME_KEY = "subphonename";
     public static final String JSON_UNIT_KEY = "unit";
     public static final String JSON_AMSIP_KEY = "amsip";
     public static final String JSON_AMSPORT_KEY = "amsport";
@@ -363,19 +381,15 @@ public class CommonData {
     //add by xc for extended modules
     public final static String JSON_MODULE_NAME_ALARM = "wiredzone";
     public final static String JSON_MODULE_NAME_RELAY = "relay";
+    public final static String JSON_MODULE_NAME_UNKNOW = "unknow";
 
-    //add by ailynn for elevator info
-    public final static String JSON_KEY_ELEVATOR_FLOOR = "elevatorfloor";
-    public final static String JSON_KEY_ELEVATOR_BUILD = "elevatorbuild";
-    public final static String JSON_KEY_ELEVATOR_ROOM = "elevatorroom";
-    public final static String JSON_KEY_ELEVATOR_DIRECTION = "elevatordirection";
-    public final static String JSON_KEY_ELEVATOR_STATUS = "elevatorstatus";
-    public final static String JSON_KEY_ELEVATOR_NO = "elevatorno";
+
     //add by ailynn for switcher
     public final static String JSON_SUBACTION_VALUE_SETRELAYLOOPSTATUS = "setrelayloopstatus";
     public final static String JSON_SUBACTION_VALUE_READRELAYLOOPSTATUS = "readrelayloopstatus";
     public final static String JSON_SUBACTION_VALUE_ZONELOOPSTATUSUPDATE = "zoneloopstatusupdate";
     public final static String JSON_SUBACTION_VALUE_LOCKSTATUSUPDATE = "lockstatusupdate";
+    public final static String JSON_SUBACTION_VALUE_DOORBELLSTATUSUPDATE = "doorbellstatusupdate";
     public final static String JSON_SUBACTION_VALUE_LOCALIO = "localio";
     public final static String JSON_KEY_DEVICETYPE_RELAY = "relay";
     public final static String JSON_KEY_DEVICETYPE_ZONE = "zone";
@@ -388,6 +402,17 @@ public class CommonData {
     public final static String JSON_KEY_STATUS_TRIGGER = "trigger";
     public final static String JSON_KEY_STATUS_NORMAL = "normal";
     public final static String JSON_KEY_STATUS_OPEN = "open";
+
+    //add by ailynn for alarm8
+    public final static String JSON_COMMAND_ACTION = "action";
+    public final static String JSON_COMMAND_SUBACTION = "subaction";
+    public final static String JSON_COMMAND_SUBACTION_ALARMINFO = "alarminfo";
+    public final static String JSON_COMMAND_ACTION_EVENT = "event";
+    public static final String JSON_COMMAND_DEVLOOPMAP = "deviceloopmap";
+    public static final String JSON_COMMAND_MODULETYPE = "moduletype";
+    public static final String JSON_COMMAND_LOOPID = "loopid";
+    public static final String JSON_COMMAND_SWITCHSTATUS = "status";
+
     //Max Voice Message Count supported
     public static final int MAX_VOICE_RECORD_COUNT = 3;
     public static final int MAX_NOTIFICATION_BULLTIN_COUNT = 1000;
@@ -445,6 +470,8 @@ public class CommonData {
     public static final String KEY_HOMESCREEN = "homescreen";//int
     public static final String KEY_TEMPER = "temper";//home panel 防拆 int
     public static final String KEY_CURSCENARIO = "curscenario";//cur scenario uuid
+    public static final String KEY_IPDC_FRONT_VERSION = "ipdcfrontversion";
+    public static final String KEY_IPDC_BACK_VERSION = "ipdcbackversion";
 
     //PbxSerice task shecdule
     public static final String TICK_MINIUTE_EVENT = "tickminiuteevent";
@@ -456,6 +483,9 @@ public class CommonData {
 
     public static final String DEVADAPTER_LOCK_MOMAS = "honeywell, local uart, momas lock";
     public static final String DEVADAPTER_LOCK_MOMAS_DES = "Honeywell homepanel local uart based momas lock";
+
+    public static final String DEVADAPTER_DOORBELL_LOCAL_HON = "honeywell, local io, door bell";
+    public static final String DEVADAPTER_DOORBELL_LOCAL_HON_DES = "Honeywell homePanel local io based door bell";
 
     public static final String DEVADAPTER_ZONE_LOCAL_HON = "honeywell, local io, zone";
     public static final String DEVADAPTER_ZONE_LOCAL_HON_DES = "Honeywell homePanel local io based zone";
@@ -475,19 +505,40 @@ public class CommonData {
     public static final String DEVADAPTER_AC_485_SANLING = "mitsubishi, local 485, aircondition";
     public static final String DEVADAPTER_AC_485_SANLING_DES = "Mitsubishi homepanel local 485 based air condition";
 
-
     /********************************** broadcast intent extras ****************************************/
     public static final String INTENT_EXTRA_DATA = "data";
     public static final String INTENT_EXTRA_DATA_LEN = "datalen";
     public static final String INTENT_EXTRA_DATA_JSONCLASS = "jsonclass";
 
     /********************************** broadcast intent actions ****************************************/
-    public final static String INTETN_ACTION_NOTUSE = "com.honeywell.cubebase.broadcast.nouse";
+    public final static String INTENT_ACTION_NOTUSE = "com.honeywell.cubebase.broadcast.nouse";
     public static final String INTENT_ACTION_EVENTBUS_MESSAGE = "com.honeywell.homepanel.eventbusmessage";
-    public static final String INTENT_ACTION_ALARM_INFO = "com.honeywell.cubebase.broadcast.alarminfo";
-    public final static String INTETN_ACTION_ENVIROMENT_INFO = "com.honeywell.cubebase.broadcast.envirometninfo";
+    public static final String INTENT_ACTION_ALARM_INFO = "com.honeywell.homepanel.broadcast.alarminfo";
+    public final static String INTETN_ACTION_ENVIROMENT_INFO = "com.honeywell.homepanel.broadcast.envirometninfo";
+    public final static String INTENT_ACTION_CONFIGINFO_CHANGED = "com.honeywell.homepanel.broadcast.configinfoupdated";
 
-    public static final String CLOUD_DEVICE_ENROLL = "com.honeywell.homepanel.enroll";
+    public static final String JSON_CONFIGDATA_CATEGORY_KEY = "category";
+    public static final String JSON_CONFIGDATA_CATEGORY_PRIVATE = "privateconfig";
+    public static final String JSON_CONFIGDATA_CATEGORY_PUBLIC = "publicconfig";
+
+    public static final String JSON_CONFIGDATA_CONFIGNAME_KEY = "configname";
+    public static final String JSON_CONFIGDATA_CONFIGNAME_DEFAULT = "default";
+    public static final String JSON_CONFIGDATA_CONFIGNAME_COMMONDEVLIST = "commondevice";
+    public static final String JSON_CONFIGDATA_CONFIGNAME_EXTENTIONMODULE = "extensionmodule";
+    public static final String JSON_CONFIGDATA_CONFIGNAME_EXTENSIONRELAY = "extensionrelay";
+    public static final String JSON_CONFIGDATA_CONFIGNAME_EXTENSIONZONE = "extensionzone";
+    public static final String JSON_CONFIGDATA_CONFIGNAME_LOCALDEVICE = "localdevice";
+    public static final String JSON_CONFIGDATA_CONFIGNAME_SCENARIO = "scenario";
+
+
+    public static final String MQTT_REGISTER_HOME_PANEL = "com.honeywell.homepanel.register";//注册
+    public static final String MQTT_BIND_HOME_PANEL = "com.honeywell.homepanel.bind";//绑定
+    public static final String MQTT_BIND_USER_ID = "com.honeywell.homepanel.bind_user_id";//绑定
+    public static final String MQTT_BIND_PHONE_NUM = "com.honeywell.homepanel.bind.phone.num";//绑定
+
+    public static final String TIME_STR_FORMAT = "yyyyMMdd-HHmmss";
+
+    public  static  final  int CALL_HISTORY_MAX_COUNT = 32;
 
     public static String file_() {
         StackTraceElement ste = new Throwable().getStackTrace()[1];

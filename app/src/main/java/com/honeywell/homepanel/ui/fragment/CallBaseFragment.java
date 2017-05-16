@@ -2,10 +2,14 @@ package com.honeywell.homepanel.ui.fragment;
 
 import android.content.Context;
 import android.media.MediaMuxer;
+import android.media.MediaPlayer;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.honeywell.homepanel.IAvRtpService;
+import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.R;
+
 import com.honeywell.homepanel.common.CommonPath;
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.AudioVideoUtil.AVIUtil;
@@ -52,6 +56,18 @@ public class CallBaseFragment extends Fragment {
     private BlockingQueue<ByteBuffer> mAudioRecordQueue = null;
     private MediaMuxer mMuxer = null;
 
+
+    public static final String CALL_RING_NEIGHPHONE = "neighphonering.wav";
+    public static final String CALL_RING_LOBBYPHONE = "lobbyphonering.wav";
+    public static final String CALL_RING_GUARDPHONE = "guardphonering.wav";
+    public static final String CALL_RING_DOORCAMERA = "doorcameraring.wav";
+    public static final String CALL_RING_HOLDTONE	 = "holdtonering.wav";
+    public static final String CALL_RING_INTERPHONE = "interphonering.wav";
+    public static final String VOLUME_TEST_RING = "volumetest.wav";
+    public static final String CALL_RING_OUT = "calltone.wav";
+    public static final String CALL_ERROR_TONE = "error.wav";
+    private MediaPlayer mPlayer;
+
     public void setFragmentAidl(IAvRtpService iAvRtpService,Context context){
         Log.d(TAG, "setFragmentAidl: 11111111111111");
         mIAvrtpService = iAvRtpService;
@@ -61,7 +77,7 @@ public class CallBaseFragment extends Fragment {
         mAudioProcess.setUuid(CommonUtils.generateCommonEventUuid());
     }
 
-    public  void startAudio(){
+    public void startAudio(){
         Log.d(TAG, "startAudio: mBAudioGet:"+mBAudioGet+",,1111111");
         if (null != mAudioProcess && !mBAudioGet) {
             try {
@@ -73,6 +89,24 @@ public class CallBaseFragment extends Fragment {
         }
     }
 
+    public void startAutoAudioReply() {
+        Log.d(TAG, "startAudioRecordFromFile: ");
+        if (null != mAudioProcess) {
+            mAudioProcess.startPhoneRecordFromFileThread();
+        }
+    }
+    public void waitAutoAudioReplyFinish() {
+        Log.d(TAG, "waitAutoAudioReplyFinish: ");
+        if (null != mAudioProcess) {
+            mAudioProcess.waitPhoneRecordFromFileThread();
+        }
+    }
+    public void stopAutoAudioReply() {
+        Log.d(TAG, "stopAutoAudioReply: ");
+        if (null != mAudioProcess) {
+            mAudioProcess.stopPhoneRecordFromFileThread();
+        }
+    }
     public  void stopAudio(){
         Log.d(TAG, "stopAudio: 111111111");
         try {
@@ -88,6 +122,7 @@ public class CallBaseFragment extends Fragment {
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy: 11111111");
+        stopAutoAudioReply();
         stopAudio();
         stopAudioGet();
         stopVideoGet();
@@ -122,12 +157,9 @@ public class CallBaseFragment extends Fragment {
                         Thread.sleep(SLEEPTIME);
                         continue;
                     }
-                    Log.d(TAG, "run: mBVideoGet:"+mBVideoGet+",,1111111111111111");
                     if(mBVideoGet) {
-                        Log.d(TAG, "run: mBVideoGet:"+mBVideoGet+",,2222222222222");
                         byte[] data = mIAvrtpService.getVideoFrame();
                         if (null != data) {
-                            Log.d(TAG, "run: mBVideoGet:"+mBVideoGet+",,3333333333333333");
                             getVideoInfo();
 
 
@@ -189,6 +221,13 @@ public class CallBaseFragment extends Fragment {
 
     public void startRecord(){
         Log.d(TAG, "startRecord: 11111");
+        if (null == CommonPath.VIDEO_PATH) {
+            Log.d(TAG, "startRecord: 2222222222222222");
+            return;
+        }
+        
+        Log.d(TAG, "startRecord: 33333333333333333");
+
         mBRecord = true;
         if(null == mVideoRecordQueue){
             mVideoRecordQueue = new LinkedBlockingQueue<ByteBuffer>(10);
@@ -196,7 +235,8 @@ public class CallBaseFragment extends Fragment {
         if(null == mAudioRecordQueue) {
             mAudioRecordQueue = new LinkedBlockingQueue<ByteBuffer>(10);
         }
-        final  String fileName = CommonPath.VIDEO_PATH + CommonUtils.getLobbyVideoRecordName();
+
+        final  String fileName = CommonPath.VIDEO_PATH+ CommonUtils.getLobbyVideoRecordName();
         File dirFile = new File(CommonPath.VIDEO_PATH);
         if(!dirFile.exists()){
             dirFile.mkdirs();
@@ -205,8 +245,11 @@ public class CallBaseFragment extends Fragment {
         try {
             file.createNewFile();
         } catch (IOException e) {
+            Log.e(TAG, "startRecord: 44444444444444");
             e.printStackTrace();
+			return;
         }
+        Log.d(TAG, "startRecord: file name " + fileName);
         EventBus.getDefault().post(new CallRecordReadyEvent(fileName));
         new Thread(new Runnable() {
             public void run() {
@@ -368,5 +411,53 @@ public class CallBaseFragment extends Fragment {
     public void stopAudioGet(){
         Log.d(TAG, "stopAudioGet: 1111111111");
         mBAudioGet = false;
+    }
+
+
+    public void startPlayRing(String ringpath){
+        Log.i(TAG, "startPlayRing: " + ringpath);
+
+
+        if (ringpath.equals(CALL_RING_NEIGHPHONE)) {
+            mPlayer = MediaPlayer.create(getActivity(), R.raw.neighphonering);
+        } else if(ringpath.equals(CALL_RING_LOBBYPHONE)) {
+            mPlayer = MediaPlayer.create(getActivity(), R.raw.lobbyphonering);
+        } else if(ringpath.equals(CALL_RING_GUARDPHONE)) {
+            mPlayer = MediaPlayer.create(getActivity(), R.raw.guardphonering);
+        } else if(ringpath.equals(CALL_RING_DOORCAMERA)) {
+            mPlayer = MediaPlayer.create(getActivity(), R.raw.doorcameraring);
+        } else if(ringpath.equals(CALL_RING_HOLDTONE)) {
+            mPlayer = MediaPlayer.create(getActivity(), R.raw.holdtonering);
+        } else if(ringpath.equals(CALL_RING_INTERPHONE)) {
+            mPlayer = MediaPlayer.create(getActivity(), R.raw.interphonering);
+        } else if(ringpath.equals(CALL_RING_OUT)) {
+            mPlayer = MediaPlayer.create(getActivity(), R.raw.calltone);
+        } else if(ringpath.equals(CALL_ERROR_TONE)) {
+            mPlayer = MediaPlayer.create(getActivity(), R.raw.error);
+        } else if(ringpath.equals(VOLUME_TEST_RING)) {
+            mPlayer = MediaPlayer.create(getActivity(), R.raw.volumetest);
+        } else {
+            mPlayer = null;
+            return;
+        }
+
+        mPlayer.start();
+
+        return;
+    }
+
+    public void stopPlayRing(){
+        if (mPlayer == null) {
+            return;
+        }
+
+        if (mPlayer.isPlaying()) {
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = null;
+        }
+
+
+
     }
 }

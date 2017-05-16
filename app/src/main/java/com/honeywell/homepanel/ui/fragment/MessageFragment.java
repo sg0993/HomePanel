@@ -17,13 +17,9 @@ import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.Utils.EventBusWrapper;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
-import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUINotification;
 import com.honeywell.homepanel.common.Message.ui.UIMessagesNotification;
-
 import com.honeywell.homepanel.ui.domain.NotificationStatisticInfo;
-import com.honeywell.homepanel.ui.domain.NotifyVoiceEventBusClass;
-
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -233,7 +229,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
                 }
                 break;
         }
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     private void initEvents() {
@@ -337,7 +333,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    /*@Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(MessageEvent event)
     {
         Log.d(TAG, "OnMessageEvent: ");
@@ -348,13 +344,13 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     {
 
     }
-
+*/
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(SUISMessagesUINotification.SUISGetEventsListMessageRsp msg) {
+    public void OnMessageEvent(SUISMessagesUINotification.SUISEventsUnreadCountMessageRsp msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
         String subaction = msg.optString(CommonJson.JSON_SUBACTION_KEY, "");
         String msgid = msg.optString(CommonJson.JSON_MSGID_KEY, "");
-
+        Log.d(TAG, "OnMessageEvent: msg:"+msg.toString()+",,1111111111111111111111");
         if (msgid == "" || action == "" || subaction == "") {
             return;
         }
@@ -362,15 +358,17 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         if ( (action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
                 && subaction.equals(CommonJson.JSON_SUBACTION_VALUE_EVENTCOUNTGET))) {
             String errorcode = msg.optString(CommonJson.JSON_ERRORCODE_KEY, "");
-            String datastatus = msg.optString(CommonData.DATASTATUS_UNREAD, "");
-            if ( (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
+            String datastatus = msg.optString(CommonData.JSON_KEY_DATASTATUS, "");
+           /* if ( (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
                 setUnreadCount(CommonData.FRAGMENT_EVENT, Integer.valueOf(count));
+            }*/
+            if ((errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
+                String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
+                mNaviEvent.setText(title_event + "(" + count + ")");
             }
         }
     }
-
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(UIMessagesNotification.UIGetAlarmListMessageReq msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
