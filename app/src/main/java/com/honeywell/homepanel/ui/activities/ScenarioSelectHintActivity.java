@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.NotificationUtil;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.ui.domain.TopStaus;
 
@@ -36,7 +37,6 @@ public class ScenarioSelectHintActivity extends Activity implements View.OnClick
                     postDelayed(mProgressBar, this, 20L);
                 }
                 else{
-                    Log.d(TAG,"onCreate() excute  1111111111111111");
                     TopStaus.getInstance(getApplicationContext()).setCurScenario(mSelect_Scenario);
                     finish();
                 }

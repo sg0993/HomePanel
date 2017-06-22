@@ -154,6 +154,7 @@ public class HVideoDecoder {
     private boolean judgeIFrame(byte[] stream_data) {
         boolean bIFrame = false;
         if(null != stream_data && stream_data.length > 5){
+
             if(stream_data[4] == 0x41 || stream_data[4] == 0x43 ||stream_data[4] == 0x44 ){
                 bIFrame = true;
             }

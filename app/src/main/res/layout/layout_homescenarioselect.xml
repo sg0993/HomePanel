@@ -12,6 +12,7 @@
         android:verticalSpacing="1dp"
         android:horizontalSpacing="1dp"
         android:columnWidth="200dip"
+        android:listSelector="@drawable/grid_view_item_bg"
         android:stretchMode="columnWidth"
         android:background="#C6C6C6"
         android:gravity="center">

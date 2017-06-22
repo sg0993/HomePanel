@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.configcenter.databases.manager.PreferenceManager;
+import com.honeywell.homepanel.ui.activities.MainActivity;
 
 /**
  * Created by H135901 on 1/24/2017.
@@ -15,13 +16,15 @@ public class TopStaus {
     private static final String TAG = "TopStaus";
     private static TopStaus instance = null;
     public Context mContext = null;
-    private  String mWeather = CommonData.WEATHER_SUNNY;
-    private  int mTemperature = 15;
-    private  String healthy = CommonData.UNHEALTHY;
+    private  String mWeather = null;//CommonData.WEATHER_SUNNY;
+    private  String healthy = null;
     private  String mArmStatus = CommonData.ARMSTATUS_DISARM;
+    private  int mTemperature = 0xFFFF;
     private  int mWifiStatus = CommonData.DISCONNECT;
     private  int mServerStatus = CommonData.DISCONNECT;
-    private  int mIPDCStatus = CommonData.DISCONNECT;
+    private  int mFrontIPDCStatus = CommonData.DISCONNECT;
+    private  int mBackIPDCStatus = CommonData.DISCONNECT;
+    private  boolean CloudBoundStatus = false;
 
     public int getmServerStatus() {
         return mServerStatus;
@@ -35,12 +38,23 @@ public class TopStaus {
         this.mServerStatus = mServerStatus;
     }
 
-    public int getmIPDCStatus() {
-        return mIPDCStatus;
+    public int getmFrontIPDCStatus() {
+        return mFrontIPDCStatus;
     }
 
-    public void setmIPDCStatus(int mIPDCStatus) {
-        this.mIPDCStatus = mIPDCStatus;
+    public void setmFrontIPDCStatus(int mFrontIPDCStatus) {
+        Log.d(TAG, "setmFrontIPDCStatus: mFrontIPDCStatus:"+ mFrontIPDCStatus +",,,1111111111");
+        this.mFrontIPDCStatus = mFrontIPDCStatus;
+    }
+
+    public int getmBackIPDCStatus() {
+        return mBackIPDCStatus;
+    }
+
+
+    public void setmBackIPDCStatus(int mBackIPDCStatus) {
+        Log.d(TAG, "setmBackIPDCStatus: mBackIPDCStatus:"+ mBackIPDCStatus +",,,1111111111");
+        this.mBackIPDCStatus = mBackIPDCStatus;
     }
 
     //public int mCurScenario = CommonData.SCENARIO_AWAY;//CommonData.SCENARIO_HOME;
@@ -101,5 +115,15 @@ public class TopStaus {
 
     public void setWifiStatus(int mWifiStatus) {
         this.mWifiStatus = mWifiStatus;
+    }
+
+    public boolean isCloudBoundStatus() {
+        return CloudBoundStatus;
+    }
+
+    public void setCloudBoundStatus(boolean cloudBoundStatus) {
+        if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_MAIN) {//only mainphone need show bound status
+            CloudBoundStatus = cloudBoundStatus;
+        }
     }
 }

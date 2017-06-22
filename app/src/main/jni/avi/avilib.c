@@ -1338,7 +1338,8 @@ JNIEXPORT jint JNICALL Java_com_honeywell_homepanel_ui_AudioVideoUtil_AVIUtil_wr
 	if(videoTime != 0){
 		int count = (videoTime - prev_video_time)/25;
 		LOGD("count::::%d 111111111111\n", count);
-		for (int i = 0; i <= count; ++i) {
+		int i=0;
+		for (i = 0; i <= count; ++i) {
 			AVI_write_frame(avi_handle, NULL, 0);
 		}
 		prev_video_time = videoTime;

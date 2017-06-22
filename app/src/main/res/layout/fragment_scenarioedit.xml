@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:foreground="@drawable/shape_window_dim"
-    android:id="@+id/scenes_frameLayout"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:foreground="@drawable/shape_window_dim"
+             android:id="@+id/scenes_frameLayout"
+             android:layout_height="match_parent"
+             android:layout_width="match_parent">
 
     <LinearLayout
         android:id="@+id/content_scrolling"
@@ -13,15 +13,13 @@
         android:background="@android:color/white"
         android:orientation="vertical"
         tools:context=".ui.activities.MainActivity">
-        <TextView
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="62dp"
             android:gravity="center"
-            android:text="Scences"
-            style="@style/notification_navi"
-            android:textAllCaps="false"
-            android:textSize="20sp"/>
+            android:text="@string/Scenes"
+            style="@style/HoneywellTitleStyle"/>
         <LinearLayout
             android:orientation="vertical"
             android:background="@color/white"
@@ -41,7 +39,7 @@
                 android:horizontalSpacing="1dp"
                 android:longClickable="true"
                 android:numColumns="2"
-                android:listSelector="@null"
+                android:listSelector="@drawable/grid_view_item_bg"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="1dp" />
             <Button

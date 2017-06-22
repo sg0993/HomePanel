@@ -1,8 +1,13 @@
 package com.honeywell.homepanel.ui.activities;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +22,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.cloud.Protocols;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
@@ -50,9 +56,11 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     private static int mLeftPrePage = CommonData.LEFT_SELECT_HOME;
     private List<View>mLeftViews = new ArrayList<View>();
     private List<ImageView>mLeftImages = new ArrayList<ImageView>();
-    private Map<Integer,Fragment> mFragments = new HashMap<Integer, Fragment>();
+    public Map<Integer,Fragment> mFragments = new HashMap<Integer, Fragment>();
     private TopViewBrusher mTopViewBrusher = new TopViewBrusher();
     private ImageView mMsgIndicator = null;
+    private boolean isBound;
+    private BroadcastReceiver bindStateReceiver;
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +71,22 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         fragmentAdd(true,mLeftCurPage);
         setLeftNavifation(mLeftCurPage);
         updateNewMessageIndicator(0);
+        bindStateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                isBound = intent.getBooleanExtra(Protocols.EXTRACT_BIND_STATE, false);
+            }
+        };
+        Intent intent = registerReceiver(bindStateReceiver, new IntentFilter(Protocols.INTENT_MQTT_BIND_STATE));
+        if (intent != null) {
+            isBound = intent.getBooleanExtra(Protocols.EXTRACT_BIND_STATE, false);
+        } else {
+            isBound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(CommonData.MQTT_BIND_HOME_PANEL, false);
+        }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG, "onSaveInstanceState: 111111111111111111");
-        super.onSaveInstanceState(outState);
+    public boolean getBindState() {
+        return isBound;
     }
 
     @Override
@@ -100,7 +118,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
                     for (int grantResult : grantResults) {
                         if (grantResult != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_ALL);
-                            Snackbar.make(getWindow().getDecorView(), "1111111111111111", Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(getWindow().getDecorView(), "请不要拒绝权限申请", Snackbar.LENGTH_LONG).show();
                             break;
                         }
                     }
@@ -121,6 +139,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         EventBus.getDefault().unregister(this);
         super.onDestroy();
         mTopViewBrusher.destory();
+        unregisterReceiver(bindStateReceiver);
     }
 
     private void fragmentAdd(boolean bAdd, int position)  {
@@ -270,13 +289,16 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 //        jsonParse((Object) msg);
     }
 
+    public void switchForFragement(int page){
+        setLeftNavifation(page);
+        fragmentAdd(false,page);
+    }
 
     @Override
     public void onClick(View view) {
         for (int i = 0; i <=  CommonData.LEFT_SELECT_SETTING; i++) {
             if(mLeftViews.get(i).getId() == view.getId()) {
-                setLeftNavifation(i);
-                fragmentAdd(false, i);
+                switchForFragement(i);
                 break;
             }
         }

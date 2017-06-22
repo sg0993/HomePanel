@@ -4,6 +4,8 @@ package com.honeywell.homepanel.ui.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.honeywell.homepanel.R;
@@ -26,10 +28,11 @@ public class ScenarioSelectActivity extends Activity implements AdapterCallback 
             R.string.scenario_away,
             R.string.scenario_sleep,
             R.string.scenario_wakeup};
-    private static final int[] IMAGES = {R.mipmap.home_sel, R.mipmap.away, R.mipmap.sleep, R.mipmap.wakeup};
+    private static final int[] IMAGES = {R.mipmap.home_sel, R.mipmap.away,
+            R.mipmap.sleep, R.mipmap.wake_up};
 
-    private static final int[] IMAGES_DOWN = {R.mipmap.home_down, R.mipmap.away_down, R.mipmap.sleep_down, R.mipmap.wakeup_down};
-
+    private static final int[] IMAGES_DOWN = {R.mipmap.home_blue, R.mipmap.away_red,
+            R.mipmap.sleep_red, R.mipmap.wake_up_blue};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,15 @@ public class ScenarioSelectActivity extends Activity implements AdapterCallback 
                 Toast.makeText(ScenarioSelectActivity.this,"positon:"+position,Toast.LENGTH_SHORT).show();
             }
         });*/
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(ScenarioSelectActivity.this, PasswordEnterActivity.class);
+                intent.putExtra(CommonData.INTENT_KEY_SCENARIO, position + 1);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override

@@ -44,8 +44,8 @@
                 android:src="@mipmap/message" />
             <ImageView
                 android:layout_toRightOf="@+id/message_image"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="12dp"
                 android:id="@+id/message_indicator"
                 android:layout_alignParentRight="true"
                 android:layout_width="12px"

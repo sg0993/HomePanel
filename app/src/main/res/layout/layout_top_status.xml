@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="@android:color/black"
-        android:layout_height="@dimen/top_status_high">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@android:color/black"
+    android:layout_height="@dimen/top_status_high">
 
         <LinearLayout
             android:id="@+id/left_1"
@@ -13,11 +14,12 @@
             android:gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
-            <TextView
+            <com.honeywell.homepanel.ui.widget.HoneywellTextView
                 android:id="@+id/timeTv"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:text="8/30 10:53"
+                android:text="@string/demotime2"
+                app:textStyle="HONEYWELL_FONTS_BOLD"
                 style="@style/top_textview"/>
 
             <LinearLayout
@@ -29,11 +31,12 @@
                     android:id="@+id/weatherImage"
                     android:src="@mipmap/top_weather_sunny"
                     style="@style/top_imageview"/>
-                <TextView
+                <com.honeywell.homepanel.ui.widget.HoneywellTextView
                     android:id="@+id/temperatureTv"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="center_vertical"
-                    android:text="26°"
+                    android:text="@string/temperatureTv"
+                    app:textStyle="HONEYWELL_FONTS_BOLD"
                     style="@style/top_textview" />
             </LinearLayout>
 
@@ -46,19 +49,22 @@
                     android:id="@+id/healthyImage"
                     android:src="@mipmap/top_heathy_unheathy"
                     style="@style/top_imageview"/>
-                <TextView
+                <com.honeywell.homepanel.ui.widget.HoneywellTextView
                     android:id="@+id/healthyTv"
                     android:layout_marginLeft="10dp"
-                    android:text="unheathy"
+                    android:text="@string/Unheathy"
+                    app:textStyle="HONEYWELL_FONTS_BOLD"
                     style="@style/top_textview"/>
             </LinearLayout>
         </LinearLayout>
 
-        <TextView
+    <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:layout_marginLeft="10dp"
             android:id="@+id/armTv"
             android:layout_centerInParent="true"
-            android:text="System Disarmed"
+            android:text="@string/System_disarmed"
+            app:textStyle="HONEYWELL_FONTS_BOLD"
+            android:textSize="18sp"
             style="@style/top_textview"/>
 
         <LinearLayout
@@ -67,16 +73,22 @@
             android:layout_height="match_parent"
             android:layout_width="wrap_content">
             <ImageView
-                android:id="@+id/wifiImage"
-                android:src="@mipmap/top_wifi_connect"
+                android:id="@+id/cloud_bound_icon"
                 style="@style/top_imageview"/>
             <ImageView
-                android:id="@+id/ipdoorcamera"
-                android:src="@mipmap/ipdoorcamera"
+                android:id="@+id/wifiImage"
+                style="@style/top_imageview"/>
+            <ImageView
+                android:id="@+id/front_ipdoorcamera"
+                style="@style/top_imageview"/>
+            <ImageView
+                android:id="@+id/connection_lann"
+                style="@style/top_imageview"/>
+            <ImageView
+                android:id="@+id/back_ipdoorcamera"
                 style="@style/top_imageview"/>
             <ImageView
                 android:id="@+id/connection_lan"
-                android:src="@mipmap/lan"
                 style="@style/top_imageview"/>
         </LinearLayout>
 

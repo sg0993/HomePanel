@@ -54,13 +54,21 @@ public class PreferenceManager {
     }
 
     public static synchronized int getIntConfig(Context context,String key){
-        int value = 0;
+        int value = getDefaultValueInt(key);
         if(null == context || TextUtils.isEmpty(key)){
             return value;
         }
         SharedPreferences preferences = context.getSharedPreferences(HOMEPANEL_CONFIG_NAME, Context.MODE_PRIVATE);
         value = preferences.getInt(key,value);
         return value;
+    }
+
+    private static int getDefaultValueInt(String key) {
+        int value = 0;
+        if(!TextUtils.isEmpty(key) && key.contains(CommonData.KEY_VOLUME_PREFIX)){
+            value = CommonData.VOLUME_VALUE_DEFAULT;
+        }
+        return  value;
     }
 
     public static synchronized String getStringConfig(Context context,String key){

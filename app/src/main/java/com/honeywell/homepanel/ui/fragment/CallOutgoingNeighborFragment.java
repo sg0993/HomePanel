@@ -17,6 +17,7 @@ import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
+import com.honeywell.homepanel.ui.RingFile.RingFileData;
 import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.activities.CallFailedActivity;
 import com.honeywell.homepanel.ui.activities.MainActivity;
@@ -59,7 +60,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
         initViews(view);
         mAnimationBtusher.init(view);
         Log.d(TAG,"CallOutgoingNeighborFragment.onCreateView() 11111111");
-        startPlayRing(CALL_RING_OUT);
+        startPlayRing(RingFileData.CALL_RING_OUT);
         uiBaseCallInfo.setmCallType(((CallActivity) getActivity()).mCallType);
         uiBaseCallInfo.setmCallAliasName(((CallActivity) getActivity()).mUnit);
         UISendCallMessage.requestForCallOut(uiBaseCallInfo);
@@ -130,6 +131,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
                 intent.putExtra(CommonData.INTENT_KEY_UNIT,aliasName);
                 startActivity(intent);
                 System.out.println("SUISCallOutMessageRsp failed");
+                getActivity().finish();
             }
         }
     }

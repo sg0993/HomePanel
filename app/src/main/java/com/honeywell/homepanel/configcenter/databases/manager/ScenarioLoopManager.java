@@ -130,7 +130,6 @@ public class ScenarioLoopManager {
         return loop;
     }
 
-
     public synchronized List<ScenarioLoop> getByUuid(String uuid) {
         List<ScenarioLoop>lists = new ArrayList<ScenarioLoop>();
         if(TextUtils.isEmpty(uuid)){
@@ -187,32 +186,42 @@ public class ScenarioLoopManager {
         return device;
     }
 
-
-    /*******************For Protocal*******************************************/
+    private void loopToJson(JSONObject loopMapObject, ScenarioLoop loop) throws JSONException {
+        loopMapObject.put(CommonJson.JSON_UUID_KEY, loop.mDeviceUuid);
+        loopMapObject.put(CommonData.JSON_SCENARIO_ACTION_KEY, new JSONObject(loop.mAction));
+        loopMapObject.put(CommonJson.JSON_ALIASNAME_KEY, loop.mName);
+        loopMapObject.put(CommonData.JSON_KEY_ENABLE, "1");
+    }
 
     public void getScenarioConfig(JSONObject jsonObject)  throws JSONException{
-        List<ScenarioLoop>lists = getByUuid(jsonObject.optString(CommonJson.JSON_UUID_KEY));
-        if(null == lists){
+        String uuid = jsonObject.optString(CommonJson.JSON_UUID_KEY, "");
+        CommonDevice scenario = CommonDeviceManager.getInstance(mContext).getByUuid(uuid);
+        List<ScenarioLoop>lists = getByUuid(uuid);
+        if(null == lists || scenario == null){
             return;
         }
+
         JSONArray loopMapArray = new JSONArray();
         for (int i = 0; i < lists.size(); i++) {
             ScenarioLoop loop = lists.get(i);
-            JSONObject loopMapObject = new JSONObject();
-            DbCommonUtil.putKeyValueToJson(mContext,loop.mDeviceUuid,loopMapObject);
-            loopMapArray.put(loopMapObject);
+            JSONObject loopObject = new JSONObject();
+
+            DbCommonUtil.putKeyValueToJson(mContext,loop.mDeviceUuid,loopObject);
+            loopToJson(loopObject, loop);
+            loopMapArray.put(loopObject);
         }
+
+        jsonObject.put(CommonJson.JSON_ALIASNAME_KEY, scenario.mName);
         jsonObject.put(CommonJson.JSON_LOOPMAP_KEY,loopMapArray);
         jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
-
 
     public void setScenarioConfig(JSONObject jsonObject) throws  JSONException{
         String uuid = jsonObject.optString(CommonJson.JSON_UUID_KEY);
         //TODO 暂不支持修改场景名字
         String name = jsonObject.optString(CommonData.JSON_KEY_NAME);
         JSONArray loopMapArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
-        CommonDevice commonDevice = CommonlDeviceManager.getInstance(mContext).getByUuid(uuid);
+        CommonDevice commonDevice = CommonDeviceManager.getInstance(mContext).getByUuid(uuid);
         if(null == commonDevice){
             return;
         }

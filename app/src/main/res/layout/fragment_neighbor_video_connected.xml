@@ -42,21 +42,20 @@
             android:layout_centerHorizontal="true">
             <include
                 layout="@layout/layout_call_animarion"/>
-            <TextView
+            <com.honeywell.homepanel.ui.widget.HoneywellTextView
                 android:id="@+id/unit_tv"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:text="20-1002"
-                style="@style/call_textview"
-                android:textStyle="bold"/>
-            <TextView
+                android:text="@string/dong"
+                style="@style/HoneywellCallTextStyle"/>
+            <com.honeywell.homepanel.ui.widget.HoneywellTextView
                 android:id="@+id/calltime_tv"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:text="02:59"
-                style="@style/call_textview"/>
+                android:text="@string/time"
+                style="@style/HoneywellCallTextStyle"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/call_bottom"

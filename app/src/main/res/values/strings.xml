@@ -21,14 +21,15 @@
     <string name="scenario_home">Home</string>
     <string name="scenario_away">Away</string>
     <string name="scenario_sleep">Sleep</string>
-    <string name="scenario_wakeup">Wakeup</string>
+    <string name="scenario_wakeup">Wake up</string>
     <string name="device_air">Air Purifer</string>
+    <string name="device_relay">Relay</string>
     <string name="device_camera">Camera</string>
     <string name="device_elevator">Elevator</string>
     <string name="device_lock">Lock</string>
     <string name="device_empty"> </string>
     <string name="devices_cameras_living_room">Living Room</string>
-    <string name="devices_cameras_ipdoor_camera">ip Door Camera</string>
+    <string name="devices_cameras_ipdoor_camera">IP Door Camera</string>
     <string name="devices_cameras_parking">Parking</string>
     <string name="devices_cameras_living_room_time">Image from 10:40 am</string>
     <string name="devices_cameras_ipdoor_camera_time">Image from 10:40 am</string>
@@ -55,9 +56,11 @@
     <string name="notification_title_voice">Voice Message</string>
 
 
-    <string name="lowbattery">Front door lock has low battery, tap to learn how to change your door lock.</string>
+    <string name="lowbatteryhint">Front door lock has low battery, tap to learn how to change your door lock.</string>
     <string name="temp_hot">The inside temperature is too hot, tap to control air condition."</string>
     <string name="newvisitor">You have a new visitor, tap to check.</string>
+    <string name="newvoicemsg">You have a new voice message,tap to play.</string>
+    <string name="newpropertymsg">You have a new property message,tap to check.</string>
 
     <string name="goodmoring">Good morning!</string>
     <string name="goodafternoon">Good afternoon!</string>
@@ -73,7 +76,7 @@
     <string name="password_hint_passworderror">Your password is incorrect,please try again.</string>
 
     <string name="indicator_board_cancel">Cancel</string>
-    <string name="indicator_board_tap">Tap to Call lift</string>
+    <string name="indicator_board_tap">Tap to call lift</string>
 
     <string name="dialing">Dialing...</string>
 
@@ -90,58 +93,63 @@
     <string name="audio">Audio</string>
     <string name="video">Video</string>
 
-    <string name="engin_top_title">Engineering mode</string>
-    <string name="engin_device_role">Device role</string>
-    <string name="engin_network">Network setting</string>
-    <string name="engin_serverip">Server Ip settiong</string>
-    <string name="engin_roomno">Room number</string>
-    <string name="engin_zonecfg">Zone configuration</string>
-    <string name="engin_relaycfg">Relay configuration</string>
-    <string name="engin_elevatorset">Elevator cetting</string>
-    <string name="engin_ddkset">Door lock cetting</string>
-    <string name="engin_subphone">Ip subphone setting</string>
-    <string name="engin_masterphone">Ip masterphone setting</string>
-    <string name="engin_camera">Ip camera setting</string>
-    <string name="engin_antidismantle">Anti-dismantle</string>
-    <string name="engin_finaltest">Start final tester</string>
+    <string name="engin_top_title">Engineering Mode</string>
+    <string name="engin_device_role">Device Role</string>
+    <string name="engin_network">Network Setting</string>
+    <string name="engin_serverip">Server IP Setting</string>
+    <string name="engin_roomno">Room Number</string>
+    <string name="engin_zonecfg">Zone Configuration</string>
+    <string name="engin_relaycfg">Relay Configuration</string>
+    <string name="engin_elevatorset">Elevator Setting</string>
+    <string name="engin_ddkset">Door Lock Setting</string>
+    <string name="card_action">Card Action</string>
+    <string name="engin_subphone">IP Subphone Setting</string>
+    <string name="engin_masterphone">IP Masterphone Setting</string>
+    <string name="engin_camera">IP Camera Setting</string>
+    <string name="engin_password_change">Engineering Mode Code</string>
+    <string name="engin_antidismantle">Anti-Dismantle</string>
+    <string name="engin_finaltest">Start Final Tester</string>
     <string name="engin_restart">Restart</string>
-    <string name="engin_serverip_addr">159.99.249.40</string>
+    <string name="engin_serverip_addr">192.168.2.2</string>
     <string name="engin_roomno_number">300201002</string>
-    <string name="engin_ipdc_front_version">IP Door Camera Front Version</string>
-    <string name="engin_ipdc_back_version">IP Door Camera Back Version</string>
+    <string name="engin_ipdc_front_version">Front IPDC Version</string>
+    <string name="engin_ipdc_back_version">Back IPDC Version</string>
 
-    <string name="network_top_title">Netmask setting</string>
-    <string name="network_IP_addr">IP address</string>
+    <string name="network_top_title">Network Setting</string>
+    <string name="network_IP_addr">IP Address</string>
     <string name="network_netmask">Netmask</string>
     <string name="network_gateway">Gateway</string>
     <string name="network_ipaddr_value">159.99.249.247</string>
     <string name="network_netmask_value">255.255.255.0</string>
     <string name="network_gateway_value">159.99.249.1</string>
 
-    <string name="zone_top_title">Zone configuration</string>
-    <string name="zone_local_zone">Local zone</string>
-    <string name="zone_extension_zone">Extension zone</string>
+    <string name="zone_top_title">Zone Configuration</string>
+    <string name="zone_local_zone">Local Zone</string>
+    <string name="zone_extension_zone">Extension Zone</string>
     <string name="title_activity_wifi_configure">WifiConfigureActivity</string>
-    <string name="wifi_configure">Wi-Fi configuration</string>
-    <string name="wifi_scan_access_points">Scan access points</string>
-    <string name="wifi_configuration">Wi-Fi configuration</string>
+    <string name="wifi_configure">Wi-Fi Configuration</string>
+    <string name="wifi_scan_access_points">Scan Access Points</string>
+    <string name="wifi_configuration">Wi-Fi Configuration</string>
+    <string name="wifi_manually_configuration">Manually Configure AP</string>
     <string name="title_activity_location">LocationActivity</string>
-    <string name="location">Set location</string>
+    <string name="location">Set Location</string>
+    <string name="Honeywell_home">Honeywell Home</string>
     <string name="title_activity_date_time">DateTimeActivity</string>
-    <string name="date">Date&amp;Time</string>
+    <string name="date">Date &amp; Time</string>
     <string name="title_activity_advanced">AdvancedActivity</string>
-    <string name="advanced">Advanced settings</string>
-    <string name="card">Access card management</string>
-    <string name="password">Change disarm password</string>
+    <string name="advanced">Advanced Settings</string>
+    <string name="card">Access Card Management</string>
+    <string name="password">Change Disarm Password</string>
+    <string name="digital">Digital Photo Frame</string>
     <string name="title_activity_card_management">CardManagementActivity</string>
-    <string name="add_card">There are no any access card yet,you can tap the "add" button to create it first.</string>
+    <string name="add_card">There are no any access card yet,\nyou can tap the \'add button\' to create it first.</string>
     <string name="title_activity_add_card">AddCardActivity</string>
     <string name="card_type">Please select card type you want to create</string>
-    <string name="card_permanent">Permanent card</string>
-    <string name="card_temporary">Temporary card</string>
+    <string name="card_permanent">Permanent Card</string>
+    <string name="card_temporary">Temporary Card</string>
     <string name="title_activity_config_card">ConfigCardActivity</string>
-    <string name="config_permanent">Configure Permanent card</string>
-    <string name="config_temporary">Configure Temporary card</string>
+    <string name="config_permanent">Configure Permanent Card</string>
+    <string name="config_temporary">Configure Temporary Card</string>
     <string name="title_activity_config_temorary">ConfigTemoraryActivity</string>
     <string name="title_activity_set_date">SetDateActivity</string>
     <string name="title_activity_set_time">SetTimeActivity</string>
@@ -150,13 +158,19 @@
     <string name="title_activity_new_passwd">NewPasswdActivity</string>
     <string name="Password">Password</string>
 
-    <string name="elevator_top_title">Elevator setting</string>
+    <string name="elevator_top_title">Elevator Setting</string>
     <string name="elevator_ip">IP</string>
     <string name="elevator_port">Port</string>
     <string name="elevator_localfloor">Local Floor</string>
     <string name="elevator_ip_value">192.171.92.1</string>
     <string name="elevator_port_value">4001</string>
     <string name="elevator_localfloor_value">10</string>
+
+    <string name="change_engineering_code_top_title">Change Engineering Code</string>
+    <string name="change_engineering_code_first_title">Code</string>
+    <string name="change_engineering_code_first_title_end">Enter a new password</string>
+    <string name="change_engineering_code_second_title">Comfirm Code</string>
+    <string name="change_engineering_code_second_title_end">Comfirm password</string>
 
     <string name="extension_zone_top_title">Extension zone</string>
     <string name="extension_zone_5804EU">5804EU</string>
@@ -171,14 +185,14 @@
     <string name="relay_wifi_relay_module2">WIFI Relay modules (4)</string>
     <string name="relay_wifi_relay_module_state">online</string>
 
-    <string name="IP_subphone_setting_top_title">Ip subphone setting</string>
+    <string name="IP_subphone_setting_top_title">IP Subphone Setting</string>
     <string name="IP_subphone_setting_alias">Alias</string>
     <string name="IP_subphone_setting_master_phone_ip_address">
-        Master Phone Ip Address</string>
+        Master Phone IP Address</string>
     <string name="IP_subphone_setting_ip_subphone_id">
-        Ip Subphone ID</string>
+        IPS ubphone ID</string>
     <string name="IP_subphone_setting_change_ip_subphone_password">
-        Change Ip Subphone Password</string>
+        Change IP Subphone Password</string>
     <string name="IP_subphone_setting_change_engin_password">
         Change Engineering Mode Password</string>
     <string name="IP_subphone_setting_alias_value">XXXXXX</string>
@@ -187,25 +201,27 @@
     <string name="IP_subphone_setting_ip_subphone_id_value">
        XX</string>
 
-    <string name="door_lock_setting_top_title">Door lock setting</string>
+    <string name="door_lock_setting_top_title">Door Lock Setting</string>
     <string name="door_lock_setting_top_front_door">Front Door</string>
     <string name="door_lock_setting_top_back_door">Back Door</string>
-    <string name="door_lock_setting_top_front_door_value">Ip Door Camera</string>
+    <string name="door_lock_setting_top_front_door_value">IP Door Camera</string>
     <string name="door_lock_setting_top_back_door_value">
         Honeywell Momas Key</string>
+    <string name="door_lock_setting_momas_key">momas</string>
+    <string name="door_lock_setting_ipdcrelay">ipdcrelay</string>
 
-    <string name="ip_camera_setting_top_title">Ip camera setting</string>
-    <string name="ip_camer1">Ip Camera 1</string>
-    <string name="ip_camer2">Ip Camera 2</string>
-    <string name="ip_camera_setting_alias_name">Alias name</string>
+    <string name="ip_camera_setting_top_title">IP Camera Setting</string>
+    <string name="ip_camer1">IP Camera 1</string>
+    <string name="ip_camer2">IP Camera 2</string>
+    <string name="ip_camera_setting_alias_name">Alias Name</string>
     <string name="ip_camer1_value">192.168.11.1</string>
     <string name="ip_camer2_value">192.168.11.1</string>
     <string name="alias_name_value">192.158.112.11</string>
-    <string name="local_zone_top_title">Local zone</string>
+    <string name="local_zone_top_title">Local Zone</string>
     <string name="local_zone_zone1">Zone1</string>
     <string name="local_zone_alias">Alias</string>
     <string name="local_zone_alias_value">XXXXXX</string>
-    <string name="local_zone_alarm_type">Alarm type</string>
+    <string name="local_zone_alarm_type">Alarm Type</string>
     <string name="local_zone_alarm_type_value">Fire</string>
     <string name="local_zone_zone_type">Zone type</string>
     <string name="local_zone_zone_type_value">Instant</string>
@@ -213,8 +229,10 @@
     <string name="local_zone_delay_time">Delay time</string>
     <string name="local_zone_zone2">Zone2</string>
 
-    <string name="room_number_title">Room number</string>
+    <string name="room_number_title">Room Number</string>
     <string name="bright_title">Brightness &#038; Volume</string>
+    <string name="Hold_talk">Hold &#038; Talk</string>
+
     <string name="brightness">Brightness</string>
     <string name="volume">Volume</string>
 
@@ -225,10 +243,10 @@
     <string name="options_zone_type_24hours">24 hours</string>
     <string name="options_zone_type_delay">Delay</string>
 
-    <string name="options_alarm_type_fire">Fire</string>
-    <string name="options_alarm_type_help">Help</string>
-    <string name="options_alarm_type_gas">Gas</string>
-    <string name="options_alarm_type_emergency">Emergency</string>
+    <string name="options_alarm_type_fire">fire</string>
+    <string name="options_alarm_type_help">help</string>
+    <string name="options_alarm_type_gas">gas</string>
+    <string name="options_alarm_type_emergency">emergency</string>
 
     <string name="options_device_role_master">Master phone</string>
     <string name="options_device_role_subphone">Sub phone</string>
@@ -239,6 +257,7 @@
     <string name="relay_delay_time">Relay Delay Time</string>
 
     <string name="save_to_room_number">Save to room number</string>
+    <string name="type_engineering_code">Type Engineering Code</string>
 
     <string name="local_zone_delay_time_30s">30 seconds</string>
     <string name="local_zone_delay_time_1m">1 min</string>
@@ -251,12 +270,12 @@
     <string name="local_zone_delay_time_4m30s">4 min 30 seconds</string>
     <string name="local_zone_delay_time_5m">5 min</string>
 
-    <string name="ip_camera_configuration_top_title">Ip camera configuration</string>
+    <string name="ip_camera_configuration_top_title">IP Camera Configuration</string>
     <string name="ip_camera_configuration_alias">Alias</string>
     <string name="ip_camera_configuration_alias_value">XXXXXXX</string>
-    <string name="ip_camera_configuration_ip_address">IP address</string>
+    <string name="ip_camera_configuration_ip_address">IP Address</string>
     <string name="ip_camera_configuration_ip_address_value">XXXXXXX</string>
-    <string name="ip_camera_configuration_user_name">User name</string>
+    <string name="ip_camera_configuration_user_name">User Name</string>
     <string name="ip_camera_configuration_user_name_value">XXXXXX</string>
     <string name="ip_camera_configuration_password">Password</string>
     <string name="ip_camera_configuration_password_value">XXXXXX</string>
@@ -269,4 +288,168 @@
     <string name="filenoexsit">视频文件不存在!</string>
     <string name="waitforexit">正在退出，请稍候！</string>
     <string name="hint">提示</string>
+    <string name="exceedmaxcount">IPC添加数量超过最大限制！</string>
+    <string name="door_open">开门</string>
+    <string name="arm">布防</string>
+    <string name="dooropen_arm">开门+布防</string>
+    <string name="honeywellhome_unbinding_left">Your Homepanel is not bound to any HoneyWell\nHome account currently.</string>
+    <string name="honeywellhome_unbinding_right_up">If you have not installed Honeywell Home App,\nscan The QR code to link to download address.</string>
+    <string name="honeywellhome_unbinding_right_down">If you have installed Honeywell Home App, scan\nthe same QR code to add device to your cloud\naccount for remote control and monitor by\nHoneywell Home App.</string>
+    <string name="honeywellhome_binding_up">Your Homepanel has been bound to</string>
+    <string name="honeywellhome_binding_down">\nif you want to bind other, you have to unbind first.</string>
+    <string name="abnoraml_popup_title">Issue Detected</string>
+    <string name="abnoraml_popup_reminder">Aborted Command:The requested command was aborted due to some sensors status error.</string>
+    <string name="title_activity_zone_delay_time_select">ZoneDelayTimeSelectActivity</string>
+
+    <string name="activity_zone_delay_time_select_min">min</string>
+    <string name="activity_zone_delay_time_select_sec">sec</string>
+    <string name="activity_zone_delay_time_select_title">Delay Time</string>
+
+    <string name="activity_engin_mode_set_code">You have to change your \n engineering code first</string>
+
+    <string name="host">host</string>
+    <string name="hostess">hostess</string>
+    <string name="child">child</string>
+    <string name="housekeeper">housekeeper</string>
+    <string name="friend">friend</string>
+    <string name="relative">relative</string>
+    <string name="elderly">elderly</string>
+
+    <string name="alarmtype_fire">Fire Alarm</string>
+    <string name="alarmtype_gas">Gas Alarm</string>
+    <string name="alarmtype_intrusion">Intrusion Alarm</string>
+    <string name="alarmtype_tamper">Tamper Alarm</string>
+    <string name="alarmtype_emergency">Emergency Alarm</string>
+
+    <string name="alarmcontent_fire">fire!</string>
+    <string name="alarmcontent_gas">gas leak!</string>
+    <string name="alarmcontent_intrusion">intrusion!</string>
+    <string name="alarmcontent_tamper">tamper!</string>
+    <string name="alarmcontent_emergency">emergency!</string>
+    <string name="alarmcontent_duress">duress!</string>
+    <string name="alarmcontent_dooropen">door open!</string>
+    <string name="alarmcontent_wrongpwd">wrong password limit!</string>
+    <string name="alarmcontent_lowbattery">low battery!</string>
+    <string name="zonetrouble">device trouble!</string>
+    <string name="alarmcontent_medicaid">medical Alarm!</string>
+    <string name="pm2.5limit">PM2.5 limit!</string>
+
+    <string name="bindtask">:bindtask</string>
+    <string name="save_speed">Save to speed dialing number</string>
+    <string name="Confirm">Confirm</string>
+    <string name="Called_failed">Called failed</string>
+    <string name="dong">20-1002</string>
+    <string name="Cleaning">Cleaning</string>
+    <string name="clean">Please clean in under 30 seconds</string>
+    <string name="Alias">Alias</string>
+    <string name="alias">Please type this card alias</string>
+    <string name="access_card">Access Card ID</string>
+    <string name="verifying">Please swipe the card for verifying</string>
+    <string name="card_ID">Please type this card ID</string>
+    <string name="Date_Range">Date Range</string>
+    <string name="Time_Range">Time Range</string>
+    <string name="Starts">Starts</string>
+    <string name="From">From</string>
+    <string name="To">To</string>
+    <string name="xxxxx">xxxxx</string>
+    <string name="Ends">Ends</string>
+    <string name="Connected_Network">Connected Network</string>
+    <string name="wirless_network">Your HomePanel has successful connected to your wirless network.</string>
+    <string name="scan_QR_code">If you have not installed Honeywell Home App, scan QR code to link to download address.</string>
+    <string name="scan_same_QR_code">If you have installed Honeywell Home App, scan the same QR code to add device to your
+     cloud account for remote control and monitor by Honeywell Home App</string>
+    <string name="Done">Done</string>
+    <string name="Unbind">Unbind</string>
+    <string name="enter_password">Enter a new password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="current_password">Please enter your current password first.</string>
+    <string name="OK">OK</string>
+    <string name="Test_WIFI">Honeywell Testing WIFI</string>
+    <string name="Connect">Connect</string>
+    <string name="SSID">SSID</string>
+    <string name="typeSSID">type the SSID for the network</string>
+    <string name="Security">Security</string>
+    <string name="None">None</string>
+    <string name="WEP">WEP</string>
+    <string name="WPA_PAK">WPA/WP2 PAK</string>
+    <string name="EAP">802.1x EAP</string>
+    <string name="WAPI">WAPI PSK</string>
+    <string name="CERT">WAPI CERT</string>
+    <string name="Connectting">Connectting...</string>
+    <string name="Scanning">Scanning...</string>
+    <string name="Available">Available Networks</string>
+    <string name="Set">Set</string>
+    <string name="Kitchen">Kitchen Window</string>
+    <string name="Open">Open</string>
+    <string name="Dialing">Dialing…20-1002</string>
+    <string name="Devices">Devices</string>
+    <string name="time">02:59</string>
+    <string name="Scenes">Scenes</string>
+    <string name="Settings">Settings</string>
+    <string name="Scan">Scan</string>
+    <string name="Networks">Networks</string>
+    <string name="change_lock">Front door lock has low battery, tap to learn how to change your door lock.</string>
+    <string name="textup">textup</string>
+    <string name="textdown">textdown</string>
+    <string name="Digital_photo">Digital Photo Frame</string>
+    <string name="zone">zone</string>
+    <string name="Scene_Name">Scene Name:</string>
+    <string name="Select_icon">Select an icon as image of the secne</string>
+    <string name="Acknowledge_all">Acknowledge All</string>
+    <string name="Mute">Mute</string>
+    <string name="Acknowledge">Acknowledge</string>
+    <string name="Title">Title</string>
+    <string name="content">This is content</string>
+    <string name="demotime">2017.2.20 10:00:00</string>
+    <string name="demotime1">2016.9.12   16:23</string>
+    <string name="Alarm_Zone">Alarm Zone</string>
+    <string name="Incomming_call">Incomming call.</string>
+    <string name="Lobby">Lobby</string>
+    <string name="Delete">Delete</string>
+    <string name="Edit">Edit</string>
+    <string name="Indicator_Board">Indicator Board</string>
+    <string name="demofloor">01</string>
+    <string name="Cameras">Cameras</string>
+    <string name="Enginneering_mode">Enginneering mode</string>
+    <string name="Ip_adress">Ip adress</string>
+    <string name="Protecting">Protecting</string>
+    <string name="exit_freely">You can exit freely within the next 30 seconds.</string>
+    <string name="not_protect">If you decide not protect,your home will return to Home Mode.</string>
+    <string name="demotime2">8/30 10:53</string>
+    <string name="temperatureTv">26°</string>
+    <string name="Unheathy">Unheathy</string>
+    <string name="System_disarmed">System Disarmed</string>
+    <string name="Adjust_speak">Adjust the speak</string>
+    <string name="Current_Home">Current:Home</string>
+    <string name="choose_scene">Tap to choose a scene</string>
+    <string name="Bedroom">Bedroom</string>
+    <string name="Property_Message">Property Message</string>
+    <string name="timeam">02.28.2016 11:23 AM</string>
+    <string name="Time">Time</string>
+    <string name="Back">Back</string>
+    <string name="Empty">Empty</string>
+    <string name="Note">Note: touch and hold to talk. Release to save, or slide off the button to cancel</string>
+    <string name="Record_text">Tap to record</string>
+    <string name="Record_text_save">Tap to save</string>
+    <string name="demodate">date</string>
+    <string name="week">week</string>
+    <string name="digits">1234567890</string>
+    <string name="line_busy">Line is busy temporarily, Please try  again later.</string>
+    <string name="wifi_scan_text_reminder">To see avaible networks.turn Wi-Fi on</string>
+    <string name="wifi_scan_text_title">Scan Access Points</string>
+    <string name="wifi_text_connected">Connected</string>
+    <string name="wifi_text_connecting">Connecting...</string>
+    <string name="wifi_text_wep">WEP</string>
+    <string name="wifi_text_wpaipsk">WPAI PSK</string>
+    <string name="wifi_text_wpaicert">WPAI CERT</string>
+    <string name="wifi_text_wpapw2pak">WPA/WP2 PAK</string>
+    <string name="wifi_text_8021xeap">802.1x EAP</string>
+    <string name="wifi_text_none">None</string>
+    <string name="datetime_settime">Set Time</string>
+    <string name="datetime_setdate">Set date</string>
+    <string name="datetime_text_title">Automatic Data &#038; Time</string>
+    <string name="datetime_text_title_down">Use network-provided time</string>
+    <string name="datetime_text_24hformat">Use 24-hour format</string>
+    <string name="speeddial_gurad">Guard</string>
+    <string name="speeddial_office">Office</string>
 </resources>

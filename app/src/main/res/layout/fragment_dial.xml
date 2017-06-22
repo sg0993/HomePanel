@@ -6,24 +6,27 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     tools:context=".ui.activities.MainActivity">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/linearLayout1"
-    android:orientation="vertical">
+
     <LinearLayout
-    android:id="@+id/btns"
-    android:layout_alignParentTop="true"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-    <include layout="@layout/dial_btns" />
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/btns"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal">
+            <include layout="@layout/dial_btns" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
-<FrameLayout
-    android:id="@+id/fragment_content"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@+id/linearLayout1">
-</FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/fragment_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout1"></FrameLayout>
 </RelativeLayout>

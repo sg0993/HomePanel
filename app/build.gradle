@@ -8,8 +8,9 @@ android {
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
 
     }
 
@@ -19,6 +20,7 @@ android {
             storePassword '111111'
             keyAlias 'lipeng'
             keyPassword '111111'
+
         }
 
         debug {
@@ -33,9 +35,36 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def fileName = "Tuna.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
+            buildConfigField("String","DEVICETYPE",'"00210001"')
+            buildConfigField("String","DEVICESKU",'"VDP7-KA-B"')
+            buildConfigField("String","HWVERSION",'"1.0.0.0"')
+
         }
         debug {
             jniDebuggable true
+
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def fileName = "TunaDebug.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
+            buildConfigField("String","DEVICETYPE",'"00210001"')
+            buildConfigField("String","DEVICESKU",'"VDP7-KA-B"')
+            buildConfigField("String","HWVERSION",'"1.0.0.0"')
         }
     }
 
@@ -43,7 +72,7 @@ android {
         main {
             jni.srcDirs = []
             jniLibs.srcDir 'src/main/libs'
-            jniLibs.srcDirs = ['src/main/libs']
+            jniLibs.srcDirs = ['src/main/libs','src/main/eclibs']
             manifest.srcFile 'src/main/AndroidManifest.xml'
             java.srcDirs = ['src/main/java', 'src/main/aidl']
             resources.srcDirs = ['src/main/java', 'src/main/aidl']
@@ -76,6 +105,7 @@ dependencies {
     })
     compile files('../../../Libraries/org.eclipse.paho.client.mqttv3-1.0.1.jar')
     compile files('../../../Libraries/bcprov-jdk16-140.jar')
+    compile files('../../../Libraries/ethernet.jar')
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.android.support:support-v4:23.1.0'
@@ -87,5 +117,6 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.google.zxing:core:3.3.0'
     compile 'com.lzy.net:okgo:2.1.4'
+    compile 'org.nanohttpd:nanohttpd:2.3.1'
     testCompile 'junit:junit:4.12'
 }

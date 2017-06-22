@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
@@ -103,11 +104,25 @@ public class PeripheralDeviceManager {
         if(!TextUtils.isEmpty(device.mIpAddr) && CommonUtils.isIp(device.mIpAddr)){
             values.put(ConfigConstant.COLUMN_PERIPHERALDEVICE_IP, device.mIpAddr);
         }
+
         if(device.mOnLine == CommonData.ONLINE || device.mOnLine == CommonData.NOTONLINE){
             values.put(ConfigConstant.COLUMN_PERIPHERALDEVICE_ONLINE, device.mOnLine);
         }
         return values;
     }
+
+    private ContentValues putUpdateItems(PeripheralDevice device){
+        ContentValues values = new ContentValues();
+        if(null == device) {
+            return  values;
+        }
+
+        values.put(ConfigConstant.COLUMN_PERIPHERALDEVICE_ONLINE, CommonData.NOTONLINE);
+
+        return values;
+    }
+
+
     public synchronized int updateByPrimaryId(long primaryId, PeripheralDevice device, boolean updateOnline) {
         if(null == device || primaryId <= 0){
             return -1;
@@ -146,6 +161,31 @@ public class PeripheralDeviceManager {
         }
         return num;
     }
+
+    /**
+     *
+     * @param device update all rows by selectionArgs
+     * @return
+     */
+    public synchronized int updateBySelection(PeripheralDevice device, String type, String[]args) {
+        int num = -1;
+        if(null == device){
+            return num;
+        }
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = putUpdateItems(device);
+        try {
+            num =  db.update(ConfigConstant.TABLE_PERIPHERALDEVICE, values, type + "=? OR " + type + " = ?", args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        if(num > 0){
+//            DbCommonUtil.onPublicConfigurationChanged(mContext, ConfigConstant.TABLE_PERIPHERALDEVICE);
+//        } comment out by xiaochao
+        return num;
+    }
+
+
 
     public synchronized PeripheralDevice getByPrimaryId(long primaryId) {
         if(primaryId <= 0){
@@ -207,16 +247,16 @@ public class PeripheralDeviceManager {
         JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
-            String type = loopMapObject.optString(CommonData.JSON_TYPE_KEY);
+            String moduleType = loopMapObject.optString(CommonData.JSON_TYPE_KEY);
             String version = loopMapObject.optString(CommonData.JSON_KEY_VERSION);
             String ip = loopMapObject.optString(CommonData.JSON_IP_KEY);
             String mac = loopMapObject.optString(CommonData.JSON_KEY_MAC);
             String model = loopMapObject.optString(CommonData.JSON_KEY_MODEL);
             int loopNum = Integer.parseInt(loopMapObject.optString(CommonData.JSON_KEY_LOOP, "0"));
-            String moduleUuid = CommonUtils.generateCommonEventUuid();
-            String name = type;
+            String moduleUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_PERIPHERALDEVICE_INT,DbCommonUtil.getSequenct(ConfigDatabaseHelper.getInstance(mContext),ConfigConstant.TABLE_PERIPHERALDEVICE));
+            String name = moduleType;
 
-            long rowId = add(moduleUuid,name,type,model,ip,mac,version,CommonData.NOTONLINE);
+            long rowId = add(moduleUuid,name,moduleType,model,ip,mac,version,CommonData.NOTONLINE);
             //add loop automaticlly for relay  and zone,and commondevice
             DbCommonUtil.putErrorCodeFromOperate(rowId,loopMapObject);
             if(rowId > 0){
@@ -225,19 +265,19 @@ public class PeripheralDeviceManager {
                     String deviceUuid = "";
                     String deviceName = name+ moduleUuid+ (j+1);
 
-                    if(type.equals(CommonData.COMMONDEVICE_TYPE_RELAY)){
+                    if(moduleType.equals(CommonData.JSON_MODULE_NAME_RELAY)){
                         deviceUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_RELAYLOOP_INT,DbCommonUtil.getSequenct(ConfigDatabaseHelper.getInstance(mContext),ConfigConstant.TABLE_RELAYLOOP));
                         _id = RelayLoopManager.getInstance(mContext).add(moduleUuid,deviceUuid,CommonData.DEVADAPTER_RELAY_HEJMODULE_HON,
                                 deviceName,j+1,0,CommonData.DISENABLE);
                     }
-                    else if(type.equals(CommonData.COMMONDEVICE_TYPE_ZONE)){
+                    else if(moduleType.equals(CommonData.JSON_MODULE_NAME_ALARM)){
                         deviceUuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_ZONELOOP_INT,DbCommonUtil.getSequenct(ConfigDatabaseHelper.getInstance(mContext),ConfigConstant.TABLE_ZONELOOP));
                         _id = ZoneLoopManager.getInstance(mContext).add(moduleUuid,deviceUuid,CommonData.DEVADAPTER_ZONE_HEJMODULE_HON,
                                 deviceName,j+1,0,CommonData.DISENABLE,CommonData.ZONETYPE_INSTANT,CommonData.ALARMTYPE_INTRUSION);
                     }
 
                     if(_id > 0){
-                        CommonlDeviceManager.getInstance(mContext).add(deviceUuid,deviceName,type);
+                        CommonDeviceManager.getInstance(mContext).add(deviceUuid,deviceName,moduleType, 0);
                     }
                 }
             }
@@ -252,10 +292,14 @@ public class PeripheralDeviceManager {
         JSONArray loopMapArray = new JSONArray();
         for (int i = 0; i < lists.size(); i++) {
             PeripheralDevice loop = lists.get(i);
-            JSONObject loopMapObject = new JSONObject();
-            loopToJson(loopMapObject,loop);
-            loopMapArray.put(loopMapObject);
+
+            if (CommonUtils.isHejModule(loop.mType)) {
+                JSONObject loopMapObject = new JSONObject();
+                loopToJson(loopMapObject, loop);
+                loopMapArray.put(loopMapObject);
+            }
         }
+
         jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
         jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
@@ -267,6 +311,7 @@ public class PeripheralDeviceManager {
         loopMapObject.put(CommonData.JSON_TYPE_KEY, loop.mType);
         loopMapObject.put(CommonData.JSON_IP_KEY, loop.mIpAddr);
         loopMapObject.put(CommonData.JSON_KEY_MAC, loop.mMacAddr);
+        loopMapObject.put(CommonData.JSON_KEY_VERSION, loop.mVersion);
     }
 
     public void extensionModuleDelete(JSONObject jsonObject) throws JSONException{
@@ -279,26 +324,116 @@ public class PeripheralDeviceManager {
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
             //delete zone loop,relay loop
             //delete common device loop
-            if(device.mType.equals(CommonData.COMMONDEVICE_TYPE_RELAY)){
+            if(device.mType.equals(CommonData.JSON_MODULE_NAME_RELAY)){
                 List<RelayLoop>relayLoops = RelayLoopManager.getInstance(mContext).getByModuleUuid(uuid);
                 if(null != relayLoops){
                     for (int j = 0; j < relayLoops.size(); j++) {
                         String relayUuid = relayLoops.get(j).mUuid;
                         RelayLoopManager.getInstance(mContext).deleteByUuid(relayUuid);
-                        CommonlDeviceManager.getInstance(mContext).deleteByUuid(relayUuid);
+                        CommonDeviceManager.getInstance(mContext).deleteByUuid(relayUuid);
                     }
                 }
             }
-            else if(device.mType.equals(CommonData.COMMONDEVICE_TYPE_ZONE)){
+            else if(device.mType.equals(CommonData.JSON_MODULE_NAME_ALARM)){
                 List<ZoneLoop>zoneLoops = ZoneLoopManager.getInstance(mContext).getByModuleUuid(uuid);
                 if(null != zoneLoops) {
                     for (int j = 0; j < zoneLoops.size(); j++) {
                         String zoneUuid = zoneLoops.get(j).mUuid;
                         ZoneLoopManager.getInstance(mContext).deleteByUuid(zoneUuid);
-                        CommonlDeviceManager.getInstance(mContext).deleteByUuid(zoneUuid);
+                        CommonDeviceManager.getInstance(mContext).deleteByUuid(zoneUuid);
                     }
                 }
             }
         }
+    }
+
+    public void extensionModuleUpdate(JSONObject jsonObject) throws JSONException {
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject loopMapObject = jsonArray.getJSONObject(i);
+            String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
+            String ipAddr = loopMapObject.optString(CommonData.JSON_IP_KEY, "");
+            String version = loopMapObject.optString(CommonData.JSON_KEY_VERSION, "");
+            String online = loopMapObject.optString(CommonData.JSON_ONLINE_KEY, "");
+            PeripheralDevice device = getByModuleUuid(uuid);
+
+            if (device != null) {
+                if (!TextUtils.isEmpty(ipAddr)) {
+                    device.mIpAddr = ipAddr;
+                }
+
+                if (!TextUtils.isEmpty(version)) {
+                    device.mVersion = version;
+                }
+
+                if (!TextUtils.isEmpty(online)) {
+                    device.mOnLine = Integer.parseInt(online);
+                } else {
+                    device.mOnLine = -1;//prohibit update database. so this api can be use update specific item independently without affecting others  add  by xiaochao
+                }
+                updateByModuleUuid(device.mModuleUuid, device, true);
+                loopMapObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
+                loopMapObject.put(CommonJson.JSON_UUID_KEY, device.mModuleUuid);
+            }
+        }
+    }
+
+    public void updateIPDCInfo(JSONObject jsonObject) throws JSONException {
+        JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject loopMapObject = jsonArray.getJSONObject(i);
+            String ipdcType = loopMapObject.optString(CommonData.JSON_IPDCTYPE_KEY, "");
+            String ipdcIpAddr = loopMapObject.optString(CommonData.JSON_IP_KEY, "");
+            String ipdcMacAddr = loopMapObject.optString(CommonData.JSON_KEY_MAC, "");
+            String ipdcVersion = loopMapObject.optString(CommonData.JSON_KEY_VERSION, "");
+            String ipdcOnline = loopMapObject.optString(CommonData.JSON_ONLINE_KEY, "");
+
+            Cursor cursor = DbCommonUtil.getByStringField(dbHelper,ConfigConstant.TABLE_PERIPHERALDEVICE,ConfigConstant.COLUMN_TYPE,ipdcType);
+            while(cursor.moveToNext()) {
+                PeripheralDevice device = fillDefault(cursor);
+
+                if (device != null) {
+                    if (!TextUtils.isEmpty(ipdcIpAddr)) {
+                        device.mIpAddr = ipdcIpAddr;
+                    }
+
+                    if (!TextUtils.isEmpty(ipdcMacAddr)) {
+                        device.mMacAddr = ipdcMacAddr;
+                    }
+
+                    if (!TextUtils.isEmpty(ipdcVersion)) {
+                        device.mVersion = ipdcVersion;
+                    }
+
+                    updateByModuleUuid(device.mModuleUuid, device, true);
+
+                    loopMapObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
+                    loopMapObject.put(CommonJson.JSON_UUID_KEY, device.mModuleUuid);
+                }
+            }
+
+            cursor.close();
+        }
+
+        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, jsonArray);
+        jsonObject.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_RESPONSE);
+    }
+
+    public void clearConnectionStatus(JSONObject jsonObject) throws JSONException {
+//        String online = jsonObject.optString(CommonData.JSON_ONLINE_KEY, "");
+
+        String[] args = new String[]{CommonData.JSON_MODULE_NAME_ALARM, CommonData.JSON_MODULE_NAME_RELAY};
+        Cursor cursor = DbCommonUtil.getRecordCursor(dbHelper,ConfigConstant.TABLE_PERIPHERALDEVICE, ConfigConstant.COLUMN_TYPE, args);
+        while(cursor.moveToNext()) {
+            Log.d(TAG, "clearConnectionStatus123");
+            PeripheralDevice device = fillDefault(cursor);
+            if (device != null) {
+                updateBySelection(device, ConfigConstant.COLUMN_TYPE, args);
+            }
+        }
+
+        cursor.close();
+
+        jsonObject.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_RESPONSE);
     }
 }

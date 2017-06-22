@@ -73,7 +73,8 @@ public class PasswordAdapter extends BaseAdapter{
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                         mBackgroundBtn.setBackgroundResource(mImages_down[mPostion]);
-                    } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                            motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
                         mBackgroundBtn.setBackgroundResource(mImages[mPostion]);
                         mAdapterCallback.subviewOnclick(mPostion,"");
                     }

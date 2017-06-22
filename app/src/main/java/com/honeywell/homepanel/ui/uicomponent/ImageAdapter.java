@@ -80,21 +80,21 @@ public class ImageAdapter extends BaseAdapter {
             this.mImageView = imageView;
             this.mTextView = textView;
 
-            mImageView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                        mImageView.setImageResource(mImages_down[mPostion]);
-                        mTextView.setTextColor(mContext.getResources().getColor(R.color.black));
-                    } else if (motionEvent.getAction() == MotionEvent.ACTION_UP
-                            || motionEvent.getAction() == MotionEvent.ACTION_OUTSIDE) {
-                        mImageView.setImageResource(mImages[mPostion]);
-                        mCallBacks.subviewOnclick(mPostion,"");
-                        mTextView.setTextColor(mContext.getResources().getColor(R.color.black_text_transparent));
-                    }
-                    return true;
-                }
-            });
+//            mImageView.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View view, MotionEvent motionEvent) {
+//                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//                        mImageView.setImageResource(mImages_down[mPostion]);
+//                        mTextView.setTextColor(mContext.getResources().getColor(R.color.black));
+//                    } else if (motionEvent.getAction() == MotionEvent.ACTION_UP
+//                            || motionEvent.getAction() == MotionEvent.ACTION_OUTSIDE) {
+//                        mImageView.setImageResource(mImages[mPostion]);
+//                        mCallBacks.subviewOnclick(mPostion,"");
+//                        mTextView.setTextColor(mContext.getResources().getColor(R.color.black_text_transparent));
+//                    }
+//                    return true;
+//                }
+//            });
         }
     }
 

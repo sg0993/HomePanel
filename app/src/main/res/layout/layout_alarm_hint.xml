@@ -1,16 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="wrap_content">
-    <ListView
-        android:divider="#ff0000"
-        android:dividerHeight="1dp"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_alarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/list_alarm" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ff0000"/>
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6">
+
+            <ListView
+                android:id="@+id/list_alarm"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@color/black_grey"
+                android:dividerHeight="1px"
+                android:padding="1px" />
+        </FrameLayout>
+
+        <!-- android:divider="@android:color/black"
+                    android:dividerHeight="1px"-->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ff0000"
+            android:visibility="gone" />
+
+
+        <com.honeywell.homepanel.ui.widget.HoneywellButton
+            android:id="@+id/acknowledge_all"
+            android:layout_width="match_parent"
+            android:layout_height="73dp"
+            android:background="#1792e5"
+            android:gravity="center"
+            android:text="@string/Acknowledge_all"
+            style="@style/HoneywellButtonStyle"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/notification_button"
+            android:layout_width="match_parent"
+            android:layout_height="67dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.honeywell.homepanel.ui.widget.HoneywellButton
+                android:id="@+id/notification_mute"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="#9b9b9b"
+                android:gravity="center"
+                android:text="@string/Mute"
+                style="@style/HoneywellButtonStyle"
+                />
+
+            <com.honeywell.homepanel.ui.widget.HoneywellButton
+                android:id="@+id/notification_ack"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="#1792e5"
+                android:gravity="center"
+                android:text="@string/Acknowledge"
+                style="@style/HoneywellButtonStyle"
+                />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

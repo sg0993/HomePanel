@@ -15,7 +15,7 @@ import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
-import com.honeywell.homepanel.common.Message.ui.AlarmHint;
+import com.honeywell.homepanel.ui.RingFile.RingFileData;
 import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.activities.MainActivity;
 import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
@@ -25,6 +25,8 @@ import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import static com.honeywell.homepanel.common.CommonData.CALL_CONNECTED_AUDIO_NETGHBOR;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -57,7 +59,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
         View view = inflater.inflate(R.layout.fragment_incomingcall_neighbor, null);
         initViews(view);
         Log.d(TAG,"CallIncomingNeighbor.onCreateView() 11111111");
-        startPlayRing(CALL_RING_NEIGHPHONE);
+        startPlayRing(RingFileData.CALL_RING_NEIGHPHONE);
         mCallAnimationBrusher.init(view);
         mCallBottomBrusher.init(view);
         mCallBottomBrusher.setVisible(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,View.GONE);
@@ -98,13 +100,13 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
             case R.id.left_btn:
                 UISendCallMessage.requestForTakeCall(MainActivity.CallBaseInfo);
                 stopPlayRing();
-                CallActivity.switchFragmentInFragment(this,CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
+                CallActivity.switchFragmentInFragment(this, CALL_CONNECTED_AUDIO_NETGHBOR);
                 break;
             case R.id.right_btn:
                 //getActivity().finish();
                 UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
                 stopPlayRing();
-                EventBus.getDefault().post(new AlarmHint(mTestAlarmCount++));
+               // EventBus.getDefault().post(new AlarmHint(mTestAlarmCount++));
                 break;
             default:
                 break;
@@ -122,5 +124,19 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
         if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
             getActivity().finish();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUICall.SUISRelayCallMessageEve msg) {
+        String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
+        Log.d(TAG, "SUISRelayCallMessageEve: 11111111111111 ");
+
+        int  status = ((CallActivity)getActivity()).getCurFragmentStatus();
+        if(status == CALL_CONNECTED_AUDIO_NETGHBOR){
+            return;
+        }
+        stopPlayRing();
+        status = CommonData.CALL_CONNECTED_AUDIO_NETGHBOR;
+        ((CallActivity)getActivity()).setCurFragmentStatus(status);
     }
 }

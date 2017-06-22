@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="30dp"
-    android:background="@android:color/black">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_marginTop="30dp"
+                android:background="@android:color/black">
 
     <RelativeLayout
         android:id="@+id/relative"
@@ -31,46 +32,43 @@
                 android:background="@mipmap/protecting"
                 android:layout_width="60dp"
                 android:layout_height="50dp" />
-            <TextView
-                android:text="Protecting"
+            <com.honeywell.homepanel.ui.widget.HoneywellTextView
+                android:text="@string/Protecting"
+                style="@style/HoneywellCallTextStyle"
                 android:layout_gravity="center_horizontal"
-                android:textColor="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </RelativeLayout>
 
-    <TextView
+    <com.honeywell.homepanel.ui.widget.HoneywellTextView
         android:id="@+id/tv_one"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/relative"
         android:layout_gravity="center_horizontal"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/normal_front_size"
-        android:text="You can exit freely within the next 30 seconds."
+        style="@style/HoneywellwhiteTextStyle"
+        android:text="@string/exit_freely"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <TextView
+    <com.honeywell.homepanel.ui.widget.HoneywellTextView
         android:id="@+id/tv_two"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/tv_one"
         android:layout_gravity="center_horizontal"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/normal_front_size"
-        android:text="If you decide not protect,your home will return to Home Mode."
+        style="@style/HoneywellwhiteTextStyle"
+        android:text="@string/not_protect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <Button
+    <com.honeywell.homepanel.ui.widget.HoneywellButton
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:id="@+id/cancel"
         android:layout_marginBottom="50dp"
-        android:textSize="@dimen/normal_front_size"
-        android:textColor="@android:color/white"
-        android:text="Cancel"
+        style="@style/HoneywellButtonStyle"
+        android:text="@string/indicator_board_cancel"
         android:background="#1792e5"
         android:layout_width="260dp"
         android:layout_height="60dp" />

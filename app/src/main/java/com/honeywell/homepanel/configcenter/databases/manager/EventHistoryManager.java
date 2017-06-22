@@ -13,6 +13,7 @@ import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
 import com.honeywell.homepanel.configcenter.databases.domain.EventHistory;
+import com.honeywell.homepanel.configcenter.databases.domain.IpDoorCard;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +44,8 @@ public class EventHistoryManager {
     }
 
     public synchronized long add(String uuid,String time,String type,String cardNo,String cardEvent,
-                                 String imagePath,String videoPath,int read){
+                                 String imagePath,String videoPath,int read, int uploadams, int uploadcloud,
+                                 int roleid){
         ContentValues values = new ContentValuesFactory()
                 .put(ConfigConstant.COLUMN_UUID, uuid)
                 .put(ConfigConstant.COLUMN_TIME, time)
@@ -52,10 +54,13 @@ public class EventHistoryManager {
                 .put(ConfigConstant.COLUMN_CARDEVENT,cardEvent)
                 .put(ConfigConstant.COLUMN_IMAGEPATH,imagePath)
                 .put(ConfigConstant.COLUMN_VIDEOPATH,videoPath)
-                .put(ConfigConstant.COLUMN_READ,read).getValues();
-        
+                .put(ConfigConstant.COLUMN_READ,read)
+                .put(ConfigConstant.COLUMN_UPLOADAMS,uploadams)
+                .put(ConfigConstant.COLUMN_UPLOADCLOUD,uploadcloud)
+                .put(ConfigConstant.COLUMN_ROLEID,roleid).getValues();
+
        if(DbCommonUtil.getCount(dbHelper.getWritableDatabase(),
-               ConfigConstant.TABLE_EVENTHISTORY) >= CommonData.CALL_HISTORY_MAX_COUNT){
+               ConfigConstant.TABLE_EVENTHISTORY) > CommonData.CALL_HISTORY_MAX_COUNT){
            long _id = DbCommonUtil.getFirstRecord(dbHelper,ConfigConstant.TABLE_EVENTHISTORY);
            Log.d(TAG, "add: _id:"+_id);
            if(_id > 0){
@@ -160,7 +165,7 @@ public class EventHistoryManager {
 
     public synchronized List<EventHistory> getEventHistoryAllList() {
         List<EventHistory> EventHistorys = null;
-        Cursor cursor = DbCommonUtil.getAll(dbHelper,ConfigConstant.TABLE_EVENTHISTORY);
+        Cursor cursor = DbCommonUtil.getAll(dbHelper,ConfigConstant.TABLE_EVENTHISTORY, "desc");
         while(cursor.moveToNext()){
             if(null == EventHistorys){
                 EventHistorys = new ArrayList<EventHistory>();
@@ -186,6 +191,9 @@ public class EventHistoryManager {
         device.mImagePath = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_IMAGEPATH));
         device.mVideoPath = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_VIDEOPATH));
         device.mRead = cursor.getInt(cursor.getColumnIndex(ConfigConstant.COLUMN_READ));
+        device.mUploadAms = cursor.getInt(cursor.getColumnIndex(ConfigConstant.COLUMN_UPLOADAMS));
+        device.mUploadCloud = cursor.getInt(cursor.getColumnIndex(ConfigConstant.COLUMN_UPLOADCLOUD));
+        device.mRoleID = cursor.getInt(cursor.getColumnIndex(ConfigConstant.COLUMN_ROLEID));
         return device;
     }
 
@@ -227,6 +235,23 @@ public class EventHistoryManager {
         loopMapObject.put(CommonData.JSON_KEY_DATASTATUS,DbCommonUtil.transferReadIntToString(loop.mRead));
         loopMapObject.put(CommonData.JSON_KEY_CARDID,loop.mCardNo);
         loopMapObject.put(CommonData.JSON_KEY_SWIPEACTION,loop.mCardEvent);
+        loopMapObject.put(CommonData.JSON_KEY_ROLEID, loop.mRoleID);
+        if(!TextUtils.isEmpty(loop.mCardNo)){
+           IpDoorCard card = IpDoorCardanager.getInstance(mContext).getByCardNo(loop.mCardNo);
+            if(null != card && !TextUtils.isEmpty(card.mType)){
+                loopMapObject.put(CommonData.JSON_KEY_CARDTYPE,card.mType);
+            }
+            else{
+                loopMapObject.put(CommonData.JSON_KEY_CARDTYPE,CommonData.CARD_PERMANENT);
+            }
+
+            if(null != card && !TextUtils.isEmpty(card.mName)){
+                loopMapObject.put(CommonData.JSON_KEY_NAME,card.mName);
+            }
+            else{
+                loopMapObject.put(CommonData.JSON_KEY_NAME,"unknown(deleted)");
+            }
+        }
         loopMapObject.put(CommonJson.JSON_ERRORCODE_KEY,CommonJson.JSON_ERRORCODE_VALUE_OK);
     }
 
@@ -242,8 +267,11 @@ public class EventHistoryManager {
             String datastatus  = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
             String cardid = loopMapObject.optString(CommonData.JSON_KEY_CARDID);
             String swipeaction = loopMapObject.optString(CommonData.JSON_KEY_SWIPEACTION);
-            long rowId = add(uuid,time,eventType,
-                    cardid, swipeaction,imgname, videoname,DbCommonUtil.transferReadStringToInt(datastatus));
+            int uploadams = loopMapObject.optInt(CommonData.JSON_KEY_UPLOADAMS);
+            int uploadcloud = loopMapObject.optInt(CommonData.JSON_KEY_UPLOADCLOUD);
+            int roleid = loopMapObject.optInt(CommonData.JSON_KEY_ROLEID);
+            long rowId = add(uuid,time,eventType, cardid, swipeaction, imgname, videoname,
+                    DbCommonUtil.transferReadStringToInt(datastatus), uploadams, uploadcloud, roleid);
             DbCommonUtil.putErrorCodeFromOperate(rowId,loopMapObject);
         }
     }
@@ -271,6 +299,7 @@ public class EventHistoryManager {
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
         }
     }
+
     public void notificationEventDelete(JSONObject jsonObject) throws  JSONException{
         JSONArray jsonArray = jsonObject.getJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -281,7 +310,7 @@ public class EventHistoryManager {
         }
     }
 
-    public void eventCountGet(JSONObject jsonObject) throws  JSONException{
+    public void eventCountGet(JSONObject jsonObject) throws  JSONException {
         String statusStr = jsonObject.getString(CommonData.JSON_KEY_DATASTATUS);
         int dataStatus = DbCommonUtil.transferReadStringToInt(statusStr);
         int count = getEventCountByStatus(dataStatus);

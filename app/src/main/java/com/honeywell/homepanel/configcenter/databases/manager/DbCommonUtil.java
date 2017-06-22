@@ -153,24 +153,63 @@ public class DbCommonUtil {
         return  cursor;
     }
 
-    public static  Cursor getByStringField(ConfigDatabaseHelper dbHelper, String table, String columnName, String uuid) {
+    public static  Cursor getByStringField(ConfigDatabaseHelper dbHelper, String table, String columnName, String selectionArgs) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(table,null,columnName + "=?",
-                new String[] { uuid }, null, null, null, null);
+                new String[] { selectionArgs }, null, null, null, null);
         return  cursor;
     }
 
+    public static  Cursor getRecordCursor(ConfigDatabaseHelper dbHelper, String table, String columnName, String[] selectionArgs) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(table, null, columnName + "=? OR " + columnName + " = ?",selectionArgs, null, null, null, null);
+        return  cursor;
+    }
+
+
     public static  Cursor getByIntField(ConfigDatabaseHelper dbHelper, String table, String columnName, int status) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(table,null,columnName + "=?",
-                new String[] { String.valueOf(status) }, null, null, null, null);
+        Cursor cursor = null;//modify by xiaochao
+        if (status == 0 || status == 1) {//0:unread 1:read
+            //query unread or read record
+            cursor = db.query(table,null,columnName + "=?",
+                    new String[] { String.valueOf(status) }, null, null, null, null);
+        } else if (status == 2) {
+            //query both read and unread data
+            cursor = db.query(table,null,columnName + " =?"+" or " + columnName +" =?",
+                    new String[] { String.valueOf(0), String.valueOf(1) }, null, null, null, null);
+        }
+
         return  cursor;
     }
 
     public static  Cursor getAll(ConfigDatabaseHelper dbHelper,String table) {
+        return getAll(dbHelper, table, "asc");
+    }
+
+    public static  Cursor getAll(ConfigDatabaseHelper dbHelper,String table, String sort) {
+        return get(dbHelper, table, sort, 0, -1);
+    }
+
+    public static  Cursor get(ConfigDatabaseHelper dbHelper,String table, String sort, int start, int count) {
+        String limitSqlString = null;
+        if (start >= 0 && count >=0) {
+            limitSqlString = new StringBuilder().append(start).append(",").append(count).toString();
+        }
+
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(table,null, null, null, null, null, ConfigConstant.COLUMN_ID +" asc", null);
+        Cursor cursor = db.query(table, null, null, null, null, null, ConfigConstant.COLUMN_ID + " " + sort, limitSqlString);
         return  cursor;
+    }
+
+    public static Cursor getUnreportedAlarmByType(ConfigDatabaseHelper dbHelper, String table, String type, int start, int count)
+    {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+
+        cursor = db.query(table, null, type +"=?", new String[] { String.valueOf("0") }, null, null, ConfigConstant.COLUMN_ID +" asc", null);// String.valueOf(count)
+
+        return cursor;
     }
 
     public static  Cursor getDistinctAll(ConfigDatabaseHelper dbHelper,String table,String column) {
@@ -305,27 +344,55 @@ public class DbCommonUtil {
         return _id;
     }
 
+    public static void deleteExceedLimiteRecords(ConfigDatabaseHelper dbHelper,String tableName, int limit) {
+        // DELETE FROM %1 WHERE %2 IN (SELECT %2 FROM %1 ORDER BY %2 DESC LIMIT %3,%4);
+        String whereClause = new StringBuilder().append("delete from ").append(tableName)
+                .append(" where ").append(ConfigConstant.COLUMN_ID).append(" in ")
+                    .append("( select ").append(ConfigConstant.COLUMN_ID)
+                    .append(" from ").append(tableName)
+                    .append(" order by ").append(ConfigConstant.COLUMN_ID)
+                    .append(" desc limit ").append(limit).append(", 50")
+                .append(");").toString();
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL(whereClause);
+    }
+
 
     public  static  String transferReadIntToString(int read){
         String status = CommonData.DATASTATUS_UNREAD;
-        if(read > 0){
+        if(read == 1){
             status = CommonData.DATASTATUS_READ;
         }
         return status;
     }
 
-    public  static  int transferReadStringToInt(String read){
+    public  static  int transferReadStringToInt(String dataStatus){
         int status = 0;
-        if(read.equals(CommonData.DATASTATUS_READ)){
+        if(dataStatus.equals(CommonData.DATASTATUS_READ)){
             status = 1;
+        } else if (dataStatus.equals(CommonData.DATASTATUS_ALL)) {// add by xiaochao
+            status = 2;
         }
         return status;
     }
 
-    public static void updateCommonName(Context context,String uuid,String name) {
-        CommonDevice commonDevice = CommonlDeviceManager.getInstance(context).getByUuid(uuid);
+    public  static  int transferUploadStatusToInt(String alarmStatus){
+        int status = 0;
+        if(alarmStatus.equals(CommonData.ALARMREPORTSTATUS_REPORTED)){
+            status = 1;
+        } else if (alarmStatus.equals(CommonData.ALARMREPORTSTATUS_UNREPORTED)) {// add by xiaochao
+            status = 0;
+        }
+        return status;
+    }
+
+    public static void updateCommonName(Context context,String uuid,String name, int enable) {
+        CommonDevice commonDevice = CommonDeviceManager.getInstance(context).getByUuid(uuid);
         commonDevice.mName = name;
-        CommonlDeviceManager.getInstance(context).updateByUuid(uuid, commonDevice);
+        commonDevice.mEnabled = enable;
+
+        CommonDeviceManager.getInstance(context).updateByUuid(uuid, commonDevice);
     }
 
     public static void onPublicConfigurationChanged(Context context, String table){

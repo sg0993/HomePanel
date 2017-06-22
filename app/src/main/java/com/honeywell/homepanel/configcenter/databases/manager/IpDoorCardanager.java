@@ -12,6 +12,7 @@ import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.ConfigDatabaseHelper;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
 import com.honeywell.homepanel.configcenter.databases.domain.IpDoorCard;
+import com.honeywell.homepanel.ui.fragment.CardListFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,8 +49,8 @@ public class IpDoorCardanager {
                 .put(ConfigConstant.COLUMN_TYPE, type)
                 .put(ConfigConstant.COLUMN_NAME, name)
                 .put(ConfigConstant.COLUMN_CARDNO, cardNo)
-                .put(ConfigConstant.COLUMN_STARTDATE,startTime)
-                .put(ConfigConstant.COLUMN_EXPIREDATE,expireTime)
+                .put(ConfigConstant.COLUMN_STARTDATE,startDate)
+                .put(ConfigConstant.COLUMN_EXPIREDATE,expireDate)
                 .put(ConfigConstant.COLUMN_STARTTIME,startTime)
                 .put(ConfigConstant.COLUMN_EXPIRETIME,expireTime)
                 .put(ConfigConstant.COLUMN_ACTION,action).getValues();
@@ -122,6 +123,20 @@ public class IpDoorCardanager {
         cursor.close();
         return device;
     }
+
+    public synchronized IpDoorCard getByCardNo(String cardNo) {
+        if(TextUtils.isEmpty(cardNo)){
+            return null;
+        }
+        Cursor cursor = DbCommonUtil.getByStringField(dbHelper,ConfigConstant.TABLE_IPDOORCARD,ConfigConstant.COLUMN_CARDNO,cardNo);
+        IpDoorCard device = null;
+        while(cursor.moveToNext()){
+            device = fillDefault(cursor);
+        }
+        cursor.close();
+        return device;
+    }
+
 
     public synchronized IpDoorCard getByUuid(String uuid) {
         if(TextUtils.isEmpty(uuid)){
@@ -216,7 +231,9 @@ public class IpDoorCardanager {
             String expireTime = loopMapObject.optString(CommonData.JSON_KEY_ENDTIME);
             String action = loopMapObject.optString(CommonData.JSON_KEY_SWIPEACTION);
             String uuid = CommonUtils.generateCommonEventUuid();
-            long rowid = add(uuid,type,name,cardId,startDate,expireDate,startTime,expireTime,action);
+
+            long rowid = add(uuid,type,name,cardId, CardListFragment.replace(startDate),CardListFragment.replace(expireDate),
+                    CardListFragment.replace(startTime),CardListFragment.replace(expireTime),action);
             DbCommonUtil.putErrorCodeFromOperate(rowid, loopMapObject);
             loopMapObject.put(CommonJson.JSON_UUID_KEY,uuid);
         }

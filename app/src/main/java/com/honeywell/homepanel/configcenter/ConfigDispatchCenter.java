@@ -2,6 +2,7 @@ package com.honeywell.homepanel.configcenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.RemoteException;
 import android.util.Log;
 
 import com.honeywell.homepanel.common.CommonData;
@@ -9,15 +10,17 @@ import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.configcenter.databases.domain.EventDataElement;
 import com.honeywell.homepanel.configcenter.databases.manager.AdapterManager;
 import com.honeywell.homepanel.configcenter.databases.manager.AlarmHistoryManager;
-import com.honeywell.homepanel.configcenter.databases.manager.CommonlDeviceManager;
+import com.honeywell.homepanel.configcenter.databases.manager.CommonDeviceManager;
 import com.honeywell.homepanel.configcenter.databases.manager.EventHistoryManager;
 import com.honeywell.homepanel.configcenter.databases.manager.IpDoorCardanager;
 import com.honeywell.homepanel.configcenter.databases.manager.IpcLoopManager;
 import com.honeywell.homepanel.configcenter.databases.manager.LocalDeviceManager;
 import com.honeywell.homepanel.configcenter.databases.manager.PeripheralDeviceManager;
+import com.honeywell.homepanel.configcenter.databases.manager.PreferenceManager;
 import com.honeywell.homepanel.configcenter.databases.manager.RelayLoopManager;
 import com.honeywell.homepanel.configcenter.databases.manager.ScenarioLoopManager;
 import com.honeywell.homepanel.configcenter.databases.manager.SpeedDialManager;
+import com.honeywell.homepanel.configcenter.databases.manager.SystemSettingManager;
 import com.honeywell.homepanel.configcenter.databases.manager.VoiceMessageManager;
 import com.honeywell.homepanel.configcenter.databases.manager.ZoneLoopManager;
 
@@ -73,12 +76,28 @@ public class ConfigDispatchCenter implements Runnable{
         mBRuning = false;
     }
 
+    public void putIntMapConfig(String key, int value) throws RemoteException {
+        SystemSettingManager.getInstance(mContext).putIntConfig(key,value);
+    }
+
+    public void putStringMapConfig(String key, String value) throws RemoteException {
+        SystemSettingManager.getInstance(mContext).putStringConfig(key,value);
+    }
+
+    public int getIntMapConfig(String key) throws RemoteException {
+        return SystemSettingManager.getInstance(mContext).getIntConfig(key);
+    }
+
+    public String getStringMapConfig(String key) throws RemoteException {
+        return SystemSettingManager.getInstance(mContext).getStringConfig(key);
+    }
+
     public byte[] getFromDbManager(JSONObject jsonObject) throws JSONException {
         jsonObject.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_RESPONSE);
         String subAction = jsonObject.optString(CommonJson.JSON_SUBACTION_KEY);
 
         if(CommonJson.JSON_SUBACTION_VALUE_GETSCENARIOLIST.equals(subAction)){
-            CommonlDeviceManager.getInstance(mContext).getScenarioList(jsonObject);
+            CommonDeviceManager.getInstance(mContext).getScenarioList(jsonObject);
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_GETSCENARIOCONFIG.equals(subAction)){
             ScenarioLoopManager.getInstance(mContext).getScenarioConfig(jsonObject);
@@ -94,6 +113,9 @@ public class ConfigDispatchCenter implements Runnable{
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONALARMGET.equals(subAction)){
             AlarmHistoryManager.getInstance(mContext).notificationAlarmGet(jsonObject);
+        }
+        else if (CommonJson.JSON_SUBACTION_VALUE_GETDBUNREPORTEDALARM.equals(subAction)) {
+            AlarmHistoryManager.getInstance(mContext).unreportedAlarmGet(jsonObject);
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_VOICEMSGCOUNTGET.equals(subAction)){
             VoiceMessageManager.getInstance(mContext).notificationVoiceMsgCountGet(jsonObject);
@@ -111,7 +133,6 @@ public class ConfigDispatchCenter implements Runnable{
             IpcLoopManager.getInstance(mContext).ipcGet(jsonObject);
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_LOCALZONEGET.equals(subAction)){
-            //ZoneLoopManager.getInstance(mContext).localZoneGet(jsonObject);
             LocalDeviceManager.getInstance(mContext).getLocalZoneDetails(jsonObject);
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_EXTENSIONMODULEGET.equals(subAction)){
@@ -127,10 +148,25 @@ public class ConfigDispatchCenter implements Runnable{
             getAllDeviceDetailsInfo(jsonObject);
         }
         else if (CommonJson.JSON_SUBACTION_VALUE_GETALLCOMMONDEVICES.equals(subAction)) {
-            CommonlDeviceManager.getInstance(mContext).getCommonDeviceList(jsonObject);
+            CommonDeviceManager.getInstance(mContext).getAllCommonDeviceList(jsonObject);
+        }
+        else if (CommonJson.JSON_SUBACTION_VALUE_GETCOMMONDEVICES.equals(subAction)) {
+            CommonDeviceManager.getInstance(mContext).getCommonDeviceList(jsonObject);
         }
         else if (CommonJson.JSON_SUBACTION_VALUE_GETDEVICEADAPTER.equals(subAction)) {
             AdapterManager.getInstance(mContext).getAvaliableAdapters(jsonObject);
+        }
+        else if (CommonJson.JSON_SUBACTION_VALUE_GETALLALARMABLEZONES.equals(subAction)) {
+            getAllAlarmableZonesDetailsInfo(jsonObject);
+        }
+        else if (CommonJson.JSON_SUBACTION_VALUE_GETALLZONES.equals(subAction)) {
+            getAllZonesDetailsInfo(jsonObject);
+        }
+        else if (CommonJson.JSON_SUBACTION_VALUE_GETDEVICECOMMONINFO.equals(subAction)) {
+            CommonDeviceManager.getInstance(mContext).getDeviceCommonInfo(jsonObject);
+        }
+        else {
+            Log.e(TAG, "getFromDbManager: ");
         }
 
         Log.d(TAG, "getFromDbManager: json response:"+jsonObject.toString());
@@ -161,6 +197,9 @@ public class ConfigDispatchCenter implements Runnable{
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONALARMDELETE.equals(subAction)){
             AlarmHistoryManager.getInstance(mContext).notificationAlarmDelete(jsonObject);
+        }
+        else if (CommonJson.JSON_SUBACTION_VALUE_UPDATEREPORTSTATUS.equals(subAction)) {
+            AlarmHistoryManager.getInstance(mContext).updateAlarmReportStatus(jsonObject);
         }
         else if(CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGADD.equals(subAction)){
             VoiceMessageManager.getInstance(mContext).notificationMessageAdd(jsonObject);
@@ -219,8 +258,21 @@ public class ConfigDispatchCenter implements Runnable{
         else if(CommonJson.JSON_SUBACTION_VALUE_EXTENSIONMODULEDELETE.equals(subAction)){
             PeripheralDeviceManager.getInstance(mContext).extensionModuleDelete(jsonObject);
         }
+        else if(CommonJson.JSON_SUBACTION_VALUE_EXTENSIONMODULEUPDATE.equals(subAction)){
+            PeripheralDeviceManager.getInstance(mContext).extensionModuleUpdate(jsonObject);
+        }
         else if (CommonJson.JSON_SUBACTION_VALUE_UPDATEDEVICEADAPTER.equals(subAction)) {
             AdapterManager.getInstance(mContext).updateSystemAvaliableAdapters(jsonObject);
+        }
+        else if (CommonJson.JSON_SUBACTION_VALUE_UPDATEIPDCINFO.equals(subAction)) {
+            PeripheralDeviceManager.getInstance(mContext).updateIPDCInfo(jsonObject);
+        }
+        else if (CommonJson.JSON_SUBACTION_VALUE_CLEARCONNECTIONSTATUS.equals(subAction)) {
+            PeripheralDeviceManager.getInstance(mContext).clearConnectionStatus(jsonObject);
+        }
+        else {
+            Log.e(TAG, "Unsupport Subaction");
+            return null;
         }
 
         Log.d(TAG, "setFromDbManager: json response:"+ jsonObject.toString());
@@ -238,6 +290,26 @@ public class ConfigDispatchCenter implements Runnable{
 
         // get local device details
         LocalDeviceManager.getInstance(mContext).getDeviceLoopDetailsInfo(jsonObject);
+    }
+
+    private void getAllAlarmableZonesDetailsInfo(JSONObject jsonObject) throws JSONException {
+        Log.d(TAG, "getAllAlarmableZonesDetailsInfo...");
+
+        // get zone loop details info
+        ZoneLoopManager.getInstance(mContext).getAlarmableZoneLoopDetailsInfo(jsonObject);
+
+        // get local device details
+        LocalDeviceManager.getInstance(mContext).getAlarmableZoneLoopDetailsInfo(jsonObject);
+    }
+
+    private void getAllZonesDetailsInfo(JSONObject jsonObject) throws JSONException {
+        Log.d(TAG, "getAllZonesDetailsInfo...");
+
+        // get zone loop details info
+        ZoneLoopManager.getInstance(mContext).getZoneLoopDetailsInfo(jsonObject);
+
+        // get local device details
+        LocalDeviceManager.getInstance(mContext).getZoneLoopDetailsInfo(jsonObject);
     }
 
     public void broadcastConfigurationUpdated(String category, String content) {

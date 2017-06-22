@@ -36,7 +36,7 @@ public class RelayLoop implements Parcelable {
                 ", mModuleUuid='" + mModuleUuid + '\'' +
                 ", mUuid='" + mUuid + '\'' +
                 ", mName='" + mName + '\'' +
-                ", mLoop=" + mLoop +
+                ", mUuid=" + mLoop +
                 ", mDelayTime=" + mDelayTime +
                 ", mEnabled=" + mEnabled +
                 '}';

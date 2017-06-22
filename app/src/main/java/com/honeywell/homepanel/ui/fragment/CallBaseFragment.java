@@ -2,14 +2,10 @@ package com.honeywell.homepanel.ui.fragment;
 
 import android.content.Context;
 import android.media.MediaMuxer;
-import android.media.MediaPlayer;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.honeywell.homepanel.IAvRtpService;
-import com.honeywell.homepanel.common.CommonData;
-import com.honeywell.homepanel.R;
-
 import com.honeywell.homepanel.common.CommonPath;
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.AudioVideoUtil.AVIUtil;
@@ -17,6 +13,7 @@ import com.honeywell.homepanel.ui.AudioVideoUtil.AudioProcess;
 import com.honeywell.homepanel.ui.AudioVideoUtil.CallRecordReadyEvent;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VStreamBuffer;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoInfo;
+import com.honeywell.homepanel.ui.RingFile.RingFileProcess;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -26,6 +23,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+;
 
 /**
  * Created by H135901 on 4/5/2017.
@@ -57,16 +56,6 @@ public class CallBaseFragment extends Fragment {
     private MediaMuxer mMuxer = null;
 
 
-    public static final String CALL_RING_NEIGHPHONE = "neighphonering.wav";
-    public static final String CALL_RING_LOBBYPHONE = "lobbyphonering.wav";
-    public static final String CALL_RING_GUARDPHONE = "guardphonering.wav";
-    public static final String CALL_RING_DOORCAMERA = "doorcameraring.wav";
-    public static final String CALL_RING_HOLDTONE	 = "holdtonering.wav";
-    public static final String CALL_RING_INTERPHONE = "interphonering.wav";
-    public static final String VOLUME_TEST_RING = "volumetest.wav";
-    public static final String CALL_RING_OUT = "calltone.wav";
-    public static final String CALL_ERROR_TONE = "error.wav";
-    private MediaPlayer mPlayer;
 
     public void setFragmentAidl(IAvRtpService iAvRtpService,Context context){
         Log.d(TAG, "setFragmentAidl: 11111111111111");
@@ -139,17 +128,6 @@ public class CallBaseFragment extends Fragment {
 
     private  class GetThread extends Thread{
         public void run() {
-            /*FileOutputStream  fo = null;
-            try {
-                File file = new File(CommonData.VIDEO_PATH,"test.h264");
-                if(file.exists()){
-                    file.delete();
-                }
-                file.createNewFile();
-                fo = new FileOutputStream(file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
             while (mRunning){
                 try {
                     if(null == mIAvrtpService){
@@ -160,19 +138,8 @@ public class CallBaseFragment extends Fragment {
                     if(mBVideoGet) {
                         byte[] data = mIAvrtpService.getVideoFrame();
                         if (null != data) {
+                            Log.d(TAG, "GetThread: 111111111111111111111");
                             getVideoInfo();
-
-
-                            //fo.write(data);
-
-                            /**********FOR Test!************************/
-
-
-
-                            /**********************************/
-
-
-
                             mVideoPlayQueue.offer(new VStreamBuffer(data));
                             if(mBRecord){
                                 mVideoRecordQueue.offer(ByteBuffer.wrap(data));
@@ -181,7 +148,8 @@ public class CallBaseFragment extends Fragment {
                         Thread.sleep(SLEEPTIME);
                     }
                     if(mBAudioGet){
-                        byte [] data = mIAvrtpService.getAudioFrame();
+                        //byte [] data = mIAvrtpService.getAudioFrame();
+                        byte [] data = mIAvrtpService.getAudioFrameWithEC().audioFrame;
                         if(null != data){
                             mAudioProcess.mPlayQueue.offer(data);
                             if(mBRecord){
@@ -197,11 +165,6 @@ public class CallBaseFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-            /*try {
-                fo.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
         }
     }
     public void startVideoGet(){
@@ -221,7 +184,8 @@ public class CallBaseFragment extends Fragment {
 
     public void startRecord(){
         Log.d(TAG, "startRecord: 11111");
-        if (null == CommonPath.VIDEO_PATH) {
+        String videoRecordStoragePath = CommonPath.getVideoRecordPath();
+        if (null == videoRecordStoragePath) {
             Log.d(TAG, "startRecord: 2222222222222222");
             return;
         }
@@ -236,8 +200,8 @@ public class CallBaseFragment extends Fragment {
             mAudioRecordQueue = new LinkedBlockingQueue<ByteBuffer>(10);
         }
 
-        final  String fileName = CommonPath.VIDEO_PATH+ CommonUtils.getLobbyVideoRecordName();
-        File dirFile = new File(CommonPath.VIDEO_PATH);
+        final  String fileName = videoRecordStoragePath+ CommonUtils.getLobbyVideoRecordName();
+        File dirFile = new File(videoRecordStoragePath);
         if(!dirFile.exists()){
             dirFile.mkdirs();
         }
@@ -414,50 +378,16 @@ public class CallBaseFragment extends Fragment {
     }
 
 
-    public void startPlayRing(String ringpath){
-        Log.i(TAG, "startPlayRing: " + ringpath);
-
-
-        if (ringpath.equals(CALL_RING_NEIGHPHONE)) {
-            mPlayer = MediaPlayer.create(getActivity(), R.raw.neighphonering);
-        } else if(ringpath.equals(CALL_RING_LOBBYPHONE)) {
-            mPlayer = MediaPlayer.create(getActivity(), R.raw.lobbyphonering);
-        } else if(ringpath.equals(CALL_RING_GUARDPHONE)) {
-            mPlayer = MediaPlayer.create(getActivity(), R.raw.guardphonering);
-        } else if(ringpath.equals(CALL_RING_DOORCAMERA)) {
-            mPlayer = MediaPlayer.create(getActivity(), R.raw.doorcameraring);
-        } else if(ringpath.equals(CALL_RING_HOLDTONE)) {
-            mPlayer = MediaPlayer.create(getActivity(), R.raw.holdtonering);
-        } else if(ringpath.equals(CALL_RING_INTERPHONE)) {
-            mPlayer = MediaPlayer.create(getActivity(), R.raw.interphonering);
-        } else if(ringpath.equals(CALL_RING_OUT)) {
-            mPlayer = MediaPlayer.create(getActivity(), R.raw.calltone);
-        } else if(ringpath.equals(CALL_ERROR_TONE)) {
-            mPlayer = MediaPlayer.create(getActivity(), R.raw.error);
-        } else if(ringpath.equals(VOLUME_TEST_RING)) {
-            mPlayer = MediaPlayer.create(getActivity(), R.raw.volumetest);
-        } else {
-            mPlayer = null;
-            return;
-        }
-
-        mPlayer.start();
-
-        return;
-    }
 
     public void stopPlayRing(){
-        if (mPlayer == null) {
-            return;
-        }
-
-        if (mPlayer.isPlaying()) {
-            mPlayer.stop();
-            mPlayer.release();
-            mPlayer = null;
-        }
+        RingFileProcess.getInstance().stopPlayRing();
+    }
 
 
+    public void startPlayRing(String ringpath) {
+        RingFileProcess.getInstance().startPlayRing(getActivity(),ringpath,0);
 
     }
+
+
 }

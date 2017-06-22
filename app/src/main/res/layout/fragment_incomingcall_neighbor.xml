@@ -14,19 +14,19 @@
         <include
             android:id="@+id/call_animation"
             layout="@layout/layout_call_animarion"/>
-        <TextView
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:gravity="center"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             android:text="@string/incommingcall"
-            style="@style/call_textview"
-            android:textColor="@color/white"/>
-        <TextView
+            style="@style/HoneywellCallTextStyle"/>
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/unitTv"
             android:gravity="center"
+            android:text="@string/xxxxx"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            style="@style/call_textview"/>
+            style="@style/HoneywellCallTextStyle"/>
     </LinearLayout>
 
     <LinearLayout

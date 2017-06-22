@@ -21,16 +21,26 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 
+import com.honeywell.homepanel.IConfigService;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.CommonPath;
+import com.honeywell.homepanel.sensingservice.security.AlarmCode;
 import com.honeywell.homepanel.ui.AudioVideoUtil.HVideoDecoder;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoInfo;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,7 +56,7 @@ public class CommonUtils {
     private static final String TAG = "CommonUtils";
 
     public static SeekBar  showCallVolumeDialog(Activity activity, View.OnClickListener onClickListener,
-                                                SeekBar.OnSeekBarChangeListener seekBarChangeListener, boolean bSpeaker){
+                                                SeekBar.OnSeekBarChangeListener seekBarChangeListener, boolean bSpeaker,int volume){
         final WindowManager manager = activity.getWindowManager();
         Display display = manager.getDefaultDisplay();
         int width = display.getWidth();
@@ -63,8 +73,8 @@ public class CommonUtils {
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         AudioManager am =(AudioManager)activity.getSystemService(Context.AUDIO_SERVICE);
         if(bSpeaker){
-            seekBar.setMax(am.getStreamMaxVolume(AudioManager.STREAM_SYSTEM));
-            seekBar.setProgress(am.getStreamVolume(AudioManager.STREAM_SYSTEM));
+            seekBar.setMax(am.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+            seekBar.setProgress(volume);
         }
         else{
 
@@ -138,6 +148,15 @@ public class CommonUtils {
         return matcher.matches();
     }
 
+    public static int getModuleLoopCount(String moduleType) {
+        if (moduleType.equals(CommonData.JSON_MODULE_NAME_RELAY)) {
+            return 4;
+        }  else if (moduleType.equals(CommonData.JSON_MODULE_NAME_ALARM)) {
+            return 8;//TBD
+        }
+        return -1;
+    }
+
     public static boolean isValidMac(String mac) {
         String pattern1="^[A-F0-9]{2}(:[A-F0-9]{2}){5}$";
         if(Pattern.compile(pattern1).matcher(mac).find()) {
@@ -206,6 +225,19 @@ public class CommonUtils {
 
     public static String generateCommonEventMsgId() {
         return UUID.randomUUID().toString();
+    }
+
+    public static String generateCommonEventCloudEncryption() {
+            int len = 32;
+            String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            Random random=new Random();
+            StringBuffer sb=new StringBuffer();
+            for(int i=0;i<len;i++){
+                int number=random.nextInt(62);
+                sb.append(str.charAt(number));
+            }
+            return sb.toString();
+
     }
 
     public static String saveBitmap(Bitmap bitmap, String bitName) {
@@ -381,6 +413,14 @@ public class CommonUtils {
 
         return hexValues.toString();
     }
+
+    public static boolean isValidUUID(String uuid) {
+        if ( (uuid == null) || (uuid.length() == 1) ) {
+            return false;
+        }
+        return true;
+    }
+
     public static byte[] intToByteArray(int a) {
         return new byte[] {
                 (byte) ((a >> 24) & 0xFF),
@@ -390,7 +430,7 @@ public class CommonUtils {
         };
     }
 
- public  static  void deleteOneFile(String fileName){
+    public  static  void deleteOneFile(String fileName){
         if(!TextUtils.isEmpty(fileName)){
             File file = new File(fileName);
             if(file.exists()){
@@ -405,5 +445,252 @@ public class CommonUtils {
             return CommonData.JSON_MODULE_NAME_ALARM;
         }
         return CommonData.JSON_MODULE_NAME_UNKNOW;
+    }
+
+    public static int convertScenarioNameToIndex(String scenarioName) {
+        if (!TextUtils.isEmpty(scenarioName)) {
+            if (scenarioName.equals(CommonData.JSON_SCENARIO_HOME)) {
+                return CommonData.SCENARIO_HOME;
+            } else if (scenarioName.equals(CommonData.JSON_SCENARIO_AWAY)) {
+                return CommonData.SCENARIO_AWAY;
+            } else if (scenarioName.equals(CommonData.JSON_SCENARIO_SLEEP)) {
+                return CommonData.SCENARIO_SLEEP;
+            } else if (scenarioName.equals(CommonData.JSON_SCENARIO_WAKEUP)) {
+                return CommonData.SCENARIO_WAKEUP;
+            }
+        }
+        return -1;
+    }
+
+    public static String genISO8601TimeStampForCurrTime() {
+        String DATEFORMAT_ISO8601_UTC = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        SimpleDateFormat TIMEFORMATE = new SimpleDateFormat(DATEFORMAT_ISO8601_UTC);
+        Calendar cal = Calendar.getInstance();
+        TimeZone timeZone = cal.getTimeZone();
+        Date date = new Date(cal.getTimeInMillis() - timeZone.getRawOffset());
+
+        String timeStamp = TIMEFORMATE.format(date);
+
+        return timeStamp;
+    }
+
+    public static String deISO8601TimeStampForCurrTime(String ISO8601TimeStamp) {
+        //timeStamp:2010-01-01T00:03:24Z
+        //remove 'Z'
+        String str = ISO8601TimeStamp.substring(0,ISO8601TimeStamp.length()-1).replace("T", " ");
+        if (str.length() != 19) {
+            Log.w(TAG, "deISO8601TimeStampForCurrTime: error");
+        }
+        return str;
+    }
+
+
+    /**
+     *
+     * @param strDate must be align with SimpleDateFormat() prarmeter
+     * @return a Long type of date
+     */
+    public static long convertStringDateToLong(String strDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        ParsePosition pos = new ParsePosition(0);
+        Date strtodate = formatter.parse(strDate, pos);
+        return strtodate.getTime();
+    }
+
+    /**
+     *
+     * @param millis millis of date
+     * @return
+     */
+    public static String convertMillisToDate(long millis) {
+        Date date = new Date(millis);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String str = formatter.format(date);
+        return str;
+    }
+
+    /**
+     *
+     * @param millis millis of date
+     * @return
+     */
+    public static String convertMillisToDateForAms(long millis) {
+        Date date = new Date(millis);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHMMSS");
+        String str = formatter.format(date);
+        return str;
+    }
+
+
+    /**
+     *
+     * @param millis millis of date
+     * @return
+     */
+    public static String convertMillisToISO8601Date(long millis) {
+        Date date = new Date(millis);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        String str = formatter.format(date);
+        return str;
+    }
+
+
+
+    /**
+     *
+     * @param ISO8601Date millis of date
+     * @return
+     */
+    public static String convertISO8601DateToAMSProtocolDate(String ISO8601Date) {
+        if (TextUtils.isEmpty(ISO8601Date)) {
+            return null;
+        }
+
+        String normalDate = deISO8601TimeStampForCurrTime(ISO8601Date);
+
+        long millis = convertStringDateToLong(normalDate);
+
+        Date date = new Date(millis);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHMMSS");
+        String str = formatter.format(date);
+        return str;
+    }
+
+
+    public static boolean judgeZoneType(String zoneType) {
+        boolean bRet = false;
+        if(null == zoneType){
+            return bRet;
+        }
+        if(zoneType.equals(CommonData.ZONETYPE_24H) || zoneType.equals(CommonData.ZONETYPE_TRIGGER)
+                || zoneType.equals(CommonData.ZONETYPE_DELAY)  || zoneType.equals(CommonData.ZONETYPE_ENVIRONMENT)
+                ||zoneType.equals(CommonData.ZONETYPE_INSTANT)){
+            bRet = true;
+        }
+        return bRet;
+    }
+
+    public static boolean isHejModule(String type) {
+        if (CommonData.JSON_MODULE_NAME_RELAY.equals(type) || CommonData.JSON_MODULE_NAME_ALARM.equals(type)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param doorType eg:front door  back door
+     * @return
+     */
+    public static String ConvertDoorTypeToID(String doorType) {
+        if (doorType.contains("front")) {
+            return "1";
+        } else if (doorType.contains("back")) {
+            return "2";
+        }
+        return "1";
+    }
+
+    /**
+     *
+     * @param role eg:front door  back door
+     * @return
+     */
+    public static String ConvertRoleTypeToID(String role) {
+        if (role.contains(CommonData.JSON_VALUE_ROLE_HOST)) {
+            return "0";
+        } else if (role.contains(CommonData.JSON_VALUE_ROLE_HOSTESS)) {
+            return "1";
+        } else if (role.contains(CommonData.JSON_VALUE_ROLE_CHILD)) {
+            return "2";
+        } else if(role.contains(CommonData.JSON_VALUE_ROLE_HOUSEKEEPER)) {
+            return "3";
+        } else if (role.contains(CommonData.JSON_VALUE_ROLE_FRIEND)) {
+            return "4";
+        } else if (role.contains(CommonData.JSON_VALUE_ROLE_RELATIVE)) {
+            return "5";
+        } else if (role.contains(CommonData.JSON_VALUE_ROLE_ELDERLY)) {
+            return "6";
+        } else {
+            return "7";
+        }
+    }
+	
+	public static JSONArray getJsonArrayFromDb(JSONObject jsonObject, IConfigService mIConfigService) throws Exception{
+        if(null != mIConfigService && null != jsonObject){
+            byte[] resp = mIConfigService.getFromDbManager(jsonObject.toString().getBytes());
+            if(null != resp){
+                String jStr = new String(resp);
+                Log.d(TAG, "getJsonArrayFromDb: json:" + jStr);
+                JSONObject respObj = new JSONObject(jStr);
+                JSONArray jsonArray = respObj.optJSONArray(CommonJson.JSON_LOOPMAP_KEY);
+                return  jsonArray;
+            }
+        }
+        return  null;
+    }
+
+    public static int convertAlarmMsgIdToResId(String alarmMsgId) {
+        int alarmCode = Integer.parseInt(alarmMsgId);
+        int resourceId = R.string.alarmcontent_emergency;
+
+        switch (alarmCode) {
+            case AlarmCode.ALARM_CODE_DOOROPEN:
+                resourceId = R.string.alarmcontent_dooropen;
+                break;
+            case AlarmCode.ALARM_CODE_DURESS:
+            case AlarmCode.ALARM_CODE_DURESS_ACCESS:
+            case AlarmCode.ALARM_CODE_DURESS_EGRESS:
+                resourceId = R.string.alarmcontent_duress;
+                break;
+            case AlarmCode.ALARM_CODE_FIRE:
+                resourceId = R.string.alarmcontent_fire;
+                break;
+            case AlarmCode.ALARM_CODE_GAS:
+                resourceId = R.string.alarmcontent_gas;
+                break;
+            case AlarmCode.ALARM_CODE_INTRUSION:
+                resourceId = R.string.alarmcontent_intrusion;
+                break;
+            case AlarmCode.ALARM_CODE_LOWBATTERY:
+                resourceId = R.string.alarmcontent_lowbattery;
+                break;
+            case AlarmCode.ALARM_CODE_MEDICALAID:
+                resourceId = R.string.alarmcontent_medicaid;
+                break;
+            case AlarmCode.ALARM_CODE_TAMPER:
+                resourceId = R.string.alarmcontent_tamper;
+                break;
+            case AlarmCode.ALARM_CODE_PWDWRONG:
+                resourceId = R.string.alarmcontent_wrongpwd;
+                break;
+            case AlarmCode.ALARM_CODE_PANIC:
+            case AlarmCode.ALARM_CODE_ZONETROUBLE:
+            case AlarmCode.ALARM_CODE_EMERGENCY:
+            default:
+                resourceId = R.string.alarmcontent_emergency;
+        }
+
+        return resourceId;
+    }
+
+    public static int convertAlarmTypeToResId(String alarmType) {
+        int resourceId = R.string.alarmcontent_emergency;
+
+        if (alarmType.equals(CommonData.ALARMTYPE_EMERGENCY) || alarmType.equals(CommonData.ALARMTYPE_EMERGENCY_NODISTURB)
+                || alarmType.equals(CommonData.ALARMTYPE_EMERGENCY_SILENCE)) {
+            resourceId = R.string.alarmtype_emergency;
+        } else if (alarmType.equals(CommonData.ALARMTYPE_FIRE)) {
+            resourceId = R.string.alarmcontent_fire;
+        } else if (alarmType.equals(CommonData.ALARMTYPE_GAS)) {
+            resourceId = R.string.alarmtype_gas;
+        } else if (alarmType.equals(CommonData.ALARMTYPE_INTRUSION)) {
+            resourceId = R.string.alarmtype_intrusion;
+        } else if (alarmType.equals(CommonData.ALARMTYPE_TAMPER)) {
+            resourceId = R.string.alarmtype_tamper;
+        }
+
+        return  resourceId;
     }
 }

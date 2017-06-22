@@ -181,7 +181,7 @@ public class IpcLoopManager {
             String uuid = CommonUtils.generateCommonEventUuid();
             long rowid = add(uuid,name,ip,userName,pwd);
             if(rowid > 0){
-                CommonlDeviceManager.getInstance(mContext).add(uuid,name,CommonData.COMMONDEVICE_TYPE_IPC);
+                CommonDeviceManager.getInstance(mContext).add(uuid,name,CommonData.COMMONDEVICE_TYPE_IPC, 1);
             }
             DbCommonUtil.putErrorCodeFromOperate(rowid, loopMapObject);
         }
@@ -198,7 +198,7 @@ public class IpcLoopManager {
             IpcLoop loop = getByUuid(uuid);
             if(loopMapObject.has(CommonJson.JSON_ALIASNAME_KEY)){
                 loop.mName = name;
-                DbCommonUtil.updateCommonName(mContext,uuid,name);
+                DbCommonUtil.updateCommonName(mContext,uuid,name, 1);
             }
             if(loopMapObject.has(CommonData.JSON_USERNAME_KEY)){
                 loop.mUser = user;
@@ -223,7 +223,7 @@ public class IpcLoopManager {
             long num = deleteByUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
             if(num > 0) {
-                CommonlDeviceManager.getInstance(mContext).deleteByUuid(uuid);
+                CommonDeviceManager.getInstance(mContext).deleteByUuid(uuid);
             }
         }
     }

@@ -22,6 +22,7 @@ public class ConfigConstant {
     public static final String TABLE_IPDOORCARD = "ipdoorcard";
     public static final String TABLE_DEVICEADAPTER = "deviceadapter";
     public static final String TABLE_LOCALDEVICE = "localdevice";
+    public static final String TABLE_SYSTEMSETTINGS = "systemsettings";
 
     public static final int TABLE_PERIPHERALDEVICE_INT = 0;
     public static final int TABLE_COMMONDEVICE_INT = 1;
@@ -51,6 +52,8 @@ public class ConfigConstant {
     public static final String COLUMN_ENABLED = "enabled";
     public static final String COLUMN_PHYSICTYPE = "physictype";
     public static final String COLUMN_CONFIGURATION = "configuration";
+    public static final String COLUMN_KEY = "key";
+    public static final String COLUMN_VALUE = "value";
 
     public static final String COLUMN_ZONETYPE = "zonetype";
     public static final String COLUMN_ALARMTYPE = "alarmtype";
@@ -75,6 +78,9 @@ public class ConfigConstant {
     public static final String COLUMN_STARTTIME = "starttime";
     public static final String COLUMN_EXPIRETIME = "expiretime";
     public static final String COLUMN_DESCRIPTION = "description";
+    public static final String COLUMN_UPLOADAMS = "uploadams";
+    public static final String COLUMN_UPLOADCLOUD = "uploadcloud";
+    public static final String COLUMN_ROLEID = "roleid";
 
     //colume for peripheraldevice
     public final static String COLUMN_PERIPHERALDEVICE_TYPE = COLUMN_TYPE;//int,
@@ -111,12 +117,23 @@ public class ConfigConstant {
     public static final  String[] DEFAULT_SCENARIO_NAME = {"回家","离家","睡眠","起床"};
 
     // 13 IOs
-    public static final int HOMEPANEL_LOCALIO_HONZONES_COUNT = 10;
+    public static final int HOMEPANEL_LOCALIO_HONZONES_BUGLAR_COUNT = 6;
+    public static final int HOMEPANEL_LOCALIO_HONZONES_EMER_COUNT = 1;
+    public static final int HOMEPANEL_LOCALIO_HONZONES_HELP_COUNT = 1;
+    public static final int HOMEPANEL_LOCALIO_HONZONES_GAS_COUNT = 1;
+    public static final int HOMEPANEL_LOCALIO_HONZONES_FIRE_COUNT = 1;
     public static final int HOMEPANEL_LOCALIO_HONDOORBELL_COUNT = 1;
-    public static final int HOMEPANEL_LOCALIO_HONEMERGENCY_COUNT = 1;
+    public static final int HOMEPANEL_LOCALIO_HONSOS_COUNT = 1;
     public static final int HOMEPANEL_LOCALIO_HONTAMPER_COUNT = 1;
-    public static final int HOMEPANEL_LOCALIO_COUNT = HOMEPANEL_LOCALIO_HONZONES_COUNT + HOMEPANEL_LOCALIO_HONDOORBELL_COUNT
-            + HOMEPANEL_LOCALIO_HONEMERGENCY_COUNT + HOMEPANEL_LOCALIO_HONTAMPER_COUNT;
+    public static final int HOMEPANEL_LOCALIO_HONLOWBATTERY_COUNT = 1;
+    public static final int HOMEPANEL_LOCALIO_COUNT = HOMEPANEL_LOCALIO_HONZONES_BUGLAR_COUNT + HOMEPANEL_LOCALIO_HONZONES_EMER_COUNT
+                                                    + HOMEPANEL_LOCALIO_HONZONES_HELP_COUNT + HOMEPANEL_LOCALIO_HONZONES_GAS_COUNT
+                                                    + HOMEPANEL_LOCALIO_HONZONES_FIRE_COUNT + HOMEPANEL_LOCALIO_HONDOORBELL_COUNT
+                                                    + HOMEPANEL_LOCALIO_HONSOS_COUNT + HOMEPANEL_LOCALIO_HONTAMPER_COUNT
+                                                    + HOMEPANEL_LOCALIO_HONLOWBATTERY_COUNT;
+
+    public static final int HOMEPANEL_IPDC_COUNT = 2;
+    public static final int HOMEPANEL_LOCK_COUNT = 2;
 
     public static SparseArray<String> mTableNameMap;
     static {
@@ -158,7 +175,8 @@ public class ConfigConstant {
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_UUID + " nvarchar(128), "
                 + COLUMN_NAME + " nvarchar(64), "
-                + COLUMN_TYPE + " nvarchar(32)"//curtain,relay,light...
+                + COLUMN_TYPE + " nvarchar(32),"//curtain,relay,light...
+                + COLUMN_ENABLED + " INTEGER"
                 + ")";
     }
 
@@ -219,7 +237,10 @@ public class ConfigConstant {
                 + COLUMN_CARDEVENT + " nvarchar(256), "
                 + COLUMN_IMAGEPATH + " nvarchar(256), "
                 + COLUMN_VIDEOPATH + " nvarchar(256), "
-                + COLUMN_READ + " INTEGER"
+                + COLUMN_READ + " INTEGER,"
+                + COLUMN_UPLOADAMS + " INTEGER,"
+                + COLUMN_UPLOADCLOUD + " INTEGER,"
+                + COLUMN_ROLEID + " INTEGER"
                 + ") ";
     }
 
@@ -239,9 +260,12 @@ public class ConfigConstant {
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_UUID + " nvarchar(128), "
                 + COLUMN_TIME + " INTEGER, "
+                + COLUMN_NAME + " nvarchar(32),"
                 + COLUMN_ALARMTYPE + " nvarchar(32), "
                 + COLUMN_MESSAGE + " nvarchar(512), "
-                + COLUMN_READ + " INTEGER"
+                + COLUMN_READ + " INTEGER,"
+                + COLUMN_UPLOADAMS + " INTEGER,"
+                + COLUMN_UPLOADCLOUD + " INTEGER"
                 + ") ";
     }
 
@@ -286,10 +310,18 @@ public class ConfigConstant {
                 + COLUMN_UUID + " nvarchar(128), "
                 + COLUMN_NAME + " nvarchar(64), "
                 + COLUMN_TYPE + " nvarchar(32) , "
-                + COLUMN_PHYSICTYPE + " nvarchar(32) unique, "
+                + COLUMN_PHYSICTYPE + " nvarchar(32), "
                 + COLUMN_ADAPTERNAME + " nvarchar(128), "
                 + COLUMN_ENABLED + " INTEGER, "
                 + COLUMN_CONFIGURATION + " nvarchar(1024) "
+                + ") ";
+    }
+
+    public static  String createSystemSettingsTable() {
+        return "CREATE TABLE IF NOT EXISTS " + TABLE_SYSTEMSETTINGS + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_KEY + " nvarchar(32) unique, "
+                + COLUMN_VALUE + " nvarchar(128)"
                 + ") ";
     }
 }

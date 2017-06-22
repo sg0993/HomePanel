@@ -14,6 +14,12 @@ public class CommonData {
     public static final int LEFT_SELECT_DIAL = 4;
     public static final int LEFT_SELECT_SETTING = 5;
 
+    //added by ellen for message fragment
+    public static final int MESSAGE_SELECT_EVENT = 0;
+    public static final int MESSAGE_SELECT_ALARMHITORY = 1;
+    public static final int MESSAGE_SELECT_NOTIFICATION = 2;
+    public static final int MESSAGE_SELECT_VOICEMESSAGE = 3;
+
     /********************For Top signal ************************/
     public static final String WEATHER_SUNNY = "sunny";
     public static final String WEATHER_CLOUDY = "cloudy";
@@ -35,7 +41,7 @@ public class CommonData {
     public static final String WEATHER_WINDY = "windy";
 
     public static final String TEMPERATURE_DUSTR = "°";
-    public static final String UNHEALTHY = "unhealthy";
+    public static final String UNHEALTHY = "Unhealthy";
     public static final String ARMSTATUS_ARM = "System Armed";
     public static final String ARMSTATUS_DISARM = "System Disarmed";
 
@@ -52,11 +58,13 @@ public class CommonData {
 
     /**********************parameter for call******************************/
     public static final String INTENT_KEY_SCENARIO = "cur_scenario";
+    public static final String INTENT_KEY_SCENARIO_UUID = "cur_scenario_uuid";
+    public static final String INTENT_KEY_SCENARIO_NAME = "cur_scenario_name";
     public static final String INTENT_KEY_CALL_TYPE = "call_type";
     public static final String INTENT_KEY_UNIT = "unit";
-	public static final String INTENT_KEY_TEXTFORMAT = "formattext";
+    public static final String INTENT_KEY_TEXTFORMAT = "formattext";
 
-
+    public static final String INTENT_KEY_DISPLAYNAME = "displayname";// for inner call out
     public static final String INTENT_KEY_VIDEOPATH = "videopath";
 
     /******************any call status************************************/
@@ -76,6 +84,9 @@ public class CommonData {
     public static final int CALL_SUBPHONE_INCOMMING = 11;//suhphone incomming
     public static final int CALL_SUBPHONE_CONNECTED = 12;//suhphone  connect
     public static final int CALL_SUBPHONE_OUTGOING = 13;
+
+
+    public static final int CALL_STATUS_IPDCVIEW = 100;
 
     /************************added by ellen end**********************************/
     public static final String INTENT_CARD_ALIAS = "card_alias";
@@ -109,7 +120,7 @@ public class CommonData {
     public static final String CALL_PHONE_SUB6 = "6";
     public static final String CALL_PHONE_SUB7 = "7";
     public static final String CALL_PHONE_SUB8 = "8";
-    public static final String CALL_PHONE_Cloud = "C";
+    public static final String CALL_PHONE_Cloud = "cloudphone";
 
     public static final int CALL_CHANNEL_MAX = 10;// 1 Mainphone, 8 Subphone, 1 Cloud
 
@@ -153,6 +164,8 @@ public class CommonData {
     public static final int ENGIN_MODE_DEVICE_ROLE = 00;
     public static final int ENGIN_MODE_RELAY_CFG = 20;
     public static final int ENGIN_MODE_ROOM_NUMBER = 31;
+    public static final int ENGIN_MODE_ENGIN_CODE = 32;
+    public static final int ENGIN_MODE_CONFIRM_ENGIN_CODE = 33;
     public static final int ENGIN_MODE_ZONE_DELAY_TIME = 14;
     public static final int ENGIN_MODE_RELAY_DELAY_TIME = 15;
     public static final String ENGIN_MODE_ZONE = "zone type";
@@ -168,6 +181,9 @@ public class CommonData {
 
     /**********************IP configuration type******************************/
     public static final String ENGIN_CONFIG_IP_TYPE = "enginneering mode config IP type";
+    public static final String ENGIN_CONFIG_IP_CONTENT = "enginneering mode config IP content";
+    public static final String ENGIN_CONFIG_NETMASK_CONTENT = "enginneering mode config Netmask content";
+    public static final String ENGIN_CONFIG_GATEWAY_CONTENT = "enginneering mode config Gateway content";
     public static final String ENGIN_CONFIG_TEXT_TYPE = "enginneering mode config Text type";
     public static final String ENGIN_CONFIG_TITLE_DESCRIBE = "enginneering title";
     public static final int CONFIG_IP_SERVER = 1;
@@ -210,6 +226,12 @@ public class CommonData {
     public static final String DATASTATUS_ALL = "all";
     public static final String DATASTATUS_UNREAD = "unread";
     public static final String DATASTATUS_READ = "read";
+    public static final String ALARMREPORTSTATUS_REPORTED = "reported";
+    public static final String ALARMREPORTSTATUS_UNREPORTED = "unreported";
+    public static final String ALARMREPORTSTATUS = "reportstatus";
+    public static final String ALARMREPORT_TYPE_AMS = "ams";
+    public static final String ALARMREPORT_TYPE_CLOUD = "cloud";
+
 
     public static final String COMMONDEVICE_TYPE_LIGHT = "light";
     public static final String COMMONDEVICE_TYPE_RELAY = "relay";
@@ -223,6 +245,7 @@ public class CommonData {
     public static final String COMMONDEVICE_TYPE_ELEVATOR = "elevator";
     public static final String COMMONDEVICE_TYPE_LOCK = "lock";
     public static final String COMMONDEVICE_TYPE_DOORBELL = "doorbell";
+    public static final String COMMONDEVICE_TYPE_IPDC = "ipdoorcamera";
 
     public static final String JSON_OPERATIONTYPE_VALUE_ADD = "add";
     public static final String JSON_OPERATIONTYPE_VALUE_DELETE = "delete";
@@ -231,12 +254,17 @@ public class CommonData {
     public static final String JSON_KEY_NAME = "name";
     public static final String JSON_KEY_ZONETYPE = "zonetype";
     public static final String JSON_KEY_ALARMTYPE = "alarmtype";
+    public static final String JSON_KEY_SENSORTYPE = "sensortype";
     public static final String JSON_KEY_ENABLE = "enable";
     public static final String JSON_KEY_DELAYTIME = "delaytime";
     public static final String JSON_KEY_LOOP = "loop";
     public static final String JSON_KEY_MODEL = "model";
     public static final String JSON_KEY_OPERATIONTYPE = "operationtype";
     public static final String JSON_KEY_DATASTATUS = "datastatus";
+    public static final String JSON_KEY_READSTATUS = "readstatus";
+    public static final String JSON_KEY_UPLOADAMS = "uploadams";
+    public static final String JSON_KEY_UPLOADCLOUD = "uploadcloud";
+    public static final String JSON_KEY_ROLEID = "roleid";
     public static final String JSON_KEY_START = "start";
     public static final String JSON_KEY_COUNT = "count";
     public static final String JSON_KEY_EVENTTYPE = "eventtype";
@@ -246,8 +274,8 @@ public class CommonData {
     public static final String JSON_KEY_CARDID = "cardid";
     public static final String JSON_KEY_CARDTYPE = "cardtype";
     public static final String JSON_KEY_SWIPEACTION = "swipeaction";
-    public static final String JSON_KEY_PERMANENTCARD = "permanentcard";
-    public static final String JSON_KEY_TEMORARYCARD = "temorarycard";
+    public static final String JSON_KEY_PERMANENTCARD = "permanent";
+    public static final String JSON_KEY_TEMORARYCARD = "temorary";
     public static final String JSON_KEY_MESSAGE = "message";
     public static final String JSON_DONGHO_KEY = "dongho";
     public static final String JSON_KEY_FILENAME = "filename";
@@ -257,12 +285,15 @@ public class CommonData {
     public static final String JSON_KEY_ADAPTERNAME = "adapteruuid";
     public static final String JSON_KEY_MODULEUUID = "moduleuuid";
 
-
     public static final String JSON_KEY_STARTDATE = "startdate";
     public static final String JSON_KEY_ENDDATE = "enddate";
 
     public static final String JSON_KEY_STARTTIME = "starttime";
     public static final String JSON_KEY_ENDTIME = "endtime";
+    public static final String JSON_KEY_SETDATE = "date";
+    public static final String JSON_KEY_SETTIME = "time";
+    public static final String JSON_KEY_AUTOTIME = "autotime";
+    public static final String JSON_KEY_24HOUR = "24hour";
     public static final String JSON_KEY_CITY = "city";
     public static final String JSON_IP_KEY = "ip";
     public static final String JSON_PORT_KEY = "port";
@@ -277,23 +308,30 @@ public class CommonData {
     public static final String JSON_AMSIP_KEY = "amsip";
     public static final String JSON_AMSPORT_KEY = "amsport";
     public static final String JSON_HOMEPANELTYPE_KEY = "homepaneltype";
-    public static final String ZONETYPE_24H = "24h";
     public static final String JSON_KEY_VERSION = "version";
+    public static final String JSON_KEY_VERSIONTYPE = "versiontype";
     public static final String JSON_KEY_MAC = "mac";
+    public static final String ZONETYPE_24H = "24h";
     public static final String ZONETYPE_INSTANT = "instant";
     public static final String ZONETYPE_DELAY = "delay";
-    public static final String ALARMTYPE_EMERGENCY = "emergency";
-    public static final String ALARMTYPE_HELP = "help";
+    public static final String ZONETYPE_TRIGGER = "trigger";
+    public static final String ZONETYPE_ENVIRONMENT = "environment";
     public static final String ALARMTYPE_FIRE = "fire";
     public static final String ALARMTYPE_GAS = "gas";
     public static final String ALARMTYPE_INTRUSION = "intrusion";
-
-
+    public static final String ALARMTYPE_TAMPER = "tamper";
+    public static final String ALARMTYPE_EMERGENCY = "emergency";
+    public static final String ALARMTYPE_EMERGENCY_SILENCE = "emergencysilence"; // mute
+    public static final String ALARMTYPE_EMERGENCY_NODISTURB = "emergencynodisturb"; //hijack
+    //    public static final String ALARM_DB_KEY_UPLOAD = "upload";
     public static final String NETMASK_IP_ADDRESS = "netmaskip";
     public static final String NETMASK_IP_NETMASK = "netmasknetmask";
     public static final String NETMASK_IP_GATEWAY = "netmaskgateway";
 
-
+    public static final String JSON_IPDCTYPE_KEY = "ipdctype";
+    public static final String JSON_IPDCTYPE_VALUE_FRONTDOOR = "2001";
+    public static final String JSON_IPDCTYPE_VALUE_BACKDOOR = "2002";
+    public static final int JSON_IPDCTYPE_VALUEINT_BASE = 2001;
 
     //added by ellen
     public static final int RELAY_LOOP_NUM = 4;
@@ -327,11 +365,10 @@ public class CommonData {
     public static final String COMMUNITY_KEY_GUARDPHONE = "guardphone";
     public static final String COMMUNITY_KEY_OFFICEPHONE = "officephone";
     public static final String COMMUNITY_KEY_LOBBYPHONE = "lobbyphone";
-    public static final String COMMUNITY_KEY_ALIAS = "alias";
     public static final String COMMUNITY_KEY_LOCKID = "lockid";
     public static final String COMMUNITY_KEY_LOWBATTERY = "lowbattery";
     public static final String COMMUNITY_KEY_LOCKCODE = "lockcode";
-    public static final String COMMUNITY_KEY_OPENWAYTYPE = "openwaytype";
+    //    public static final String COMMUNITY_KEY_OPENWAYTYPE = "openwaytype";
     public static final String COMMUNITY_KEY_OPENMEMBERTYPE = "openmembertype";
     public static final String COMMUNITY_KEY_OPENMEMBERID = "openmemberid";
     public static final String COMMUNITY_KEY_HIJACK = "hijack";
@@ -357,6 +394,7 @@ public class CommonData {
     public static final String JSON_VALUE_SWIPECARD = "swipecard";
     public static final String JSON_VALUE_PERMANENT = "permanent";
     public static final String JSON_VALUE_TEMPORARY = "temporary";
+    public static final String JSON_VALUE_DOOROPEN = "dooropen";
     public static final String JSON_KEY_TITLE = "title";
     public static final String JSON_KEY_DATE = "date";
     public static final String COLOR_DARKGREY = "#4A4A4A";
@@ -383,36 +421,72 @@ public class CommonData {
     public final static String JSON_MODULE_NAME_RELAY = "relay";
     public final static String JSON_MODULE_NAME_UNKNOW = "unknow";
 
+    //add by xc for homepanel scenario
+    public final static String JSON_SCENARIO_HOME = "home";
+    public final static String JSON_SCENARIO_AWAY = "away";
+    public final static String JSON_SCENARIO_SLEEP = "sleep";
+    public final static String JSON_SCENARIO_WAKEUP = "wakeup";
 
+    public final static String ABNORMAL_INTENT_KEY = "abnormallist";
     //add by ailynn for switcher
     public final static String JSON_SUBACTION_VALUE_SETRELAYLOOPSTATUS = "setrelayloopstatus";
     public final static String JSON_SUBACTION_VALUE_READRELAYLOOPSTATUS = "readrelayloopstatus";
     public final static String JSON_SUBACTION_VALUE_ZONELOOPSTATUSUPDATE = "zoneloopstatusupdate";
+    public final static String JSON_SUBACTION_VALUE_DEVICEASSISTALARM = "deviceassitalarm";
     public final static String JSON_SUBACTION_VALUE_LOCKSTATUSUPDATE = "lockstatusupdate";
-    public final static String JSON_SUBACTION_VALUE_DOORBELLSTATUSUPDATE = "doorbellstatusupdate";
+    public final static String JSON_SUBACTION_VALUE_DOORBELLSTATUSTRIGGER = "doorbellstatustrigger";
     public final static String JSON_SUBACTION_VALUE_LOCALIO = "localio";
     public final static String JSON_KEY_DEVICETYPE_RELAY = "relay";
-    public final static String JSON_KEY_DEVICETYPE_ZONE = "zone";
+    public final static String JSON_KEY_DEVICETYPE_WIREDZONE = "wiredzone";
     public final static String JSON_KEY_DEVICETYPE_MOMAS = "momaslock";
     public final static String JSON_KEY_LOCALIO_ID = "localioid";
     public final static String JSON_KEY_LOCALIO_STATUS = "localiostatus";
     public final static String JSON_KEY_STATUS = "status";
-    public final static String JSON_KEY_SWITCH_ON = "on";
-    public final static String JSON_KEY_SWITCH_OFF = "off";
+    public final static String JSON_KEY_STATUS_ON = "on";
+    public final static String JSON_KEY_STATUS_OFF = "off";
     public final static String JSON_KEY_STATUS_TRIGGER = "trigger";
     public final static String JSON_KEY_STATUS_NORMAL = "normal";
     public final static String JSON_KEY_STATUS_OPEN = "open";
+    public final static String JSON_KEY_ALARM_PWD = "alarmpwd";
+    public final static String JSON_KEY_ALARMMSGID = "alarmmsgid";
+    public final static String JSON_KEY_ALARMRECORDID = "alarmrecordid";
+    public final static String JSON_KEY_ABNORMALSTATUS = "abnormalstatus";
+    public final static String JSON_KEY_ALARMZONEID = "alarmzoneid";
+
+    //add by ailynn for door open event
+    public static final String JSON_VALUE_OPEN_FRONTDOOR = "openfrontdoor";
+    public static final String JSON_VALUE_OPEN_BACKDOOR = "openbackdoor";
+    public static final String JSON_VALUE_ROLE_HOST = "host";
+    public static final String JSON_VALUE_ROLE_HOSTESS = "hostess";
+    public static final String JSON_VALUE_ROLE_CHILD = "child";
+    public static final String JSON_VALUE_ROLE_HOUSEKEEPER = "housekeeper";
+    public static final String JSON_VALUE_ROLE_FRIEND = "friend";
+    public static final String JSON_VALUE_ROLE_RELATIVE = "relative";
+    public static final String JSON_VALUE_ROLE_ELDERLY = "elderly";
 
     //add by ailynn for alarm8
     public final static String JSON_COMMAND_ACTION = "action";
     public final static String JSON_COMMAND_SUBACTION = "subaction";
     public final static String JSON_COMMAND_SUBACTION_ALARMINFO = "alarminfo";
+    public final static String JSON_COMMAND_SUBACTION_RELAYINFO = "relayinfo";
+    public final static String JSON_COMMAND_SUBACTION_SETDEVICE = "setdevice";
+    public final static String JSON_COMMAND_SUBACTION_READDEVICE = "readdevice";
+    public final static String JSON_COMMAND_TIME = "time";
     public final static String JSON_COMMAND_ACTION_EVENT = "event";
     public static final String JSON_COMMAND_DEVLOOPMAP = "deviceloopmap";
     public static final String JSON_COMMAND_MODULETYPE = "moduletype";
     public static final String JSON_COMMAND_LOOPID = "loopid";
     public static final String JSON_COMMAND_SWITCHSTATUS = "status";
+    public final static String JSON_SUBACTION_VALUE_ALARMINFOTOAMS = "alarminfo2ams";
 
+    // scenario
+    public static final String JSON_SCENARIO_ACTION_KEY = "action";
+    public static final String JSON_ARM_KEY = "arm";
+    public static final String JSON_ARM_VALUE_ARM = "arm";
+    public static final String JSON_ARM_VALUE_DISARM = "disarm";
+
+    public static final String JSON_IPDC_OPENFRONTDOOR = "openfrontdoor";
+    public static final String JSON_IPDC_OPENBACKDOOR = "openbackdoor";
     //Max Voice Message Count supported
     public static final int MAX_VOICE_RECORD_COUNT = 3;
     public static final int MAX_NOTIFICATION_BULLTIN_COUNT = 1000;
@@ -428,6 +502,7 @@ public class CommonData {
     public static final int LOG_LEVEL_ERROR = 2;
 
     public static final int MAXALARMCASHCOUNT = 100;
+    public static final int MAXALARMHISTROYCOUNT = 100;
 
     public final static String ALARMLOG_MODULETYPE = "moduletype";// string,
     public final static String ALARMLOG_MODULEADDR = "moduleaddr";//str,ip or mac
@@ -441,22 +516,29 @@ public class CommonData {
     // Full path name for services name
     public final static String ACTION_SERVICE_LOGCENTER = "com.honeywell.homepanel.logserver.LogService";
     public final static String ACTION_SERVICE_CONFIG = "com.honeywell.homepanel.configcenter.ConfigService";
+    public final static String ACTION_SERVICE_PBX = "com.honeywell.homepanel.pbx.PBXService";
     public final static String ACTION_SERVICE_MONITOR = "com.honeywell.homepanel.watchdog.WatchDogService";
     public final static String ACTION_ENGINEERING_CHANGE = "com.honeywell.homepanel.engineering.change";
 
-    public static final String PROJECT_CODE="020106";
+    public final static String SIPAPP_PACKAGE_NAME = "com.honeywell.sipapp";
+    public final static String SIPAPP_ACTIVITY_NAME = "com.honeywell.sipapp.MainActivity";
+    public final static String SIPAPP_SERVICE_NAME = "com.honeywell.sipapp.SipAppService";
+
+    public static final String PROJECT_CODE = "020106";
 
     public static final int VIDEO_WIDTH = 1920;
     public static final int VIDEO_HEIGHT = 1200;
 
     //configservice::::home panel config key
     public static final String KEY_DBVERSIONID = "dbversionid";//int
-    public static final String KEY_SECURITY_PASSWORD = "security_password";//str
+    public static final String KEY_SECURITY_PASSWORD = "securitypassword";//str
     public static final String KEY_CITY = JSON_KEY_CITY;//str
     public static final String KEY_UNIT = JSON_UNIT_KEY;//str
     public static final String KEY_FLOOR = CommonJson.JSON_FLOORNO_KEY;//int
     public static final String KEY_FRONTLOCKTYPE = "frontlocktype";//str
     public static final String KEY_BACKLOCKTYPE = "backlocktype";//str
+    public static final String KEY_TYPE_MOMAS = "momas";//str
+    public static final String KEY_TYPE_IPDCRELAY = "ipdcrelay";//str
     public static final String KEY_REGISTERPWD = "registerpwd";//str
     public static final String KEY_AMSIP = JSON_AMSIP_KEY;//str
     public static final String KEY_AMSPORT = JSON_AMSPORT_KEY;//int
@@ -472,6 +554,21 @@ public class CommonData {
     public static final String KEY_CURSCENARIO = "curscenario";//cur scenario uuid
     public static final String KEY_IPDC_FRONT_VERSION = "ipdcfrontversion";
     public static final String KEY_IPDC_BACK_VERSION = "ipdcbackversion";
+
+    //add by ellen on 20150525 for ring and call voulme config
+
+    public static final String KEY_VOLUME_PREFIX = "volume";
+    public static final String KEY_VOLUME_RING = "volume_ring";
+    public static final String KEY_VOLUME_NEIGHBOR = "volume_neighbor";
+    public static final String KEY_VOLUME_LOBBY = "volume_lobby";
+    public static final String KEY_VOLUME_GUARD = "volume_guard";
+    public static final String KEY_VOLUME_INNER = "volume_inner";
+    public static final String KEY_VOLUME_IPDC = "volume_ipdc";
+    public static final String KEY_CURRENT_SCENARIO_ID = "currentscenarioid";
+    public static final String KEY_CARD_ACTION = "card_action";//str
+
+
+    public static final int VOLUME_VALUE_DEFAULT = 15;
 
     //PbxSerice task shecdule
     public static final String TICK_MINIUTE_EVENT = "tickminiuteevent";
@@ -505,6 +602,59 @@ public class CommonData {
     public static final String DEVADAPTER_AC_485_SANLING = "mitsubishi, local 485, aircondition";
     public static final String DEVADAPTER_AC_485_SANLING_DES = "Mitsubishi homepanel local 485 based air condition";
 
+    // scenario ids
+    public static final String SCENARIO_ID_HOME = "1";
+    public static final String SCENARIO_ID_AWAY = "2";
+    public static final String SCENARIO_ID_SLEEP = "3";
+    public static final String SCENARIO_ID_WAKEUP = "4";
+
+    /**
+     * Zone status detail types
+     */
+    // general alarms
+    public static final String ZONE_ALARM_STATUS_GENERAL_NORMAL = "normal";
+    public static final String ZONE_ALARM_STATUS_GENERAL_TRIGGERED = "trigger";
+    public static final String ZONE_ALARM_STATUS_GENERAL_TAMPER = "tamper";
+    public static final String ZONE_ALARM_STATUS_GENERAL_HIJACK = "hijack";
+    public static final String ZONE_ALARM_STATUS_GENERAL_LOWBATTR = "lowbattery";
+    public static final String ZONE_ALARM_STATUS_GENERAL_INTRUSION = "intrusion";
+    public static final String ZONE_ALARM_STATUS_GENERAL_ZONETROUBLE = "zonetrouble";
+    public static final String ZONE_ALARM_STATUS_GENERAL_PM2P5 = "pm2.5limit";
+    public static final String ZONE_ALARM_STATUS_GENERAL_MAGNETIC = "door_magnetic";//门磁
+    public static final String ZONE_ALARM_STATUS_GENERAL_HEARTHEAT = "heartheat";//
+    public static final String ZONE_ALARM_STATUS_GENERAL_RESET = "reset";//sensor has been reset
+    public static final String ZONE_ALARM_STATUS_GENERAL_MOTION = "motion";
+    public static final String ZONE_ALARM_STATUS_GENERAL_THIEF = "thief";//红外sensor
+
+    // ALARMS from ipvdp system
+    public static final String ZONE_ALARM_STATUS_IPVDP_GAS = "gas";
+    public static final String ZONE_ALARM_STATUS_IPVDP_FIRE = "fire";
+    public static final String ZONE_ALARM_STATUS_IPVDP_HELP = "help";
+    public static final String ZONE_ALARM_STATUS_IPVDP_THIEF = "thief";
+    public static final String ZONE_ALARM_STATUS_IPVDP_EMERGENCY = "emergency";
+    public static final String ZONE_ALARM_STATUS_IPVDP_ARMALL = "armall";
+    public static final String ZONE_ALARM_STATUS_IPVDP_DISARMALL = "disarmall";
+    public static final String IPVDPZONELOOP = "ipvdpzoneloopmap";
+    public static final String ZONE_ALARM_STATUS_IPVDP_MEDICALAID = "medicalaid";
+    public static final String ZONE_ALARM_STATUS_IPVDP_LOCKTEMPER = ZONE_ALARM_STATUS_GENERAL_TAMPER;
+    public static final String ZONE_ALARM_STATUS_IPVDP_LOCKLOWBATTR = ZONE_ALARM_STATUS_GENERAL_LOWBATTR;
+    public static final String ZONE_ALARM_STATUS_IPVDP_LOCK_HIJACK = ZONE_ALARM_STATUS_GENERAL_HIJACK;
+    public static final String ZONE_ALARM_STATUS_IPVDP_LOCK_WRONGPWD = "pwderror";
+    public static final String ZONE_ALARM_STATUS_IPVDP_LOCK_OPEN = "lockopen";
+    public static final String ZONE_ALARM_STATUS_IPVDP_DOOR_OPEN = "dooropen";
+    public static final String ZONE_ALARM_STATUS_IPVDP_DOOR_CLOSE = "doorclose";
+    public static final String IPVDPLOCKLOOP = "ipvdplockloopmap";
+
+    // Alarms from wired zone
+    public static final String ZONE_ALARM_STATUS_WIRED_HIGH = "open";
+    public static final String ZONE_ALARM_STATUS_WIRED_LOW = "close";
+    public static final String ZONE_ALARM_STATUS_NORMAL = "normal";
+    public static final String ZONE_ALARM_STATUS_TRIGGER = "trigger";
+
+    // Alarms from wireless zone
+    public static final String ZONE_ALARM_STATUS_WIRELESS_LOWBATTR = ZONE_ALARM_STATUS_GENERAL_LOWBATTR;
+    public static final String ZONE_ALARM_STATUS_WIRELESS_TAMPER = ZONE_ALARM_STATUS_GENERAL_TAMPER;
+
     /********************************** broadcast intent extras ****************************************/
     public static final String INTENT_EXTRA_DATA = "data";
     public static final String INTENT_EXTRA_DATA_LEN = "datalen";
@@ -514,8 +664,14 @@ public class CommonData {
     public final static String INTENT_ACTION_NOTUSE = "com.honeywell.cubebase.broadcast.nouse";
     public static final String INTENT_ACTION_EVENTBUS_MESSAGE = "com.honeywell.homepanel.eventbusmessage";
     public static final String INTENT_ACTION_ALARM_INFO = "com.honeywell.homepanel.broadcast.alarminfo";
+    public static final String INTENT_ACTION_ASSISTALARM_INFO = "com.honeywell.homepanel.broadcast.assistalarminfo";
     public final static String INTETN_ACTION_ENVIROMENT_INFO = "com.honeywell.homepanel.broadcast.envirometninfo";
     public final static String INTENT_ACTION_CONFIGINFO_CHANGED = "com.honeywell.homepanel.broadcast.configinfoupdated";
+    public static final String INTENT_ACTION_LOCKSTATUS_CHANGED = "com.honeywell.homepanel.broadcast.lockstatusupdated";
+    public static final String INTENT_ACTION_DOORBELLSTATUS_CHANGED = "com.honeywell.homepanel.broadcast.doorbellstatusupdated";
+
+
+    public static final String INTENT_ACTION_SCENE_CHANGED = "com.honeywell.homepanel.broadcast.scene.changed";
 
     public static final String JSON_CONFIGDATA_CATEGORY_KEY = "category";
     public static final String JSON_CONFIGDATA_CATEGORY_PRIVATE = "privateconfig";
@@ -538,9 +694,50 @@ public class CommonData {
 
     public static final String TIME_STR_FORMAT = "yyyyMMdd-HHmmss";
 
-    public  static  final  int CALL_HISTORY_MAX_COUNT = 32;
+    public static final int HOMEPANEL_TYPE_MAIN = 0;
+    public static final int HOMEPANEL_TYPE_SUB = 1;
+
+    public static final int CALL_HISTORY_MAX_COUNT = 32;
+
+    public static final String DEFAULT_ENGINEER_PWD = "085213";
+
+    public static final int DEFAULT_IPC_COUNT = 11;
+
+    public static final String CARD_ACTION_DOOROPEN = "dooropen";
+    public static final String CARD_ACTION_ARM = "arm";
+    public static final String CARD_ACTION_DOOROPEN_ARM = "dooropen & arm";
+
+    public static final String JSON_FRONTDOOR = "2001";
+    public static final String JSON_BACKDOOR = "2002";
+
+
+    public static final int IPDC_FRONTDOOR = 2001;
+    public static final int IPDC_BACKDOOR = 2002;
+
+
+    public static final String ETHERNET_IP = "ethernetip";
+    public static final String ETHERNET_NETMASK = "ethernetnetmask";
+    public static final String ETHERNET_GATEWAY = "ethernetgateway";
+    public static final int MAX_SUPPORT_DB_ALARM_COUNT = 100;
+    public  static  final  String LOOP_IP = "127.0.0.1";
+
+    public static final String JSON_MESSAGETYPE = "messageType";
+    public static final String JSON_MESSAGEID = "messageId";
+    public static final String JSON_CALLER = "caller";
+    public static final String JSON_DATA = "data";
+    public static final String JSON_TYPE = "type";
+    public static final String JSON_ENCRYPTKEY = "encryptKey";
+    public static final String JSON_SESSIONID = "sessionId";
+    public static final String JSON_CALL = "call";
+    public static final String JSON_FLAGS = "flags";
+    public static final String JSON_NEED_RESPONSE = "needResponse";
+
+    public  static  final  String DEFAULT_SUBPHONE_REGISTERPWD = "1111";
+
+
 
     public static String file_() {
+
         StackTraceElement ste = new Throwable().getStackTrace()[1];
         return ste.getFileName();
     }
@@ -549,4 +746,6 @@ public class CommonData {
         StackTraceElement ste = new Throwable().getStackTrace()[1];
         return ste.getLineNumber();
     }
+
+
 }

@@ -40,7 +40,7 @@ public class ZoneLoop implements Parcelable {
                 ", mModuleUuid='" + mModuleUuid + '\'' +
                 ", mUuid='" + mUuid + '\'' +
                 ", mName='" + mName + '\'' +
-                ", mLoop=" + mLoop +
+                ", mUuid=" + mLoop +
                 ", mDelayTime=" + mDelayTime +
                 ", mEnabled=" + mEnabled +
                 ", mZoneType='" + mZoneType + '\'' +

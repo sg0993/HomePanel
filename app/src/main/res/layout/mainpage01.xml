@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_marginLeft="20dp"
 
-    android:orientation="horizontal">
+              android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/arm_status_noevent"
@@ -14,26 +15,27 @@
         android:layout_weight="3"
         android:orientation="vertical">
 
-        <TextView
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/goodwhat_noevent"
             style="@style/goodwhat"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"
-            android:text="Good morning!"
-            android:textColor="@android:color/white"
+            android:text="@string/goodmoring"
+            android:textColor="@android:color/black"
+            app:textStyle="HONEYWELL_FONTS_MEDIUM"
             android:textSize="40sp" />
 
-        <TextView
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/arm_hint_noevent"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:layout_width="@dimen/left_event_width"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:lines="2"
-            android:textStyle="bold"
-            android:text="Everything looks good,your home is ready to arm."
+            app:textStyle="HONEYWELL_FONTS_MEDIUM"
+            android:text="@string/disarmhint"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -46,27 +48,28 @@
         android:layout_gravity="center_horizontal"
         android:orientation="vertical">
 
-        <TextView
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/goodwhat_hasevent"
             android:layout_marginTop="50dp"
             style="@style/goodwhat"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:layout_gravity="center_horizontal"
-            android:text="Good afternoon!"
+            android:text="@string/goodafternoon"
+            app:textStyle="HONEYWELL_FONTS_MEDIUM"
             android:textSize="40sp" />
 
-        <TextView
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/arm_hint_hasevent"
             android:layout_width="@dimen/left_event_width"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:lines="2"
-            android:textStyle="bold"
-            android:text="Everything looks good,your home is ready to arm."
+            app:textStyle="HONEYWELL_FONTS_MEDIUM"
+            android:text="@string/disarmhint"
             android:textSize="25sp" />
 
         <ListView
@@ -101,24 +104,22 @@
 
             <ImageView
                 android:id = "@+id/choose_scenarioImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:src="@mipmap/choose_scenario_home" />
 
-            <TextView
+            <com.honeywell.homepanel.ui.widget.HoneywellTextView
                 android:id="@+id/currentscenario"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Current:Home"
-                android:textSize="20sp"
-                android:textColor="@android:color/white" />
-            <TextView
+                android:text="@string/Current_Home"
+                style="@style/HoneywellTextLightStyle"/>
+            <com.honeywell.homepanel.ui.widget.HoneywellTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tap to choose a scene"
-                android:textSize="20sp"
-                android:textColor="@color/home_text_transparent" />
+                android:text="@string/choose_scene"
+                style="@style/HoneywellTextLightStyle"/>
         </LinearLayout>
 
     </LinearLayout>

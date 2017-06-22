@@ -16,19 +16,27 @@ public class EventHistory implements Parcelable {
     public  String mCardEvent = "";
     public  String mImagePath = "";
     public  String mVideoPath = "";
-    public  int mRead = 0;
+    public int mRead = 0;
+    public int mUploadAms = 0;//0: not upload to ams yet
+    public int mUploadCloud = 0;//0: not upload to ams yet
+    public int mRoleID = 0;
     public EventHistory(){}
 
-    public EventHistory(String mUuid, String mTime, String mType, String mImagePath,
-                        String mCardNo, String mCardEvent, String mVideoPath, int mRead) {
+    public EventHistory(long mId, String mUuid, String mTime, String mType, String mCardNo,
+                        String mCardEvent, String mImagePath, String mVideoPath, int mRead, int
+                                mUploadAms, int mUploadCloud, int mRoleID) {
+        this.mId = mId;
         this.mUuid = mUuid;
         this.mTime = mTime;
         this.mType = mType;
-        this.mImagePath = mImagePath;
         this.mCardNo = mCardNo;
         this.mCardEvent = mCardEvent;
+        this.mImagePath = mImagePath;
         this.mVideoPath = mVideoPath;
         this.mRead = mRead;
+        this.mUploadAms = mUploadAms;
+        this.mUploadCloud = mUploadCloud;
+        this.mRoleID = mRoleID;
     }
 
     @Override
@@ -43,9 +51,11 @@ public class EventHistory implements Parcelable {
                 ", mImagePath='" + mImagePath + '\'' +
                 ", mVideoPath='" + mVideoPath + '\'' +
                 ", mRead=" + mRead +
+                ", mUploadAms=" + mUploadAms +
+                ", mUploadCloud=" + mUploadCloud +
+                ", mRoleID=" + mRoleID +
                 '}';
     }
-
 
     @Override
     public int describeContents() {
@@ -63,6 +73,9 @@ public class EventHistory implements Parcelable {
         dest.writeString(this.mImagePath);
         dest.writeString(this.mVideoPath);
         dest.writeInt(this.mRead);
+        dest.writeInt(this.mUploadAms);
+        dest.writeInt(this.mUploadCloud);
+        dest.writeInt(this.mRoleID);
     }
 
     protected EventHistory(Parcel in) {
@@ -75,6 +88,9 @@ public class EventHistory implements Parcelable {
         this.mImagePath = in.readString();
         this.mVideoPath = in.readString();
         this.mRead = in.readInt();
+        this.mUploadAms = in.readInt();
+        this.mUploadCloud = in.readInt();
+        this.mRoleID = in.readInt();
     }
 
     public static final Parcelable.Creator<EventHistory> CREATOR = new Parcelable.Creator<EventHistory>() {

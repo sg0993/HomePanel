@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.honeywell.homepanel">
+    package="com.honeywell.homepanel"
+    android:sharedUserId="android.uid.system">
 
+    <!-- android:sharedUserId="android.uid.system" -->
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+
+    <uses-permission android:name="android.permission.CONNECTIVITY_INTERNAL" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -27,13 +35,12 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.camera.flash" />
 
-    <permission android:name="android.permission.SET_TIME" />
+    <uses-permission android:name="android.permission.SET_TIME" />
 
     <application
         android:name=".ui.uicomponent.MyApplication"
@@ -50,7 +57,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
@@ -59,10 +68,14 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" />
         <activity
-            android:name=".ui.activities.PasswordEnterActivity"
+            android:name=".ui.activities.ArmAbnormalPopupWindow"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.notAnimation" />
+            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" />
+        <activity
+            android:name=".ui.activities.ZoneDelayTimeSelectActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activities.ScenarioSelectHintActivity"
             android:launchMode="singleInstance"
@@ -70,6 +83,11 @@
             android:theme="@style/Theme.notAnimation" />
         <activity
             android:name=".ui.activities.CallActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.IpDcViewActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
@@ -85,6 +103,11 @@
             android:theme="@style/Theme.notAnimation" />
         <activity
             android:name=".ui.activities.CamerasFullActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.RelayActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
@@ -113,10 +136,10 @@
             android:label="@string/title_activity_set_date"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.notAnimation"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.activities.WifiScanActivity"
+            android:name="com.honeywell.homepanel.ui.activities.WifiScanActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
@@ -137,7 +160,12 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
         <activity
-            android:name=".ui.activities.LocationActivity"
+            android:name=".ui.activities.SetEnginModeCodeActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.ChangeEngineeringCodeActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
@@ -268,7 +296,7 @@
             android:name=".ui.activities.IPAddressConfigActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.notAnimation" />
+            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" />
         <activity
             android:name=".ui.activities.ScreensaverTextClockActivity"
             android:launchMode="singleInstance"
@@ -291,6 +319,48 @@
             android:theme="@style/Theme.notAnimation" />
         <activity
             android:name=".ui.activities.SubPhoneConfigActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.NotificationPasswdActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.HoneywellHomeUnbinding"
+            android:launchMode="singleInstance"
+            android:process="@string/cloudservice"
+            android:screenOrientation="landscape"
+            android:taskAffinity="@string/bindtask"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.HoneywellHomeBinding"
+            android:launchMode="singleInstance"
+            android:process="@string/cloudservice"
+            android:screenOrientation="landscape"
+            android:taskAffinity="@string/bindtask"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.DeviceBindActivity"
+            android:label="@string/title_activity_device_bind"
+            android:launchMode="singleInstance"
+            android:process="@string/cloudservice"
+            android:taskAffinity="@string/bindtask"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        <activity
+            android:name=".ui.activities.HoneywellHomePasswordEnterActivity"
+            android:launchMode="singleInstance"
+            android:process="@string/cloudservice"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.PasswordEnterActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.LocationActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
@@ -390,16 +460,6 @@
             </intent-filter>
         </service>
         <service
-            android:name=".security.SecurityService"
-            android:exported="false"
-            android:process="@string/security">
-            <intent-filter>
-                <action
-                    android:name="com.honeywell.homepanel.security.SecurityService"
-                    android:exported="false" />
-            </intent-filter>
-        </service>
-        <service
             android:name=".subphoneservice.SubphoneClient.SubPhoneClientService"
             android:exported="false">
             <intent-filter>
@@ -457,7 +517,20 @@
                     android:exported="false" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".sensingservice.SensingService"
+            android:exported="false"
+            android:process="@string/security">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.security.SecurityService"
+                    android:exported="false" />
+            </intent-filter>
+        </service>
+
         <service android:name=".ui.services.WidgetInfoService" />
+        <service android:name=".ui.services.NotificationService" />
 
         <receiver android:name=".ui.uicomponent.NetworkConnectChangedReceiver">
             <intent-filter>
@@ -467,20 +540,21 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".cloud.StorageVolumeReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <action android:name="android.intent.action.MEDIA_EJECT" />
+
+                <data android:scheme="file" />
+            </intent-filter>
+        </receiver>
+
         <meta-data
             android:name="design_width"
             android:value="1024" />
         <meta-data
             android:name="design_height"
             android:value="600" />
-
-        <activity
-            android:name=".ui.activities.DeviceBindActivity"
-            android:label="@string/title_activity_device_bind"
-            android:launchMode="singleTask"
-            android:process="@string/cloudservice"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" />
-        >
     </application>
 
 </manifest>

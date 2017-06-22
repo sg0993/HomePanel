@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:gravity="center"
     android:layout_width="match_parent"
@@ -30,13 +31,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </FrameLayout>
-        <TextView
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/left_tv"
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:text="Lift"
-            style="@style/call_textview"/>
+            android:text="@string/lift"
+            style="@style/HoneywellCallTextStyle"/>
     </LinearLayout>
 
     <LinearLayout
@@ -63,13 +64,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </FrameLayout>
-        <TextView
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/middle_tv"
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:text="Video"
-            style="@style/call_textview"/>
+            android:text="@string/video"
+            style="@style/HoneywellCallTextStyle"/>
     </LinearLayout>
 
     <LinearLayout
@@ -94,11 +95,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </FrameLayout>
-        <TextView
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/right_tv"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
-            android:text="End"
-            style="@style/call_textview"/>
+            android:text="@string/end"
+            style="@style/HoneywellCallTextStyle"/>
     </LinearLayout>
 </LinearLayout>

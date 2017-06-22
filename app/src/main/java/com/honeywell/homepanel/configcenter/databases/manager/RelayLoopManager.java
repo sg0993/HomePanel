@@ -199,7 +199,7 @@ public class RelayLoopManager {
             long num = updateByUuid(uuid,loop);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
             if(num > 0 && loopMapObject.has(CommonJson.JSON_ALIASNAME_KEY)){
-                DbCommonUtil.updateCommonName(mContext,uuid,loopMapObject.getString(CommonJson.JSON_ALIASNAME_KEY));
+                DbCommonUtil.updateCommonName(mContext,uuid,loopMapObject.getString(CommonJson.JSON_ALIASNAME_KEY), loop.mEnabled);
             }
         }
     }
@@ -227,7 +227,7 @@ public class RelayLoopManager {
             long num = deleteByUuid(uuid);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
             if(num > 0){
-                CommonlDeviceManager.getInstance(mContext).deleteByUuid(uuid);
+                CommonDeviceManager.getInstance(mContext).deleteByUuid(uuid);
             }
         }
     }

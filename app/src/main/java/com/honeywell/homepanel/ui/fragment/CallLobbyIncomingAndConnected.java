@@ -22,6 +22,7 @@ import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.AudioVideoUtil.CallRecordReadyEvent;
 import com.honeywell.homepanel.ui.AudioVideoUtil.TextureViewListener;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoDecoderThread;
+import com.honeywell.homepanel.ui.RingFile.RingFileData;
 import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.activities.MainActivity;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
@@ -35,6 +36,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import static com.honeywell.homepanel.common.CommonData.CALL_LOBBY_CONNECTED;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -82,7 +85,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         //mCallBottomBrusher.setVisible(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,View.GONE);
         mCallRightBrusher.init(view);
         mCallTopBrusher.init(view);
-        startPlayRing(CALL_RING_LOBBYPHONE);
+        startPlayRing(RingFileData.CALL_RING_LOBBYPHONE);
         startVideoGet();
         //for photo one bitmap to sdcard
         phoneOneFrame();
@@ -158,19 +161,21 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
+        int status = ((CallActivity)getActivity()).getCurFragmentStatus();
         switch (viewId){
             case R.id.middle_btn:
+                stopPlayRing();
                 UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
                 getActivity().finish();
                 Log.d(TAG, "onClick: end!!!!!!!!!!!!");
                 break;
             case R.id.left_btn:
                 Toast.makeText(mContext,"call_left",Toast.LENGTH_SHORT).show();
-                int status = ((CallActivity)getActivity()).getCurFragmentStatus();
                 if(status == CommonData.CALL_LOBBY_INCOMMING){
-                    status = CommonData.CALL_LOBBY_CONNECTED;
+                    status = CALL_LOBBY_CONNECTED;
                     ((CallActivity)getActivity()).setCurFragmentStatus(status);
                     UISendCallMessage.requestForTakeCall(MainActivity.CallBaseInfo);
+                    ((CallActivity)getActivity()).setRingCallVolume();
 //                    switchToLobbyConnected();
 //                    //start audio
 //                    startAudio();
@@ -185,6 +190,8 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
             case R.id.right_btn:
                 int CurStatus = ((CallActivity)getActivity()).getCurFragmentStatus();
                 UISendCallMessage.requestForOpenDoor(MainActivity.CallBaseInfo);
+                //UISendCallMessage.requestForCallElevator(MainActivity.CallBaseInfo);
+                UISendCallMessage.requestForElevatorAuth(MainActivity.CallBaseInfo);
 
                 break;
             case R.id.top_btn:
@@ -202,7 +209,9 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
     }
 
     private void switchToLobbyConnected() {
+        stopPlayRing();
         if(getActivity() instanceof CallActivity){
+            //mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,R.mipmap.call_blue_background,R.mipmap.call_video_image);
             mCallBottomBrusher.setVisible(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,View.GONE);
             mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_LEFT,R.mipmap.call_red_background,R.mipmap.call_end_image);
             mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_LEFT,"End");
@@ -303,6 +312,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
             @Override
             public void run() {
                 stopRecord();
+                stopPlayRing();
                 UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
                 if(getActivity() !=  null){
                     getActivity().finish();
@@ -314,15 +324,26 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISRelayCallMessageEve msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
-
-        if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
+        Log.d(TAG, "SUISRelayCallMessageEve: 11111111111111 ");
+        /*if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
             CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_VIDEO_NETGHBOR);
+        }*/
+
+        int  status = ((CallActivity)getActivity()).getCurFragmentStatus();
+        if(status == CALL_LOBBY_CONNECTED){
+            return;
         }
+        status = CommonData.CALL_LOBBY_CONNECTED;
+        ((CallActivity)getActivity()).setCurFragmentStatus(status);
+        switchToLobbyConnected();
+        startAudio();
     }
+
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(SUISMessagesUICall.SUISMuteMessageRsp msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
-
+        Log.d(TAG, "SUISMuteMessageRsp: 11111111111111 ");
         if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)) {
 
             String errorCode = msg.optString(CommonJson.JSON_ERRORCODE_KEY);

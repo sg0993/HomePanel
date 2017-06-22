@@ -104,6 +104,7 @@ public class DialFragment extends Fragment implements View.OnClickListener{
         subphoneUnderline = view.findViewById(R.id.subphone_underline);
         keypadUnderline = view.findViewById(R.id.keypad_underline);
     }
+
     private void initEvents(){
         speeddial.setOnClickListener(this);
         subphone.setOnClickListener(this);

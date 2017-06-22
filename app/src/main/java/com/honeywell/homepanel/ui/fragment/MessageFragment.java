@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.Utils.EventBusWrapper;
@@ -19,6 +20,7 @@ import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUINotification;
 import com.honeywell.homepanel.common.Message.ui.UIMessagesNotification;
+import com.honeywell.homepanel.ui.activities.MainActivity;
 import com.honeywell.homepanel.ui.domain.NotificationStatisticInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,7 +36,6 @@ import java.util.UUID;
 /**
  * Created by H135901 on 1/25/2017.
  */
-
 @SuppressLint("ValidFragment")
 public class MessageFragment extends Fragment implements View.OnClickListener, NotificationBridge{
     private Button mNaviEvent;
@@ -56,11 +57,12 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
 
     private String title = "";
     private final String NORMAL_GREY = "#ABABAB";
-
     String title_event = null;
     String title_alarm = null;
     String title_notify = null;
     String title_voice = null;
+
+    private  View mTopNavigationView = null;
 
     public static Map<String, Integer> unreadCountMap;
 
@@ -80,8 +82,6 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-//        updateTitle(3, temp.getEventUnreadCnt());
-
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,7 +89,13 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         initData();
         initView(view);
         initEvents();
-        setSelect(true,0);
+        if(MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_MAIN){
+            setSelect(true,MainActivity.mMessageFragPage);
+            MainActivity.mMessageFragPage = CommonData.MESSAGE_SELECT_EVENT;
+        }
+        else{
+            setSelect(true,CommonData.MESSAGE_SELECT_ALARMHITORY);
+        }
         NotificationStatisticInfo temp = NotificationStatisticInfo.getInstance();
         updateTitle(1, String.valueOf(temp.getEventUnreadCnt()));
         updateTitle(2, String.valueOf(temp.getAlarmUnreadCnt()));
@@ -104,18 +110,11 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     }
 
     private void initData() {
-//        getEventCount();
-//        getAlarmCount();
-//        getNotificationCount();
-//        getVoiceMsgCount();
-
         title_event = getResources().getString(R.string.notification_title_event);
         title_alarm = getResources().getString(R.string.notification_title_alarm);
         title_notify = getResources().getString(R.string.notification_title_notify);
         title_voice =  getResources().getString(R.string.notification_title_voice);
-
         UIMessagesNotification.UIGetVoiceMsgListMessageReq dataReq = new UIMessagesNotification.UIGetVoiceMsgListMessageReq();
-
     }
 
     private void getEventCount() {
@@ -192,7 +191,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         //set img to bright color
         switch (i)
         {
-            case 0:
+            case CommonData.MESSAGE_SELECT_EVENT:
                 if (mTabFragEvent == null || bFirst) {
                     mTabFragEvent = new FragmentEvent();
                     mTabFragEvent.setUpdateTitleCB(this);
@@ -201,7 +200,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
                     transaction.replace(R.id.id_msg_body,mTabFragEvent);
                 }
                 break;
-            case 1:
+            case CommonData.MESSAGE_SELECT_ALARMHITORY:
                 if (mTabFragAlarm == null|| bFirst) {
                     mTabFragAlarm = new FragmentAlarm();
                     mTabFragAlarm.setUpdateTitleCB(this);
@@ -210,7 +209,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
                     transaction.replace(R.id.id_msg_body,mTabFragAlarm);
                 }
                 break;
-            case 2:
+            case CommonData.MESSAGE_SELECT_NOTIFICATION:
                 if (mTabFragNotify == null|| bFirst) {
                     mTabFragNotify = new FragmentNofity();
                     mTabFragNotify.setUpdateTitleCB(this);
@@ -219,7 +218,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
                     transaction.replace(R.id.id_msg_body,mTabFragNotify);
                 }
                 break;
-            case 3:
+            case CommonData.MESSAGE_SELECT_VOICEMESSAGE:
                 if (mTabFragVoice == null|| bFirst) {
                     mTabFragVoice = new FragmentVoice();
                     mTabFragVoice.setUpdateTitleCB(this);
@@ -233,6 +232,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     }
 
     private void initEvents() {
+        if(MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB){
+            return;
+        }
         mNaviEvent.setOnClickListener(this);
         mNaviAlarm.setOnClickListener(this);
         mNaviNotification.setOnClickListener(this);
@@ -250,10 +252,24 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         mNotificationUnderline = (View)view.findViewById(R.id.notify_underline);
         mVoiceUnderline = (View)view.findViewById(R.id.voice_underline);
 
-        mEventUnderline.setVisibility(View.VISIBLE);
-        mAlarmUnderline.setVisibility(View.INVISIBLE);
-        mNotificationUnderline.setVisibility(View.INVISIBLE);
-        mVoiceUnderline.setVisibility(View.INVISIBLE);
+        mTopNavigationView = view.findViewById(R.id.topnavigation);
+        if(MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_MAIN){
+            mEventUnderline.setVisibility(View.VISIBLE);
+            mAlarmUnderline.setVisibility(View.INVISIBLE);
+            mNotificationUnderline.setVisibility(View.INVISIBLE);
+            mVoiceUnderline.setVisibility(View.INVISIBLE);
+        }
+        else{
+            mNaviEvent.setVisibility(View.GONE);
+            mNaviAlarm.setVisibility(View.GONE);
+            mNaviNotification.setVisibility(View.GONE);
+            mNaviVoice.setVisibility(View.GONE);
+            mEventUnderline.setVisibility(View.GONE);
+            mAlarmUnderline.setVisibility(View.GONE);
+            mNotificationUnderline.setVisibility(View.GONE);
+            mVoiceUnderline.setVisibility(View.GONE);
+            mTopNavigationView.setVisibility(View.GONE);
+        }
 
         tabBtnList.add(mNaviEvent);
         tabBtnList.add(mNaviAlarm);
@@ -263,19 +279,21 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
+        if(MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB){
+            return;
+        }
+        switch (view.getId()){
             case R.id.msg_navi_event:
-                setSelect(false,0);
+                setSelect(false,CommonData.MESSAGE_SELECT_EVENT);
                 break;
             case R.id.msg_navi_alarm:
-                setSelect(false,1);
+                setSelect(false,CommonData.MESSAGE_SELECT_ALARMHITORY);
                 break;
             case R.id.msg_navi_notify:
-                setSelect(false,2);
+                setSelect(false,CommonData.MESSAGE_SELECT_NOTIFICATION);
                 break;
             case R.id.msg_navi_voice:
-                setSelect(false,3);
+                setSelect(false,CommonData.MESSAGE_SELECT_VOICEMESSAGE);
                 break;
         }
     }
@@ -283,7 +301,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     private void setStyleById(int id) {
         switch (id)
         {
-            case 0:
+            case CommonData.MESSAGE_SELECT_EVENT:
                 mNaviEvent.setTextColor(Color.parseColor(CommonData.COLOR_DARKGREY));
                 mNaviAlarm.setTextColor(Color.parseColor(NORMAL_GREY));
                 mNaviNotification.setTextColor(Color.parseColor(NORMAL_GREY));
@@ -294,7 +312,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
                 mNotificationUnderline.setVisibility(View.INVISIBLE);
                 mVoiceUnderline.setVisibility(View.INVISIBLE);
                 break;
-            case 1:
+            case CommonData.MESSAGE_SELECT_ALARMHITORY:
                 mNaviEvent.setTextColor(Color.parseColor(NORMAL_GREY));
                 mNaviAlarm.setTextColor(Color.parseColor(CommonData.COLOR_DARKGREY));
                 mNaviNotification.setTextColor(Color.parseColor(NORMAL_GREY));
@@ -306,7 +324,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
                 mVoiceUnderline.setVisibility(View.INVISIBLE);
 
                 break;
-            case 2:
+            case CommonData.MESSAGE_SELECT_NOTIFICATION:
                 mNaviEvent.setTextColor(Color.parseColor(NORMAL_GREY));
                 mNaviAlarm.setTextColor(Color.parseColor(NORMAL_GREY));
                 mNaviNotification.setTextColor(Color.parseColor(CommonData.COLOR_DARKGREY));
@@ -317,7 +335,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
                 mNotificationUnderline.setVisibility(View.VISIBLE);
                 mVoiceUnderline.setVisibility(View.INVISIBLE);
                 break;
-            case 3:
+            case CommonData.MESSAGE_SELECT_VOICEMESSAGE:
                 mNaviEvent.setTextColor(Color.parseColor(NORMAL_GREY));
                 mNaviAlarm.setTextColor(Color.parseColor(NORMAL_GREY));
                 mNaviNotification.setTextColor(Color.parseColor(NORMAL_GREY));

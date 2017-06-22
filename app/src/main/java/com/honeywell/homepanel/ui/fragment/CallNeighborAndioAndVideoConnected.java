@@ -191,7 +191,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
         switch (viewId){
             case R.id.left_btn:
                 UISendCallMessage.requestForCallElevator(MainActivity.CallBaseInfo);
-                Toast.makeText(mContext,"call_left",Toast.LENGTH_SHORT).show();
+                UISendCallMessage.requestForElevatorAuth(MainActivity.CallBaseInfo);
                 break;
             case R.id.middle_btn:
                 int status = ((CallActivity)getActivity()).getCurFragmentStatus();
@@ -210,6 +210,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
                 changeViewStatus();
                 break;
             case R.id.right_btn:
+                stopPlayRing();
                 UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
                 getActivity().finish();
                 break;
@@ -329,6 +330,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
 
     ///////////////////////  camera texture view listener  ///////////////////////////
     private TextureView.SurfaceTextureListener camTextureListener = new  TextureView.SurfaceTextureListener() {
+
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
             Log.d(TAG, "camera onSurfaceTextureAvailable");
@@ -359,6 +361,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
         public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {}
     };
 
+
     private void doOpenCamera() {
         Thread openThread = new Thread() {
             @Override
@@ -376,6 +379,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
 
     @Override
     public void cameraHasOpened() {
+
         CameraWrapper.getInstance().doStartPreview(mCameraTexture.getSurfaceTexture()/*, mPreviewRate*/);
     }
 }

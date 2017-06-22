@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_scrolling"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white"
-    tools:context=".ui.activities.MainActivity">
-    <TextView
+    android:orientation="vertical">
+
+    <com.honeywell.homepanel.ui.widget.HoneywellTextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="60dp"
+        android:background="@color/notification_titlebg"
         android:gravity="center"
-        android:text="Settings"
-        android:textColor="@android:color/black"
-        style="@style/notification_navi"
-        android:textAllCaps="false"
-        android:textSize="20sp"/>
+        android:text="@string/Settings"
+        style="@style/HoneywellTitleStyle"/>
+
     <LinearLayout
-        android:background="@color/white"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:background="@color/line_color"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="2dp">
-        </Button>
+            android:layout_height="1px"
+            android:background="@color/line_color" />
+
         <GridView
-            android:background="@color/line_color"
             android:id="@+id/gridview_setting"
-            android:numColumns="4"
-            android:columnWidth="@dimen/activity_horizontal_margin"
-            android:gravity="center"
-            android:listSelector="@null"
-            android:verticalSpacing="1dp"
-            android:horizontalSpacing="1dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </GridView>
-        <Button
-            android:background="@color/line_color"
             android:layout_width="match_parent"
-            android:layout_height="2dp">
-        </Button>
+            android:layout_height="match_parent"
+            android:background="@color/line_color"
+            android:choiceMode="singleChoice"
+            android:gravity="center"
+            android:horizontalSpacing="1dp"
+            android:listSelector="@drawable/grid_view_item_bg"
+            android:numColumns="4"
+            android:verticalSpacing="1dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/line_color"
+            android:visibility="gone"></View>
     </LinearLayout>
 </LinearLayout>

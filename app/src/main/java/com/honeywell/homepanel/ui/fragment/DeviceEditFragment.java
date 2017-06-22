@@ -20,6 +20,7 @@ import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.ui.UIMessagesControl;
 import com.honeywell.homepanel.ui.activities.CamerasActivity;
 import com.honeywell.homepanel.ui.activities.IndicatorBoardActivity;
+import com.honeywell.homepanel.ui.activities.RelayActivity;
 import com.honeywell.homepanel.ui.uicomponent.DevicesImageAdapter;
 import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
 import com.honeywell.homepanel.ui.uicomponent.UISendLockMessage;
@@ -40,12 +41,12 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
     private Context mContext = null;
     private boolean mStatus = true;
     GridView gridView;
-    private static final int[] IMAGES = {R.mipmap.device_elevator3x,
-            R.mipmap.device_camera3x, R.mipmap.device_air3x, R.mipmap.device_air3x,
+    private static final int[] IMAGES = {R.mipmap.lift,
+            R.mipmap.camera, R.mipmap.relay, R.mipmap.device_white,
             R.mipmap.device_white, R.mipmap.device_white, R.mipmap.device_white,
             R.mipmap.device_white};
     private static final int[] TEXTES = {R.string.device_elevator,
-            R.string.device_camera, R.string.device_air, R.string.device_lock,
+            R.string.device_camera, R.string.device_relay, R.string.device_empty,
             R.string.device_empty, R.string.device_empty, R.string.device_empty,
             R.string.device_empty};
 
@@ -63,13 +64,13 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
                                     long id) {
                 if (position == 0) {
                     startActivity(new Intent(mContext, IndicatorBoardActivity.class));
-                }
-                if (position == 1) {
+                } else if (position == 1) {
                     startActivity(new Intent(mContext, CamerasActivity.class));
-                }
-                if (position == 3) {
-                    UISendLockMessage.SendLockControlCommand(mStatus);
-                    mStatus = !mStatus;
+                } else if (position == 2) {
+                    startActivity(new Intent(mContext, RelayActivity.class));
+                } else if (position == 3) {
+                    //UISendLockMessage.SendLockControlCommand(mStatus);
+                    //mStatus = !mStatus;
                 }
             }
         });

@@ -12,12 +12,14 @@ public class CommonDevice implements Parcelable {
     public String mUuid = "";
     public  String mName = "";
     public  String mType = "";
+    public int mEnabled = 0;
 
-    public CommonDevice(long mId, String mUuid, String mName, String mType) {
+    public CommonDevice(long mId, String mUuid, String mName, String mType, int enabled) {
         this.mId = mId;
         this.mUuid = mUuid;
         this.mName = mName;
         this.mType = mType;
+        mEnabled = enabled;
     }
     public CommonDevice() {}
 
@@ -32,6 +34,7 @@ public class CommonDevice implements Parcelable {
         dest.writeString(this.mUuid);
         dest.writeString(this.mName);
         dest.writeString(this.mType);
+        dest.writeInt(this.mEnabled);
     }
 
     protected CommonDevice(Parcel in) {
@@ -39,6 +42,7 @@ public class CommonDevice implements Parcelable {
         this.mUuid = in.readString();
         this.mName = in.readString();
         this.mType = in.readString();
+        this.mEnabled = in.readInt();
     }
 
     public static final Parcelable.Creator<CommonDevice> CREATOR = new Parcelable.Creator<CommonDevice>() {

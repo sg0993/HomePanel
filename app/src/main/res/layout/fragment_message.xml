@@ -4,18 +4,24 @@
     android:id="@+id/fragment_message"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@android:color/white"
+    android:orientation="vertical"
     tools:context=".ui.activities.MainActivity">
 
+    <LinearLayout
+        android:id="@+id/topnavigation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <include layout="@layout/notification_navigation_bar"/>
+        <include layout="@layout/notification_navigation_bar" />
+    </LinearLayout>
+
+
 
     <FrameLayout
         android:id="@+id/id_msg_body"
-        android:layout_weight="1"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp">
-    </FrameLayout>
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"></FrameLayout>
 
 </LinearLayout>
