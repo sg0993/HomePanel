@@ -29,19 +29,19 @@ public class CalRightBrusher {
     private View.OnClickListener mOnclickListener = null;
 
     public void init(View view) {
-        top_btn = (Button)view.findViewById(R.id.top_btn);
-        top_imageview = (ImageView)view.findViewById(R.id.top_image);
+        top_btn = (Button) view.findViewById(R.id.top_btn);
+        top_imageview = (ImageView) view.findViewById(R.id.top_image);
         /*middle_btn = (Button)view.findViewById(R.id.middle_btn);
         middle_imageview = (ImageView)view.findViewById(R.id.middle_image);*/
-        bottom_btn = (Button)view.findViewById(R.id.bottom_btn);
-        bottom_imageview = (ImageView)view.findViewById(R.id.bottom_image);
+        bottom_btn = (Button) view.findViewById(R.id.bottom_btn);
+        bottom_imageview = (ImageView) view.findViewById(R.id.bottom_image);
 
         top_btn.setOnClickListener(mOnclickListener);
         bottom_btn.setOnClickListener(mOnclickListener);
         setRes();
     }
 
-    public CalRightBrusher(View.OnClickListener clickListener,int top_btn_back, int top_image/*, int middle_btn_back, int middle_image*/
+    public CalRightBrusher(View.OnClickListener clickListener, int top_btn_back, int top_image/*, int middle_btn_back, int middle_image*/
             , int bottom_btn_back, int bottom_image) {
         mOnclickListener = clickListener;
         this.top_btn_back = top_btn_back;
@@ -53,11 +53,11 @@ public class CalRightBrusher {
     }
 
     private void setRes() {
-        top_btn.setBackgroundResource(top_btn_back);
-        top_imageview.setBackgroundResource(top_image);
+        //top_btn.setBackgroundResource(top_btn_back);
+         top_imageview.setBackgroundResource(top_image);
        /* middle_btn.setBackgroundResource(middle_btn_back);
         middle_imageview.setBackgroundResource(middle_image);*/
-        bottom_btn.setBackgroundResource(bottom_btn_back);
+//        bottom_btn.setBackgroundResource(bottom_btn_back);
         bottom_imageview.setBackgroundResource(bottom_image);
     }
 }

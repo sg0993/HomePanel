@@ -1,83 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/white">
+
     <TextureView
         android:id="@+id/textview_other"
-        android:background="@color/blue"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/blue" />
+
     <RelativeLayout
-        android:background="@android:color/transparent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
         <TextureView
             android:id="@+id/own_textview"
-            android:visibility="invisible"
-            android:background="@mipmap/call_pic"
-            android:padding="30dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_width="200dp"
-            android:layout_height="200dp" />
+            android:background="@mipmap/call_pic"
+            android:padding="30dp"
+            android:visibility="invisible" />
+
         <LinearLayout
             android:id="@+id/call_top"
             android:layout_width="match_parent"
-            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true">
-            <include
-                layout="@layout/layout_call_top_textview" />
+            android:layout_centerHorizontal="true"
+            android:gravity="center">
+
+            <include layout="@layout/layout_call_top_textview" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/call_animation"
-            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true">
-            <include
-                layout="@layout/layout_call_animarion"/>
+            android:orientation="vertical">
+
+            <include layout="@layout/layout_call_animarion" />
+
             <com.honeywell.homepanel.ui.widget.HoneywellTextView
                 android:id="@+id/unit_tv"
-                android:gravity="center"
+                style="@style/HoneywellCallTextStyle"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
+                android:gravity="center"
                 android:text="@string/dong"
-                style="@style/HoneywellCallTextStyle"/>
+                android:textColor="@color/black" />
+
             <com.honeywell.homepanel.ui.widget.HoneywellTextView
                 android:id="@+id/calltime_tv"
-                android:gravity="center"
+                style="@style/HoneywellCallTextStyle"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
+                android:gravity="center"
                 android:text="@string/time"
-                style="@style/HoneywellCallTextStyle"/>
+                android:textColor="@color/black" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/call_bottom"
-            android:background="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <include
-                layout="@layout/layout_call_bottom_button" />
+            android:background="@android:color/transparent"
+            android:gravity="center">
+
+            <include layout="@layout/layout_call_bottom_button" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/call_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:gravity="center_vertical"
-            android:paddingRight="30dp"
             android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-            <include
-                layout="@layout/layout_call_right_button"/>
+            android:paddingRight="30dp">
+
+            <include layout="@layout/layout_call_right_button" />
         </LinearLayout>
     </RelativeLayout>
 </FrameLayout>

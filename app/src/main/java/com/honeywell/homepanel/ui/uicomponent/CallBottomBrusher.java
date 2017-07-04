@@ -78,15 +78,15 @@ public class CallBottomBrusher {
     }
 
     private void setRes() {
-        left_btn.setBackgroundResource(left_btn_back);
+       // left_btn.setBackgroundResource(left_btn_back);
         left_imageview.setImageResource(left_image);
         left_tv.setText(left_text);
 
-        middle_btn.setBackgroundResource(middle_btn_back);
+       // middle_btn.setBackgroundResource(middle_btn_back);
         middle_imageview.setImageResource(middle_image);
         middle_tv.setText(middle_text);
 
-        right_btn.setBackgroundResource(right_btn_back);
+      //  right_btn.setBackgroundResource(right_btn_back);
         right_imageview.setImageResource(right_image);
         right_tv.setText(right_text);
     }
@@ -115,15 +115,15 @@ public class CallBottomBrusher {
     public void setImageRes(int position,int backRes,int imageRes){
         switch (position){
             case BOTTOM_POSTION_LEFT:
-                left_btn.setBackgroundResource(backRes);
+              //  left_btn.setBackgroundResource(backRes);
                 left_imageview.setImageResource(imageRes);
                 break;
             case BOTTOM_POSTION_MIDDLE:
-                middle_btn.setBackgroundResource(backRes);
+            //    middle_btn.setBackgroundResource(backRes);
                 middle_imageview.setImageResource(imageRes);
                 break;
             case BOTTOM_POSTION_RIGHT:
-                right_btn.setBackgroundResource(backRes);
+             //   right_btn.setBackgroundResource(backRes);
                 right_imageview.setImageResource(imageRes);
                 break;
             default:

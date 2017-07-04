@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.honeywell.homepanel.IAvRtpService;
 import com.honeywell.homepanel.IConfigService;
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.LogMgr;
+import com.honeywell.homepanel.Utils.NotificationUtil;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
@@ -33,6 +35,7 @@ import com.honeywell.homepanel.ui.fragment.CallLobbyIncomingAndConnected;
 import com.honeywell.homepanel.ui.fragment.CallNeighborAndioAndVideoConnected;
 import com.honeywell.homepanel.ui.fragment.CallOutgoingNeighborFragment;
 import com.honeywell.homepanel.ui.fragment.CallSubponeIncomingAndConnected;
+import com.honeywell.homepanel.ui.uicomponent.Notification;
 import com.honeywell.homepanel.ui.uicomponent.TopViewBrusher;
 
 import org.greenrobot.eventbus.EventBus;
@@ -61,11 +64,11 @@ import static com.honeywell.homepanel.common.CommonData.CALL_SUBPHONE_OUTGOING;
  * Created by H135901 on 1/24/2017.
  */
 
-public  class CallActivity extends FragmentActivity implements View.OnClickListener,SeekBar.OnSeekBarChangeListener{
+public class CallActivity extends FragmentActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
-    private static  final String TAG = "CallActivity";
+    private static final String TAG = "CallActivity";
     private TopViewBrusher mTopViewBrusher = new TopViewBrusher();
-    private Map<Integer,CallBaseFragment> mFragments = new HashMap<Integer, CallBaseFragment>();
+    private Map<Integer, CallBaseFragment> mFragments = new HashMap<Integer, CallBaseFragment>();
 
     public int mCurCallStatus = CALL_LOBBY_INCOMMING;
     public String mUnit = "100-202";
@@ -93,93 +96,102 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         initViewAndListener();
         mTopViewBrusher.init(this);
         fragmentAdd(mCurCallStatus);
-        mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-        CommonUtils.startAndBindService(getApplicationContext(),CommonData.ACTION_AVRTP_SERVICE,mIAvRtpServiceConnect);
-        CommonUtils.startAndBindService(getApplicationContext(),CommonData.ACTION_CONFIG_SERVICE,mIConfigServiceConnect);
+        CommonUtils.startAndBindService(getApplicationContext(), CommonData.ACTION_AVRTP_SERVICE, mIAvRtpServiceConnect);
+        CommonUtils.startAndBindService(getApplicationContext(), CommonData.ACTION_CONFIG_SERVICE, mIConfigServiceConnect);
+
+        //警告停止
+        NotificationUtil.getNotificationUtil().stopShow();
     }
 
     private JSONObject getCallInitJsonObject() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(CommonJson.JSON_ACTION_KEY,CommonJson.JSON_ACTION_VALUE_EVENT);
-            jsonObject.put(CommonJson.JSON_SUBACTION_KEY,CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONEVENTADD);
+            jsonObject.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_EVENT);
+            jsonObject.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONEVENTADD);
             JSONArray jsonArray = new JSONArray();
             JSONObject mapObject = new JSONObject();
-            mapObject.put(CommonJson.JSON_UUID_KEY,MainActivity.CallBaseInfo.getCallUuid());
-            mapObject.put(CommonData.JSON_KEY_EVENTTYPE,CommonData.JSON_VALUE_VISITOR);
-            mapObject.put(CommonData.JSON_KEY_TIME,getCalltime());
-            mapObject.put(CommonData.JSON_KEY_DATASTATUS,CommonData.DATASTATUS_UNREAD);
+            mapObject.put(CommonJson.JSON_UUID_KEY, MainActivity.CallBaseInfo.getCallUuid());
+            mapObject.put(CommonData.JSON_KEY_EVENTTYPE, CommonData.JSON_VALUE_VISITOR);
+            mapObject.put(CommonData.JSON_KEY_TIME, getCalltime());
+            mapObject.put(CommonData.JSON_KEY_DATASTATUS, CommonData.DATASTATUS_UNREAD);
             jsonArray.put(mapObject);
-            jsonObject.put(CommonJson.JSON_LOOPMAP_KEY,jsonArray);
+            jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, jsonArray);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return  jsonObject;
+        return jsonObject;
     }
 
 
-    public String getCalltime(){
+    public String getCalltime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String time = sdf.format(new Date());
         return time;
     }
 
     private void getAllParameter(Intent intent) {
-        if(intent.hasExtra(CommonData.INTENT_KEY_CALL_TYPE)){
-            mCurCallStatus = intent.getIntExtra(CommonData.INTENT_KEY_CALL_TYPE,mCurCallStatus);
+        if (intent.hasExtra(CommonData.INTENT_KEY_CALL_TYPE)) {
+            mCurCallStatus = intent.getIntExtra(CommonData.INTENT_KEY_CALL_TYPE, mCurCallStatus);
         }
-        if(intent.hasExtra(CommonData.INTENT_KEY_UNIT)){
+        if (intent.hasExtra(CommonData.INTENT_KEY_UNIT)) {
             mUnit = intent.getStringExtra(CommonData.INTENT_KEY_UNIT);
         }
-        if(intent.hasExtra(CommonData.INTENT_KEY_DISPLAYNAME)){
+        if (intent.hasExtra(CommonData.INTENT_KEY_DISPLAYNAME)) {
             mDisplayName = intent.getStringExtra(CommonData.INTENT_KEY_DISPLAYNAME);
         }
-        if(intent.hasExtra(CommonData.INTENT_KEY_TEXTFORMAT)){
+        if (intent.hasExtra(CommonData.INTENT_KEY_TEXTFORMAT)) {
             mFormatText = intent.getStringExtra(CommonData.INTENT_KEY_TEXTFORMAT);
         }
-        if(intent.hasExtra(CommonJson.JSON_CALLTYPE_KEY)){
+        if (intent.hasExtra(CommonJson.JSON_CALLTYPE_KEY)) {
             mCallType = intent.getStringExtra(CommonJson.JSON_CALLTYPE_KEY);
         }
 
-        Log.d(TAG,"getAllParameter() mCurCallStatus:"+mCurCallStatus+",mUnit:"+mUnit +",,,1111111");
+        Log.d(TAG, "getAllParameter() mCurCallStatus:" + mCurCallStatus + ",mUnit:" + mUnit + ",,,1111111");
     }
 
     protected void initViewAndListener() {
 
     }
- 	@Override
+
+    @Override
     protected void onResume() {
         super.onResume();
     }
+
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
         mTopViewBrusher.destory();
-        if(null != mIAvRtpServiceConnect){
+        //警告恢复
+        NotificationUtil.getNotificationUtil().afreshShow();
+        if (null != mIAvRtpServiceConnect) {
             getApplicationContext().unbindService(mIAvRtpServiceConnect);
         }
-        if(null != mIConfigServiceConnect){
+        if (null != mIConfigServiceConnect) {
             getApplicationContext().unbindService(mIConfigServiceConnect);
         }
     }
 
 
-    public void fragmentAdd(int position)  {
+    public void fragmentAdd(int position) {
         mCurCallStatus = position;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         Fragment fragment = mFragments.get(position);
-        if(null == fragment){
+        if (null == fragment) {
             fragment = getNewFragMent(position);
         }
         transaction.replace(R.id.main_frameLayout, fragment);
         transaction.commitAllowingStateLoss();
     }
+
     private Fragment getNewFragMent(int position) {
+        LogMgr.e("position:" + position);
         CallBaseFragment fragment = null;
-        switch (position){
+        switch (position) {
             case CALL_OUTGOING_NEIGHBOR:
                 fragment = new CallOutgoingNeighborFragment("" + position);
                 break;
@@ -188,12 +200,12 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
                 break;
             case CommonData.CALL_CONNECTED_AUDIO_NETGHBOR:
                 fragment = new CallNeighborAndioAndVideoConnected("" + position);
-			    fragment.setFragmentAidl(mIAvRtpService,getApplicationContext());
+                fragment.setFragmentAidl(mIAvRtpService, getApplicationContext());
                 setRingCallVolume();
                 break;
             case CommonData.CALL_CONNECTED_VIDEO_NETGHBOR:
                 fragment = new CallNeighborAndioAndVideoConnected("" + position);
-				fragment.setFragmentAidl(mIAvRtpService,getApplicationContext());
+                fragment.setFragmentAidl(mIAvRtpService, getApplicationContext());
                 break;
             case CALL_LOBBY_INCOMMING:
                 fragment = new CallLobbyIncomingAndConnected("" + position);////
@@ -223,8 +235,8 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
     }
 
     public void setRingCallVolume() {
-        int curVolume  = getVolumeForCallStatus();
-        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,curVolume,AudioManager.FLAG_PLAY_SOUND);
+        int curVolume = getVolumeForCallStatus();
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, curVolume, AudioManager.FLAG_PLAY_SOUND);
     }
 
     private int getVolumeForCallStatus() {
@@ -232,18 +244,19 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         int currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         try {
             currentVolume = mIConfigService.getIntMapConfig(volume_type);
-            if(currentVolume < 0){
+            if (currentVolume < 0) {
                 currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "getVolumeForCallStatus: currentVolume:"+currentVolume+",,11111111");
-        return  currentVolume;
+        Log.d(TAG, "getVolumeForCallStatus: currentVolume:" + currentVolume + ",,11111111");
+        return currentVolume;
     }
-    private String getVolumeType(){
+
+    private String getVolumeType() {
         String volume_type = "";
-        switch (mCurCallStatus){
+        switch (mCurCallStatus) {
             case CALL_IPDC_INCOMING:
             case CALL_GUARD_INCOMMING:
             case CALL_GUART_OUTGOING:
@@ -274,13 +287,13 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
                 volume_type = CommonData.KEY_VOLUME_RING;
                 break;
         }
-        Log.d(TAG, "getVolumeType: volume_type:"+volume_type+",,111111111111");
-        return  volume_type;
+        Log.d(TAG, "getVolumeType: volume_type:" + volume_type + ",,111111111111");
+        return volume_type;
     }
 
-    public static void switchFragmentInFragment(Fragment fragment,int callType) {
-        if(fragment.getActivity() instanceof CallActivity){
-            ((CallActivity)fragment.getActivity()).fragmentAdd(callType);
+    public static void switchFragmentInFragment(Fragment fragment, int callType) {
+        if (fragment.getActivity() instanceof CallActivity) {
+            ((CallActivity) fragment.getActivity()).fragmentAdd(callType);
         }
     }
 
@@ -289,26 +302,24 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         int viewId = view.getId();
         switch (viewId) {
             case R.id.volume_decrease:
-                if(mSpeakerAdjust){
-                    Toast.makeText(getApplicationContext(),"volume decrease!!!!",Toast.LENGTH_SHORT).show();
-                    mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_PLAY_SOUND);
+                if (mSpeakerAdjust) {
+                    Toast.makeText(getApplicationContext(), "volume decrease!!!!", Toast.LENGTH_SHORT).show();
+                    mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
                     int volume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                     mCurSeekBar.setProgress(volume);
                     writeVolumeToDb(volume);
-                }
-                else{
+                } else {
 
                 }
                 break;
             case R.id.volume_increase:
-                if(mSpeakerAdjust){
-                    Toast.makeText(this,"volume increase!!!!",Toast.LENGTH_SHORT).show();
-                    mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_PLAY_SOUND);
+                if (mSpeakerAdjust) {
+                    Toast.makeText(this, "volume increase!!!!", Toast.LENGTH_SHORT).show();
+                    mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
                     int volume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                     mCurSeekBar.setProgress(volume);
                     writeVolumeToDb(volume);
-                }
-                else{
+                } else {
 
                 }
                 break;
@@ -318,13 +329,14 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
     }
 
     private SeekBar mCurSeekBar = null;
-    public void volumeSpeaker(){
+
+    public void volumeSpeaker() {
         mSpeakerAdjust = true;
-        mCurSeekBar = CommonUtils.showCallVolumeDialog(this,this,this, mSpeakerAdjust,getVolumeForCallStatus());
+        mCurSeekBar = CommonUtils.showCallVolumeDialog(this, this, this, mSpeakerAdjust, getVolumeForCallStatus());
         Toast.makeText(getApplicationContext(), "top_btn", Toast.LENGTH_SHORT).show();
     }
 
-    public void volumeMic(){
+    public void volumeMic() {
         mSpeakerAdjust = false;
         //mCurSeekBar = CommonUtils.showCallVolumeDialog(this,this,this, mSpeakerAdjust);
     }
@@ -334,26 +346,29 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
 
     }
 
-    public int getCurFragmentStatus(){
+    public int getCurFragmentStatus() {
         return mCurCallStatus;
     }
 
-    public void setCurFragmentStatus(int status ){
-         mCurCallStatus = status;
+    public void setCurFragmentStatus(int status) {
+        mCurCallStatus = status;
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    }
+
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        Log.d(TAG,"onStopTrackingTouch() progress:" + seekBar.getProgress());
-        if(mSpeakerAdjust){
-            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,seekBar.getProgress(),AudioManager.FLAG_PLAY_SOUND);
+        Log.d(TAG, "onStopTrackingTouch() progress:" + seekBar.getProgress());
+        if (mSpeakerAdjust) {
+            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, seekBar.getProgress(), AudioManager.FLAG_PLAY_SOUND);
             writeVolumeToDb(seekBar.getProgress());
-        }
-        else{
+        } else {
 
         }
     }
@@ -362,37 +377,36 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             String serviceClassName = name.getClassName();
-            if(serviceClassName.equals(CommonData.ACTION_AVRTP_SERVICE)){
+            if (serviceClassName.equals(CommonData.ACTION_AVRTP_SERVICE)) {
                 mIAvRtpService = IAvRtpService.Stub.asInterface(service);
                 setFragmentAidl();
-            }
-            else if(serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)){
+            } else if (serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)) {
                 mIConfigService = IConfigService.Stub.asInterface(service);
-                if(mCurCallStatus == CALL_LOBBY_INCOMMING ||
-                        mCurCallStatus == CALL_IPDC_INCOMING){
+                if (mCurCallStatus == CALL_LOBBY_INCOMMING ||
+                        mCurCallStatus == CALL_IPDC_INCOMING) {
                     saveCallHistory(getCallInitJsonObject());
                 }
                 int currentVolume = getVolumeForCallStatus();
-                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,currentVolume,AudioManager.FLAG_PLAY_SOUND);
+                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_PLAY_SOUND);
             }
         }
+
         public void onServiceDisconnected(ComponentName name) {
             String serviceClassName = name.getClassName();
-            if(serviceClassName.equals(CommonData.ACTION_AVRTP_SERVICE)){
+            if (serviceClassName.equals(CommonData.ACTION_AVRTP_SERVICE)) {
                 mIAvRtpService = null;
-            }
-            else if(serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)){
+            } else if (serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)) {
                 mIConfigService = null;
             }
         }
     }
 
-    private void writeVolumeToDb(int volume){
-        if(mIConfigService != null){
+    private void writeVolumeToDb(int volume) {
+        if (mIConfigService != null) {
             String key = getVolumeType();
-            Log.d(TAG, "writeVolumeToDb: key:"+key+",,volume:"+volume+",,,111111111");
+            Log.d(TAG, "writeVolumeToDb: key:" + key + ",,volume:" + volume + ",,,111111111");
             try {
-                mIConfigService.putIntMapConfig(key,volume);
+                mIConfigService.putIntMapConfig(key, volume);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -401,14 +415,14 @@ public  class CallActivity extends FragmentActivity implements View.OnClickListe
 
     private void setFragmentAidl() {
         CallBaseFragment fragment = mFragments.get(getCurFragmentStatus());
-        if(null != fragment && mIAvRtpService != null){
-            fragment.setFragmentAidl(mIAvRtpService,getApplicationContext());
+        if (null != fragment && mIAvRtpService != null) {
+            fragment.setFragmentAidl(mIAvRtpService, getApplicationContext());
         }
     }
 
 
-    public  void saveCallHistory(JSONObject jsonObject){
-        if(null != mIConfigService){
+    public void saveCallHistory(JSONObject jsonObject) {
+        if (null != mIConfigService) {
             try {
                 mIConfigService.putToDBManager(jsonObject.toString().getBytes());
             } catch (RemoteException e) {

@@ -4,22 +4,15 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
@@ -113,6 +106,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                     if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
                         return;
                     }
+                    //Intent intent1 = new Intent(getActivity(), WiFiConfigurationActivity.class);
                     Intent intent1 = new Intent(getActivity(), WiFiConfigurationActivity.class);
                     startActivity(intent1);
                     break;

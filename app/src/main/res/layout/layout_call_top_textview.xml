@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:gravity="center"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
     <com.honeywell.homepanel.ui.widget.HoneywellTextView
         android:id="@+id/top_tv"
-        android:gravity="center"
+        style="@style/HoneywellCallTextStyle"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/Incomming_call"
-        style="@style/HoneywellCallTextStyle"/>
+        android:textColor="@color/black"
+        android:visibility="gone" />
+
     <com.honeywell.homepanel.ui.widget.HoneywellTextView
         android:id="@+id/bottom_tv"
-        android:gravity="center"
+        style="@style/HoneywellCallTextStyle"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/Lobby"
-        style="@style/HoneywellCallTextStyle"/>
+        android:textColor="@color/black"
+
+        android:visibility="gone" />
 </LinearLayout>

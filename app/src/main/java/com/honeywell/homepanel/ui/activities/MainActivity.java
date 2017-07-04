@@ -77,7 +77,7 @@ public class MainActivity extends BaseActivity {
     public static int mHomePanelType = CommonData.HOMEPANEL_TYPE_MAIN;
     public static String mDongHao = "";
     public static String mSubPPhoneId = CommonData.CALL_PHONE_MAIN;
-    public static final String mClientCert = "/sdcard/Download/ClientCert.pem";
+    public static final String mClientCert = "/data/security/ClientCert.pem";//"/sdcard/Download/ClientCert.pem";
 
     private static final int FTRESULTCODE = 126;
     private myBroadcastReceiver myBroadcastReceiver;
@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity {
 
     public static int mMessageFragPage = CommonData.MESSAGE_SELECT_EVENT;
 
-    private void checkAndStartFTApplication() {
+    private boolean checkAndStartFTApplication() {
         Log.d(TAG, "checkAndStartFTApplication: ");
         File file = new File(mClientCert);
         if (file.exists()) {
@@ -96,22 +96,22 @@ public class MainActivity extends BaseActivity {
             if (macAddress != null) {
                 Ifconfig.setEthernetMacAddress(macAddress);
             }
-            return;
+            return false;
         }
 
         try {
             getPackageManager().getPackageInfo("com.honeywell.finaltest", PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            return;
+            return false;
         }
 
         Intent intent = new Intent();
         intent.setAction("android.intent.action.MAIN");
         intent.setPackage("com.honeywell.finaltest");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(intent, FTRESULTCODE);
         Log.d(TAG, "checkAndStartFTApplication: Start FinalTest");
+        return true;
     }
 
     private String getMacAddressFromCert(File file) {
@@ -184,20 +184,15 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == FTRESULTCODE) {
-            try {
-                Runtime.getRuntime().exec("pm uninstall com.honeywell.finaltest");
-                Log.d(TAG, "onActivityResult: remove FinalTest");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            startService(new Intent(this, WatchDogService.class));
+            //bind database config service
+            CommonUtils.startAndBindService(this, CommonData.ACTION_CONFIG_SERVICE, mIConfigServiceConnect);// using getContext()???
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkAndStartFTApplication();
-
         String[] argu = {"-d", "/sdcard/Download/", "-p", "8443", "--tls"};
         TunaWebServer.TunaMain(argu);
         argu = new String[]{"-d", "/sdcard/Download/", "-p", "8080"};
@@ -205,9 +200,16 @@ public class MainActivity extends BaseActivity {
 
         mContext = this;
         // start watch dog
+        /*if (!checkAndStartFTApplication()) {
+            startService(new Intent(this, WatchDogService.class));
+            //bind database config service
+            CommonUtils.startAndBindService(this, CommonData.ACTION_CONFIG_SERVICE, mIConfigServiceConnect);// using getContext()???
+        }*/
+
         startService(new Intent(this, WatchDogService.class));
         //bind database config service
         CommonUtils.startAndBindService(this, CommonData.ACTION_CONFIG_SERVICE, mIConfigServiceConnect);// using getContext()???
+
 
         mTopView = findViewById(R.id.top_status);//for test
         mTopView.setOnClickListener(new View.OnClickListener() {
@@ -231,7 +233,6 @@ public class MainActivity extends BaseActivity {
                 RingFileCopy.getInstance().CopyRingFileFromCard();
             }
         }).start();
-
     }
 
     @Override

@@ -46,7 +46,7 @@ public class VideoDecoderThread implements  Runnable{
                 if (null != mDecoderTextureListener) {
                     mDecoder = mDecoderTextureListener.getVideoDecoder();
                     if (null == mDecoder) {
-                        Log.e(TAG, "----VideoDecoderThread----->  decoder is null ???");
+                        //Log.e(TAG, "----VideoDecoderThread----->  decoder is null ???");
                         try {
                             Thread.sleep(2);
                         } catch (InterruptedException e) {

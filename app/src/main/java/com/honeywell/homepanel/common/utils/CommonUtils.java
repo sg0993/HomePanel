@@ -26,6 +26,7 @@ import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.CommonPath;
+import com.honeywell.homepanel.nativeapi.NativeEncry;
 import com.honeywell.homepanel.sensingservice.security.AlarmCode;
 import com.honeywell.homepanel.ui.AudioVideoUtil.HVideoDecoder;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoInfo;
@@ -33,10 +34,12 @@ import com.honeywell.homepanel.ui.AudioVideoUtil.VideoInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -52,8 +55,11 @@ import static android.content.Context.BIND_AUTO_CREATE;
  */
 
 public class CommonUtils {
-
     private static final String TAG = "CommonUtils";
+    public static final String FIXSTRING = "HON_HS_CUBE";
+    public static final int ENCRYPTION_TYPE_NONE = 0;
+    public static final int ENCRYPTION_TYPE_CHACHA = 1;
+    public static final int ENCRYPTION_TYPE_ECC = 0x10;
 
     public static SeekBar  showCallVolumeDialog(Activity activity, View.OnClickListener onClickListener,
                                                 SeekBar.OnSeekBarChangeListener seekBarChangeListener, boolean bSpeaker,int volume){
@@ -693,4 +699,122 @@ public class CommonUtils {
 
         return  resourceId;
     }
+
+    /**
+     * byte array to hex string
+     * @param bytes
+     * @return
+     */
+    public static String byteArrayToHexString(byte[] bytes) {
+        if(null == bytes) {
+            return "";
+        }
+        char[] hexArray =
+                {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+        char[] hexChars = new char[bytes.length * 2];
+        int v;
+
+        for (int j = 0; j < bytes.length; j++) {
+            v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+
+        return new String(hexChars);
+    }
+
+    public static  byte[] appendSendingBytes(byte[] bytes, int size, int encType,
+                                             byte [] encKey){
+        byte[] data;
+        if (bytes == null || size == 0) {
+            return null;
+        }
+        if (size >= bytes.length) {
+            data = bytes;
+        } else {
+            data = Arrays.copyOfRange(bytes, 0, size);
+        }
+
+        data = wrapArroudData(data, encType, encKey);
+        return data;
+    }
+
+    private static  byte[] wrapArroudData(byte[] bytes, int encType, byte[] encKey) {
+        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+        int size;
+        byte[] header = FIXSTRING.getBytes();
+        byte[] data = null;
+
+        // write miracle string
+        byteArray.write(header, 0, header.length);
+
+        // write encrypt type
+        byteArray.write(encType);
+
+        data = encryptData(bytes, encType, encKey);
+        if(null == data) {
+            size = 0;
+        } else {
+            size = data.length;
+        }
+        Log.d(TAG, "Util.java wrapArroudData body length="+size+",,,,\r\n");
+
+        // write length
+        byteArray.write((size & 0xff000000) >> 24);
+        byteArray.write((size & 0x00ff0000) >> 16);
+        byteArray.write((size & 0x0000ff00) >> 8);
+        byteArray.write(size & 0x000000ff);
+
+        // write body
+        byteArray.write(data, 0, size);
+
+        return byteArray.toByteArray();
+    }
+
+    private static byte[] encryptData(byte[] bytes, int encType, byte[] encKey) {
+        byte ret [] = null;
+        switch (encType) {
+            case ENCRYPTION_TYPE_NONE:
+                ret = bytes;
+                break;
+            case ENCRYPTION_TYPE_CHACHA:
+                ret = bytes;
+                break;
+            case ENCRYPTION_TYPE_ECC:
+                if(null != encKey) {
+                    ret = NativeEncry.encWithKey(bytes,
+                            bytes.length, encKey);
+                } else {
+                    ret = bytes;
+                }
+                break;
+        }
+
+        return ret;
+    }
+
+    /**
+     * hex string to byte array
+     * @param s
+     * @return
+     */
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        if (len % 2 != 0) {
+            len = len - 1; //maybe should return null.
+        }
+        if(len <= 0) {
+            return null;
+        }
+        byte[] data = new byte[len / 2];
+
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character
+                    .digit(s.charAt(i + 1), 16));
+        }
+
+        return data;
+    }
+
+
 }

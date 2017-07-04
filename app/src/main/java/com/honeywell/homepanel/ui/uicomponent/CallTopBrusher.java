@@ -11,8 +11,8 @@ import com.honeywell.homepanel.R;
 
 public class CallTopBrusher {
 
-    public static  final  int POSITION_TOP = 0;
-    public static  final  int POSITION_BOTTOM = 1;
+    public static final int POSITION_TOP = 0;
+    public static final int POSITION_BOTTOM = 1;
 
 
     private TextView top_tv = null;
@@ -24,11 +24,12 @@ public class CallTopBrusher {
 
     public void init(View view) {
         top_tv = (TextView) view.findViewById(R.id.top_tv);
-        bottom_tv = (TextView) view.findViewById(R.id.bottom_tv);
+//        bottom_tv = (TextView) view.findViewById(R.id.bottom_tv);
+        bottom_tv = (TextView) view.findViewById(R.id.unit_tv);
         setRes();
     }
 
-    public CallTopBrusher(String topStr,String bottomStr) {
+    public CallTopBrusher(String topStr, String bottomStr) {
         this.topStr = topStr;
         this.bottomStr = bottomStr;
     }
@@ -38,8 +39,8 @@ public class CallTopBrusher {
         bottom_tv.setText(bottomStr);
     }
 
-    public void setResText(int postion,String text){
-        switch (postion){
+    public void setResText(int postion, String text) {
+        switch (postion) {
             case POSITION_TOP:
                 top_tv.setText(text);
                 break;

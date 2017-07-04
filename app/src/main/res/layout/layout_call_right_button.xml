@@ -16,6 +16,7 @@
             android:gravity="center_vertical"
             android:layout_gravity="center"
             android:layout_width="80dp"
+            android:background="@android:color/transparent"
             android:layout_height="80dp"/>
         <ImageView
             android:id="@+id/top_image"
@@ -34,6 +35,7 @@
             android:id="@+id/middle_btn"
             android:gravity="center_vertical"
             android:layout_gravity="center"
+            android:background="@android:color/transparent"
             android:layout_width="80dp"
             android:layout_height="80dp"/>
         <ImageView
@@ -52,6 +54,7 @@
             android:id="@+id/bottom_btn"
             android:gravity="center_vertical"
             android:layout_gravity="center"
+            android:background="@android:color/transparent"
             android:layout_width="80dp"
             android:layout_height="80dp"/>
         <ImageView

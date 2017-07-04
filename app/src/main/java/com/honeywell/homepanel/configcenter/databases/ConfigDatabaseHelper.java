@@ -186,10 +186,10 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
         db.beginTransaction();
 
         try {
-            addDefaultLocalUartDevice(db);
-            addDefaultElevatorDevice(db);
             addDefaultLocalIODevice(db);
+            addDefaultLocalUartDevice(db);
             addDefaultLocal485tDevice(db);
+            addDefaultElevatorDevice(db);
 
             db.setTransactionSuccessful();
         } catch (Exception e) {
@@ -348,7 +348,7 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
                         .put(ConfigConstant.COLUMN_UUID, deviceUuid)
                         .put(ConfigConstant.COLUMN_NAME, name)
                         .put(ConfigConstant.COLUMN_TYPE, type)
-                        .put(ConfigConstant.COLUMN_ENABLED, 1)
+                        .put(ConfigConstant.COLUMN_ENABLED, 0) // default disable all zone
                         .put(ConfigConstant.COLUMN_ADAPTERNAME, adapter)
                         .put(ConfigConstant.COLUMN_CONFIGURATION, additionConfigs.toString())
                         .put(ConfigConstant.COLUMN_PHYSICTYPE, CommonJson.JSON_LOCALDEV_PHYSICTYPE_VALUE_IOBASE + (iobase + i))
@@ -463,9 +463,15 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
             addDefaultSystemSetting(db, CommonData.KEY_VOLUME_GUARD, CommonData.VOLUME_VALUE_DEFAULT + "");
             addDefaultSystemSetting(db, CommonData.KEY_VOLUME_INNER, CommonData.VOLUME_VALUE_DEFAULT + "");
             addDefaultSystemSetting(db, CommonData.KEY_VOLUME_IPDC, CommonData.VOLUME_VALUE_DEFAULT + "");
+
             addDefaultSystemSetting(db, CommonData.ETHERNET_IP, "");
             addDefaultSystemSetting(db, CommonData.ETHERNET_NETMASK, "");
             addDefaultSystemSetting(db, CommonData.ETHERNET_GATEWAY, "");
+
+            addDefaultSystemSetting(db, CommonData.NETMASK_IP_ADDRESS, "");
+            addDefaultSystemSetting(db, CommonData.NETMASK_IP_NETMASK, "");
+            addDefaultSystemSetting(db, CommonData.NETMASK_IP_GATEWAY, "");
+
 
             db.setTransactionSuccessful();
         } catch (Exception e) {

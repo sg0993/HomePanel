@@ -17,6 +17,7 @@
     <color name="button_activity_gray">#B3B3B3</color>
     <color name="button_pressed_gray">#666666</color>
 
+    <color name="view_disable_gray">#F5F5F5</color>
 
     <color name="notification_titlebg">#F5F5F5</color>
 

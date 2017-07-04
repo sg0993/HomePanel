@@ -5,11 +5,13 @@ import android.media.MediaMuxer;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.honeywell.homepanel.AudioPacketWithEC;
 import com.honeywell.homepanel.IAvRtpService;
 import com.honeywell.homepanel.common.CommonPath;
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.AudioVideoUtil.AVIUtil;
 import com.honeywell.homepanel.ui.AudioVideoUtil.AudioProcess;
+import com.honeywell.homepanel.ui.AudioVideoUtil.AudioProcessWithEC;
 import com.honeywell.homepanel.ui.AudioVideoUtil.CallRecordReadyEvent;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VStreamBuffer;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoInfo;
@@ -38,8 +40,8 @@ public class CallBaseFragment extends Fragment {
     private static  final  String TAG = "CallBaseFragment";
 
     public IAvRtpService mIAvrtpService = null;
-    private AudioProcess mAudioProcess = null;
-
+    //private AudioProcess mAudioProcess = null;
+    private AudioProcessWithEC mAudioProcess = null;
 
     public BlockingQueue<VStreamBuffer> mVideoPlayQueue = new LinkedBlockingQueue<VStreamBuffer>(MAX_QUEUE_SIZE);
 
@@ -60,7 +62,8 @@ public class CallBaseFragment extends Fragment {
     public void setFragmentAidl(IAvRtpService iAvRtpService,Context context){
         Log.d(TAG, "setFragmentAidl: 11111111111111");
         mIAvrtpService = iAvRtpService;
-        mAudioProcess = new AudioProcess(context,"",mIAvrtpService);
+        //mAudioProcess = new AudioProcess(context,"",mIAvrtpService);
+        mAudioProcess = new AudioProcessWithEC(context,"",mIAvrtpService);
 
         //TODO for test
         mAudioProcess.setUuid(CommonUtils.generateCommonEventUuid());
@@ -96,7 +99,7 @@ public class CallBaseFragment extends Fragment {
             mAudioProcess.stopPhoneRecordFromFileThread();
         }
     }
-    public  void stopAudio(){
+    public    void stopAudio(){
         Log.d(TAG, "stopAudio: 111111111");
         try {
             if (null != mAudioProcess) {
@@ -147,12 +150,26 @@ public class CallBaseFragment extends Fragment {
                         }
                         Thread.sleep(SLEEPTIME);
                     }
-                    if(mBAudioGet){
+                    if(mBAudioGet) {
                         //byte [] data = mIAvrtpService.getAudioFrame();
-                        byte [] data = mIAvrtpService.getAudioFrameWithEC().audioFrame;
+                        byte[] data = null;
+                        AudioPacketWithEC eachFrame = null;
+                        if (null != mIAvrtpService) {
+                            eachFrame = mIAvrtpService.getAudioFrameWithEC();
+                            if (null != eachFrame) {
+                                data = eachFrame.audioFrame;
+                                Log.d(TAG, "run: get package with seq " + eachFrame.audioFrameSeq);
+                            } else {
+                                Thread.sleep(20);
+                                continue;
+                            }
+                        }
+
                         if(null != data){
-                            mAudioProcess.mPlayQueue.offer(data);
+                            //mAudioProcess.mPlayQueue.offer(data);
+                            mAudioProcess.mPlayQueue.offer(eachFrame);
                             if(mBRecord){
+                               // mAudioRecordQueue.offer(ByteBuffer.wrap(data.audioFrame));
                                 mAudioRecordQueue.offer(ByteBuffer.wrap(data));
                             }
                         }

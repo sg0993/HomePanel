@@ -133,18 +133,23 @@
             android:theme="@style/Theme.notAnimation" />
         <activity
             android:name=".ui.activities.WifiConnectActivity"
-            android:label="@string/title_activity_set_date"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.honeywell.homepanel.ui.activities.WifiScanActivity"
+            android:name="com.honeywell.homepanel.ui.activities.WiFiConfigurationActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+
+        <activity
+            android:name="com.honeywell.homepanel.ui.activities.WifiInfoConnectedActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
         <activity
-            android:name=".ui.activities.WiFiConfigurationActivity"
+            android:name=".ui.activities.WiFiConfigurationOldActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
@@ -202,11 +207,13 @@
         <activity
             android:name=".ui.activities.SetTimeActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
             android:name=".ui.activities.SetDateActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
             android:name=".ui.activities.PasswdChangeActivity"
             android:launchMode="singleInstance"
@@ -219,6 +226,11 @@
             android:theme="@style/Theme.notAnimation" />
         <activity
             android:name=".ui.activities.NetworkSettingActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+        <activity
+            android:name=".ui.activities.NetworkSettingDHCPActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
@@ -294,9 +306,11 @@
             android:theme="@style/Theme.notAnimation" />
         <activity
             android:name=".ui.activities.IPAddressConfigActivity"
+            android:label="@string/title_activity_set_date"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.activities.ScreensaverTextClockActivity"
             android:launchMode="singleInstance"
@@ -488,7 +502,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".upgrade.UpgradeService"
+            android:name=".upgrade.upgrader.UpgraderService"
             android:exported="false"
             android:process="@string/upgrade">
             <intent-filter>
@@ -529,6 +543,39 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".miscservices.discovery.DiscoveryService"
+            android:exported="false"
+            android:process=":miscservice">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.miscservice.discovery.DiscoveryService"
+                    android:exported="false" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".miscservices.logcat.LogCaptureService"
+            android:exported="false"
+            android:process=":miscservice">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.miscservice.LogHelper.LogCaptureService"
+                    android:exported="false" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".upgrade.subupgrader.SubupgraderService"
+            android:exported="false"
+            android:process=":subupgrader">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.upgrade.subupgrader.SubupgraderService"
+                    android:exported="false" />
+            </intent-filter>
+        </service>
+
         <service android:name=".ui.services.WidgetInfoService" />
         <service android:name=".ui.services.NotificationService" />
 
@@ -540,7 +587,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".cloud.StorageVolumeReceiver">
+        <receiver android:name=".upgrade.subupgrader.StorageVolumeReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
                 <action android:name="android.intent.action.MEDIA_EJECT" />

@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/black"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
-        <include
-            android:id="@+id/call_animation"
-            layout="@layout/layout_call_animarion"/>
-        <com.honeywell.homepanel.ui.widget.HoneywellTextView
-            android:id="@+id/unit_tv"
-            android:gravity="center"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:text="@string/Dialing"
-            style="@style/HoneywellCallTextStyle" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true">
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/call_animation"
+            layout="@layout/layout_call_animarion" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent" />
+
             <Button
                 android:id="@+id/cancel_btn"
-                android:background="@mipmap/call_outging_cancel"
-                android:layout_gravity="center"
-                android:layout_width="80dp"
-                android:layout_height="80dp"/>
-            <ImageView
-                android:layout_gravity="center"
-                android:src="@mipmap/call_outging_cancel_chacha"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@mipmap/cancel" />
         </FrameLayout>
+
         <com.honeywell.homepanel.ui.widget.HoneywellTextView
+            style="@style/HoneywellCallTextStyle"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:text="@string/indicator_board_cancel"
-            style="@style/HoneywellCallTextStyle" />
+            android:textColor="@color/black" />
     </LinearLayout>
 </RelativeLayout>

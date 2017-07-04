@@ -96,6 +96,8 @@
     <string name="engin_top_title">Engineering Mode</string>
     <string name="engin_device_role">Device Role</string>
     <string name="engin_network">Network Setting</string>
+    <string name="network_details">Network Details</string>
+    <string name="engin_network_dhcp">Network DHCP</string>
     <string name="engin_serverip">Server IP Setting</string>
     <string name="engin_roomno">Room Number</string>
     <string name="engin_zonecfg">Zone Configuration</string>
@@ -291,7 +293,7 @@
     <string name="exceedmaxcount">IPC添加数量超过最大限制！</string>
     <string name="door_open">开门</string>
     <string name="arm">布防</string>
-    <string name="dooropen_arm">开门+布防</string>
+    <string name="dooropen_arm">开门+撤防</string>
     <string name="honeywellhome_unbinding_left">Your Homepanel is not bound to any HoneyWell\nHome account currently.</string>
     <string name="honeywellhome_unbinding_right_up">If you have not installed Honeywell Home App,\nscan The QR code to link to download address.</string>
     <string name="honeywellhome_unbinding_right_down">If you have installed Honeywell Home App, scan\nthe same QR code to add device to your cloud\naccount for remote control and monitor by\nHoneywell Home App.</string>
@@ -366,6 +368,7 @@
     <string name="OK">OK</string>
     <string name="Test_WIFI">Honeywell Testing WIFI</string>
     <string name="Connect">Connect</string>
+    <string name="Connected">Connected</string>
     <string name="SSID">SSID</string>
     <string name="typeSSID">type the SSID for the network</string>
     <string name="Security">Security</string>
@@ -382,6 +385,7 @@
     <string name="Kitchen">Kitchen Window</string>
     <string name="Open">Open</string>
     <string name="Dialing">Dialing…20-1002</string>
+    <string name="Dialing_">Dialing…</string>
     <string name="Devices">Devices</string>
     <string name="time">02:59</string>
     <string name="Scenes">Scenes</string>
@@ -419,7 +423,7 @@
     <string name="temperatureTv">26°</string>
     <string name="Unheathy">Unheathy</string>
     <string name="System_disarmed">System Disarmed</string>
-    <string name="Adjust_speak">Adjust the speak</string>
+    <string name="Adjust_speak">Volume</string>
     <string name="Current_Home">Current:Home</string>
     <string name="choose_scene">Tap to choose a scene</string>
     <string name="Bedroom">Bedroom</string>
@@ -452,4 +456,15 @@
     <string name="datetime_text_24hformat">Use 24-hour format</string>
     <string name="speeddial_gurad">Guard</string>
     <string name="speeddial_office">Office</string>
+
+    <string name="wifi_network_auto">Auto Connect</string>
+    <string name="wifi_network_status">Status</string>
+    <string name="wifi_network_signal">Signal Strength</string>
+    <string name="wifi_network_security">Security</string>
+    <string name="wifi_network_ip_address">IP Address</string>
+    <string name="wifi_network_netmask">Netmask</string>
+    <string name="wifi_network_gateway">Gateway</string>
+    <string name="wifi_network_forget">Forget Netmask</string>
+
+
 </resources>

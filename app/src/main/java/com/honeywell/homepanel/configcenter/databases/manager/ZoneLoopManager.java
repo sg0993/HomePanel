@@ -296,12 +296,10 @@ public class ZoneLoopManager {
         while(cursor.moveToNext()){
             ZoneLoop loop = fillDefault(cursor);
 
-            if (loop.mEnabled == CommonData.ENABLE) {
-                JSONObject loopMapObject = new JSONObject();
-                loopMapObject.put(CommonData.JSON_TYPE_KEY, CommonData.COMMONDEVICE_TYPE_ZONE);
-                loopToJson(loopMapObject, loop);
-                loopMapArray.put(loopMapObject);
-            }
+            JSONObject loopMapObject = new JSONObject();
+            loopMapObject.put(CommonData.JSON_TYPE_KEY, CommonData.COMMONDEVICE_TYPE_ZONE);
+            loopToJson(loopMapObject, loop);
+            loopMapArray.put(loopMapObject);
         }
 
         // close cursor

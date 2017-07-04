@@ -341,48 +341,6 @@ public class CommonData {
     public static final int DISENABLE = 0;
 
 
-    public static final String COMMUNITY_DEVLOOPMAP = "deviceloopmap";
-    public static final String COMMUNITY_KEY_EQUIP = "equip";
-    public static final String COMMUNITY_KEY_TYPE = "type";
-    public static final String COMMUNITY_KEY_PAGE = "page";
-    public static final String COMMUNITY_KEY_PER = "per";
-    public static final String COMMUNITY_KEY_ID = "id";
-    public static final String COMMUNITY_KEY_TITLE = "title";
-    public static final String COMMUNITY_KEY_DATE = "date";
-    public static final String COMMUNITY_KEY_YEAR = "year";
-    public static final String COMMUNITY_KEY_MONTH = "month";
-    public static final String COMMUNITY_KEY_DAY = "day";
-    public static final String COMMUNITY_KEY_HOUR = "hour";
-    public static final String COMMUNITY_KEY_MIN = "min";
-    public static final String COMMUNITY_KEY_SEC = "sec";
-    public static final String COMMUNITY_KEY_ITEM = "item";
-    public static final String COMMUNITY_KEY_VALUE = "value";
-    public static final String COMMUNITY_KEY_DONGHO = "dongho";
-    public static final String COMMUNITY_KEY_CONTENT = "content";
-    public static final String COMMUNITY_KEY_LOGIN = "login";
-    public static final String COMMUNITY_KEY_CALLTYPE = "calltype";
-    public static final String COMMUNITY_KEY_IP = "ip";
-    public static final String COMMUNITY_KEY_GUARDPHONE = "guardphone";
-    public static final String COMMUNITY_KEY_OFFICEPHONE = "officephone";
-    public static final String COMMUNITY_KEY_LOBBYPHONE = "lobbyphone";
-    public static final String COMMUNITY_KEY_LOCKID = "lockid";
-    public static final String COMMUNITY_KEY_LOWBATTERY = "lowbattery";
-    public static final String COMMUNITY_KEY_LOCKCODE = "lockcode";
-    //    public static final String COMMUNITY_KEY_OPENWAYTYPE = "openwaytype";
-    public static final String COMMUNITY_KEY_OPENMEMBERTYPE = "openmembertype";
-    public static final String COMMUNITY_KEY_OPENMEMBERID = "openmemberid";
-    public static final String COMMUNITY_KEY_HIJACK = "hijack";
-
-    public static final String COMMUNITY_VALUE_EQUIP_WM = "WM";
-    public static final String COMMUNITY_VALUE_EQUIP_GM1 = "GM1";
-    public static final String COMMUNITY_VALUE_EQUIP_GM2 = "GM2";
-    public static final String COMMUNITY_VALUE_EQUIP_GM3 = "GM3";
-
-    public static final String COMMUNITY_VALUE_TYPE_REMOTE = "remote";
-    public static final String COMMUNITY_VALUE_TYPE_MANAGEMENT = "management";
-    public static final String COMMUNITY_VALUE_TYPE_ALL = "all";
-    public static final String COMMUNITY_VALUE_TYPE_INDIVIDUAL = "individual";
-
     /*******************added by xc for notifiction *******************************/
     public static final String FRAGMENT_EVENT = "event";
     public static final String FRAGMENT_ALARM = "alarm";
@@ -426,6 +384,7 @@ public class CommonData {
     public final static String JSON_SCENARIO_AWAY = "away";
     public final static String JSON_SCENARIO_SLEEP = "sleep";
     public final static String JSON_SCENARIO_WAKEUP = "wakeup";
+    public final static String JSON_KEY_SCENARIO = "scenario";
 
     public final static String ABNORMAL_INTENT_KEY = "abnormallist";
     //add by ailynn for switcher
@@ -477,8 +436,56 @@ public class CommonData {
     public static final String JSON_COMMAND_MODULETYPE = "moduletype";
     public static final String JSON_COMMAND_LOOPID = "loopid";
     public static final String JSON_COMMAND_SWITCHSTATUS = "status";
+    public static final String JSON_COMMAND_SUBACTION_ECCENC = "ecc256";
+    public static final String JSON_COMMAND_SUBACTION_MESSAGE = "message";
+    public static final String JSON_COMMAND_SUBACTION_PUBKEY = "pubkey";
+    public static final String JSON_COMMAND_SUBACTION_SIGN = "sign";
     public final static String JSON_SUBACTION_VALUE_ALARMINFOTOAMS = "alarminfo2ams";
 
+    //add for bulletin
+    public final static String JSON_COMMAND_SUBACTION_BULLETINLST = "bulletinlistget";
+    public final static String JSON_COMMAND_SUBACTION_BULLETINCONTENT = "bulletincontentget";
+    public final static String JSON_COMMAND_SUBACTION_BULLETINNOTIFICATION = "bulletinnotification";
+    public static final String COMMUNITY_DEVLOOPMAP = "deviceloopmap";
+    public static final String COMMUNITY_KEY_EQUIP = "equip";
+    public static final String COMMUNITY_KEY_TYPE = "type";
+    public static final String COMMUNITY_KEY_PAGE = "page";
+    public static final String COMMUNITY_KEY_PER = "per";
+    public static final String COMMUNITY_KEY_NEXTPAGE = "isnextpage";
+    public static final String COMMUNITY_KEY_COUNT = "count";
+    public static final String COMMUNITY_KEY_ID = "id";
+    public static final String COMMUNITY_KEY_TITLE = "title";
+    public static final String COMMUNITY_KEY_DATE = "date";
+    public static final String COMMUNITY_KEY_URL = "url";
+    public static final String COMMUNITY_KEY_YEAR = "year";
+    public static final String COMMUNITY_KEY_MONTH = "month";
+    public static final String COMMUNITY_KEY_DAY = "day";
+    public static final String COMMUNITY_KEY_HOUR = "hour";
+    public static final String COMMUNITY_KEY_MIN = "min";
+    public static final String COMMUNITY_KEY_SEC = "sec";
+    public static final String COMMUNITY_KEY_ITEM = "item";
+    public static final String COMMUNITY_KEY_VALUE = "value";
+    public static final String COMMUNITY_KEY_DONGHO = "dongho";
+    public static final String COMMUNITY_KEY_CONTENT = "content";
+    public static final String COMMUNITY_KEY_LOGIN = "login";
+    public static final String COMMUNITY_KEY_CALLTYPE = "calltype";
+    public static final String COMMUNITY_KEY_IP = "ip";
+
+    public static final String COMMUNITY_KEY_LOCKID = "lockid";
+    public static final String COMMUNITY_KEY_LOWBATTERY = "lowbattery";
+    public static final String COMMUNITY_KEY_LOCKCODE = "lockcode";
+
+    public static final String COMMUNITY_KEY_HIJACK = "hijack";
+
+    public static final String COMMUNITY_VALUE_EQUIP_WM = "WM";
+    public static final String COMMUNITY_VALUE_EQUIP_GM1 = "GM1";
+    public static final String COMMUNITY_VALUE_EQUIP_GM2 = "GM2";
+    public static final String COMMUNITY_VALUE_EQUIP_GM3 = "GM3";
+
+    public static final String COMMUNITY_VALUE_TYPE_REMOTE = "remote";
+    public static final String COMMUNITY_VALUE_TYPE_MANAGEMENT = "management";
+    public static final String COMMUNITY_VALUE_TYPE_ALL = "all";
+    public static final String COMMUNITY_VALUE_TYPE_INDIVIDUAL = "individual";
     // scenario
     public static final String JSON_SCENARIO_ACTION_KEY = "action";
     public static final String JSON_ARM_KEY = "arm";
@@ -567,6 +574,8 @@ public class CommonData {
     public static final String KEY_CURRENT_SCENARIO_ID = "currentscenarioid";
     public static final String KEY_CARD_ACTION = "card_action";//str
 
+
+    public static final String DEFAULT_SUBPHONE_REGISTERPWD = "1111";
 
     public static final int VOLUME_VALUE_DEFAULT = 15;
 
@@ -676,6 +685,7 @@ public class CommonData {
     public static final String JSON_CONFIGDATA_CATEGORY_KEY = "category";
     public static final String JSON_CONFIGDATA_CATEGORY_PRIVATE = "privateconfig";
     public static final String JSON_CONFIGDATA_CATEGORY_PUBLIC = "publicconfig";
+    public static final String JSON_CONFIGDATA_CATEGORY_SYSSETTINGS = "systemsettings";
 
     public static final String JSON_CONFIGDATA_CONFIGNAME_KEY = "configname";
     public static final String JSON_CONFIGDATA_CONFIGNAME_DEFAULT = "default";
@@ -715,11 +725,8 @@ public class CommonData {
     public static final int IPDC_BACKDOOR = 2002;
 
 
-    public static final String ETHERNET_IP = "ethernetip";
-    public static final String ETHERNET_NETMASK = "ethernetnetmask";
-    public static final String ETHERNET_GATEWAY = "ethernetgateway";
     public static final int MAX_SUPPORT_DB_ALARM_COUNT = 100;
-    public  static  final  String LOOP_IP = "127.0.0.1";
+    public static final String LOOP_IP = "127.0.0.1";
 
     public static final String JSON_MESSAGETYPE = "messageType";
     public static final String JSON_MESSAGEID = "messageId";
@@ -731,9 +738,13 @@ public class CommonData {
     public static final String JSON_CALL = "call";
     public static final String JSON_FLAGS = "flags";
     public static final String JSON_NEED_RESPONSE = "needResponse";
+    public static final String JSON_KEY_COMMANDS = "commands";
 
-    public  static  final  String DEFAULT_SUBPHONE_REGISTERPWD = "1111";
 
+
+    public static final String ETHERNET_IP = "ethernetip";
+    public static final String ETHERNET_NETMASK = "ethernetnetmask";
+    public static final String ETHERNET_GATEWAY = "ethernetgateway";
 
 
     public static String file_() {
