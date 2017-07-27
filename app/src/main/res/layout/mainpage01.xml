@@ -7,25 +7,26 @@
 
               android:orientation="horizontal">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/arm_status_noevent"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="3"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_weight="3">
 
         <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/goodwhat_noevent"
             style="@style/goodwhat"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
+            android:layout_alignLeft="@+id/arm_hint_noevent"
             android:text="@string/goodmoring"
             android:textColor="@android:color/black"
-            app:textStyle="HONEYWELL_FONTS_MEDIUM"
-            android:textSize="40sp" />
+            android:textSize="40sp"
+            android:textStyle="bold"
+            app:textStyle="HONEYWELL_FONTS_MEDIUM" />
 
         <com.honeywell.homepanel.ui.widget.HoneywellTextView
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/goodwhat_noevent"
             android:id="@+id/arm_hint_noevent"
             android:textColor="@android:color/black"
             android:layout_width="@dimen/left_event_width"
@@ -37,30 +38,21 @@
             app:textStyle="HONEYWELL_FONTS_MEDIUM"
             android:text="@string/disarmhint"
             android:textSize="20sp" />
-    </LinearLayout>
+    </RelativeLayout>
 
 
-    <LinearLayout
+    <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/arm_status_hasevent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
-        android:layout_gravity="center_horizontal"
-        android:orientation="vertical">
+        android:layout_gravity="center_horizontal">
 
         <com.honeywell.homepanel.ui.widget.HoneywellTextView
-            android:id="@+id/goodwhat_hasevent"
-            android:layout_marginTop="50dp"
-            style="@style/goodwhat"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/goodafternoon"
-            app:textStyle="HONEYWELL_FONTS_MEDIUM"
-            android:textSize="40sp" />
-
-        <com.honeywell.homepanel.ui.widget.HoneywellTextView
+            android:layout_centerHorizontal="true"
             android:id="@+id/arm_hint_hasevent"
+            android:layout_below="@+id/goodwhat_hasevent"
             android:layout_width="@dimen/left_event_width"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
@@ -71,8 +63,21 @@
             app:textStyle="HONEYWELL_FONTS_MEDIUM"
             android:text="@string/disarmhint"
             android:textSize="25sp" />
+        <com.honeywell.homepanel.ui.widget.HoneywellTextView
+            android:layout_alignLeft="@+id/arm_hint_hasevent"
+            android:id="@+id/goodwhat_hasevent"
+            android:layout_marginTop="50dp"
+            style="@style/goodwhat"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/goodafternoon"
+            app:textStyle="HONEYWELL_FONTS_MEDIUM"
+            android:textSize="40sp" />
 
         <ListView
+            android:layout_alignLeft="@+id/goodwhat_hasevent"
+            android:layout_below="@+id/arm_hint_hasevent"
             android:layout_marginTop="60dp"
             android:layout_gravity="center_horizontal"
             android:id="@+id/event_listview"
@@ -81,7 +86,7 @@
             android:layout_height="wrap_content"
             android:fastScrollEnabled="false" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <LinearLayout
@@ -97,7 +102,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:gravity="center"
             android:orientation="vertical">

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.utils.CommonUtils;
@@ -151,6 +152,9 @@ public class SpeedDialManager {
         }
         jsonObject.put(CommonJson.JSON_LOOPMAP_KEY,loopMapArray);
         jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
+
+        //LogMgr.e("jsonObject-->jsonObject:"+jsonObject);
+
     }
 
     private void loopToJson(JSONObject loopMapObject, SpeedDial loop) throws JSONException {

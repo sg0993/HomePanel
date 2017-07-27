@@ -10,7 +10,6 @@ import com.honeywell.homepanel.IAvRtpService;
 import com.honeywell.homepanel.common.CommonPath;
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.AudioVideoUtil.AVIUtil;
-import com.honeywell.homepanel.ui.AudioVideoUtil.AudioProcess;
 import com.honeywell.homepanel.ui.AudioVideoUtil.AudioProcessWithEC;
 import com.honeywell.homepanel.ui.AudioVideoUtil.CallRecordReadyEvent;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VStreamBuffer;
@@ -69,11 +68,11 @@ public class CallBaseFragment extends Fragment {
         mAudioProcess.setUuid(CommonUtils.generateCommonEventUuid());
     }
 
-    public void startAudio(){
+    public void startAudio(double volumeMultiple){
         Log.d(TAG, "startAudio: mBAudioGet:"+mBAudioGet+",,1111111");
         if (null != mAudioProcess && !mBAudioGet) {
             try {
-                mAudioProcess.startPhoneRecordAndPlay();
+                mAudioProcess.startPhoneRecordAndPlay(volumeMultiple);
                 startAudioGet();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -139,9 +138,10 @@ public class CallBaseFragment extends Fragment {
                         continue;
                     }
                     if(mBVideoGet) {
+                        Log.d(TAG, "GetThread: video"+",,111111111111111111111");
                         byte[] data = mIAvrtpService.getVideoFrame();
                         if (null != data) {
-                            Log.d(TAG, "GetThread: 111111111111111111111");
+                            Log.d(TAG, "GetThread: video"+",,22222222");
                             getVideoInfo();
                             mVideoPlayQueue.offer(new VStreamBuffer(data));
                             if(mBRecord){
@@ -155,7 +155,9 @@ public class CallBaseFragment extends Fragment {
                         byte[] data = null;
                         AudioPacketWithEC eachFrame = null;
                         if (null != mIAvrtpService) {
+                            Log.d(TAG, "GetThread: audio"+",,333333333");
                             eachFrame = mIAvrtpService.getAudioFrameWithEC();
+                            Log.d(TAG, "GetThread: audio"+",,4444444444444");
                             if (null != eachFrame) {
                                 data = eachFrame.audioFrame;
                                 Log.d(TAG, "run: get package with seq " + eachFrame.audioFrameSeq);
@@ -169,7 +171,6 @@ public class CallBaseFragment extends Fragment {
                             //mAudioProcess.mPlayQueue.offer(data);
                             mAudioProcess.mPlayQueue.offer(eachFrame);
                             if(mBRecord){
-                               // mAudioRecordQueue.offer(ByteBuffer.wrap(data.audioFrame));
                                 mAudioRecordQueue.offer(ByteBuffer.wrap(data));
                             }
                         }
@@ -185,12 +186,12 @@ public class CallBaseFragment extends Fragment {
         }
     }
     public void startVideoGet(){
-        Log.d(TAG, "startVideoGet: 111111111");
+        //Log.d(TAG, "startVideoGet: 111111111");
         mBVideoGet = true;
         startGetThread();
     }
     private void startGetThread(){
-        Log.d(TAG, "startGetThread: 11111111");
+        //Log.d(TAG, "startGetThread: 11111111");
         mRunning = true;
         if(null == mGetThread){
             mGetThread = new GetThread();
@@ -397,11 +398,13 @@ public class CallBaseFragment extends Fragment {
 
 
     public void stopPlayRing(){
+        Log.i(TAG, "stopPlayRing: ");
         RingFileProcess.getInstance().stopPlayRing();
     }
 
 
     public void startPlayRing(String ringpath) {
+        Log.i(TAG, "startPlayRing: ");
         RingFileProcess.getInstance().startPlayRing(getActivity(),ringpath,0);
 
     }

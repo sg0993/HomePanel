@@ -54,10 +54,55 @@ public class CalRightBrusher {
 
     private void setRes() {
         //top_btn.setBackgroundResource(top_btn_back);
-         top_imageview.setBackgroundResource(top_image);
+        top_imageview.setBackgroundResource(top_image);
        /* middle_btn.setBackgroundResource(middle_btn_back);
         middle_imageview.setBackgroundResource(middle_image);*/
 //        bottom_btn.setBackgroundResource(bottom_btn_back);
         bottom_imageview.setBackgroundResource(bottom_image);
+    }
+
+
+    public void setResBg(int top, int bottom) {
+        //top_btn.setBackgroundResource(top_btn_back);
+        top_imageview.setBackgroundResource(top);
+       /* middle_btn.setBackgroundResource(middle_btn_back);
+        middle_imageview.setBackgroundResource(middle_image);*/
+//        bottom_btn.setBackgroundResource(bottom_btn_back);
+        bottom_imageview.setBackgroundResource(bottom);
+    }
+
+    public void setRightButtonGONE() {
+        if (top_imageview != null) {
+            top_imageview.setVisibility(View.GONE);
+        }
+        if (bottom_imageview != null) {
+            bottom_imageview.setVisibility(View.GONE);
+        }
+
+        if (top_btn != null) {
+            top_btn.setVisibility(View.GONE);
+        }
+
+        if (bottom_btn != null) {
+            bottom_btn.setVisibility(View.GONE);
+        }
+    }
+
+
+    public void setRightButtonVISIBLE() {
+        if (top_imageview != null) {
+            top_imageview.setVisibility(View.VISIBLE);
+        }
+        if (bottom_imageview != null) {
+            bottom_imageview.setVisibility(View.VISIBLE);
+        }
+
+        if (top_btn != null) {
+            top_btn.setVisibility(View.VISIBLE);
+        }
+
+        if (bottom_btn != null) {
+            bottom_btn.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.honeywell.homepanel.ui.AudioVideoUtil;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -17,7 +16,6 @@ import com.honeywell.homepanel.common.CommonPath;
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,7 +42,7 @@ public class AudioProcess implements Runnable {
     private int mPlayBufferSize = 0;
     private Thread mPlayThread = null, mRecordThread = null;
     private Thread mRecordFromFileThread = null;
-    private static final int MAX_QUEUE_SIZE = 200;
+    private static final int MAX_QUEUE_SIZE = 500;
     public BlockingQueue<byte[]> mPlayQueue = new LinkedBlockingQueue<byte[]>(MAX_QUEUE_SIZE);
     private String mP2PUUID = null;
     private Context mContext = null;
@@ -222,7 +220,7 @@ public class AudioProcess implements Runnable {
         mAudioRecord.startRecording();
 
         int restLength = 0;
-
+        Log.d(TAG, "startPhoneMicRecord: 44444444444444444444444444");
         while ((!Thread.interrupted()) && !mStoped) {
             if (mStoped) {
                 break;
@@ -431,13 +429,19 @@ public class AudioProcess implements Runnable {
         int numBytesRead = 0;
         byte[] gsmdata;
         //开始
+        Log.d(TAG, "startPhoneSpkPlay: 111111111111111111111111111111111");
         mAudioTrack.play();
         DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(audioFile)));
+        int i = 0;
         try {
             while ((!Thread.interrupted()) && !mStoped) {
                 if (mStoped) {
                     break;
                 }
+                if (i % 10 == 0) {
+                    Log.d(TAG, "startPhoneSpkPlay: play queue size " + mPlayQueue.size());
+                }
+                ++i;
                 try {
                     gsmdata = mPlayQueue.poll(QUEUEPOLLTMOUT, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) {
@@ -460,7 +464,7 @@ public class AudioProcess implements Runnable {
                     }
                 }*/
                 if(null != gsmdata && gsmdata.length > 0){
-                    //Log.d(TAG, "startPhoneSpkPlay: gsmdata.length::::"+gsmdata.length+",,,,22222");
+                    Log.d(TAG, "startPhoneSpkPlay: gsmdata.length::::"+gsmdata.length+",,,,22222");
                     dos.write(gsmdata, 0, gsmdata.length);
                     mAudioTrack.write(gsmdata, 0, gsmdata.length);//往track中写数据
                 }

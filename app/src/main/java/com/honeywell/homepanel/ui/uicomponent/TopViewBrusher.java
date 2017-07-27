@@ -131,11 +131,11 @@ public class TopViewBrusher {
 
         updateWeather();
         updateConnectionStatus();
+        updateArmStatus(topStatus);
 
-        mArmTv.setText(topStatus.getArmStatus());
         mTimeTv.setText(getCurrentTimeString());
-        Log.d(TAG, "setTop: getCurrentTimeString():" + getCurrentTimeString());
-        setTopViewBackground(topStatus.getCurScenario());
+        Log.d(TAG, "setTop:" + getCurrentTimeString());
+//        setTopViewBackground(topStatus.getCurScenario());
     }
 
     private void updateWeather() {
@@ -182,10 +182,21 @@ public class TopViewBrusher {
 
         updateWeather();
         updateConnectionStatus();
+        updateArmStatus(topStatus);
 
-        mArmTv.setText(topStatus.getArmStatus());
         mTimeTv.setText(getCurrentTimeString());
-        setTopViewBackground(topStatus.getCurScenario());
+
+    }
+
+    private void updateArmStatus(TopStaus ts) {
+        if (ts == null) return;
+
+        mArmTv.setText(ts.getArmStatus());
+        if (ts.getArmStatus().equals(CommonData.ARMSTATUS_DISARM)) {
+            mTopView.setBackgroundColor(mContext.getResources().getColor(R.color.topbackground_disarm));
+        } else if (ts.getArmStatus().equals(CommonData.ARMSTATUS_ARM)){
+            mTopView.setBackgroundColor(mContext.getResources().getColor(R.color.topbackground_arm));
+        }
     }
 
     private void updateConnectionStatus() {
@@ -280,7 +291,7 @@ public class TopViewBrusher {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(NetworkMsg msg) {
-        Log.d(TAG, TAG+ ",OnMessageEvent: NetworkMsg:"+msg.toString()+",,,11111111");
+        Log.d(TAG, "OnMessageEvent:"+msg.toString());
         if (msg.isWifiUpdated()) {
             if (msg.getWifiStatus() == 1) {
                 TopStaus.getInstance(mCurrentActivity).setWifiStatus(CommonData.CONNECTED);
@@ -288,8 +299,14 @@ public class TopViewBrusher {
                 TopStaus.getInstance(mCurrentActivity).setWifiStatus(CommonData.DISCONNECT);
             }
         }
-        if (msg.isCloudBoundupdated()) {
+        if (msg.isCloudBoundUpdated()) {
             TopStaus.getInstance(mCurrentActivity).setCloudBoundStatus(msg.isCloudBoundStatus());
+        }
+
+        if (msg.isEthUpdated()) {
+            if (msg.getEthernetStatus() == 0) {//ethernet offline event
+                TopStaus.getInstance(mCurrentActivity).updateEthernetStatus(CommonData.DISCONNECT);
+            }
         }
 
         setTop(mCurrentActivity);
@@ -297,7 +314,6 @@ public class TopViewBrusher {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(TopViewBrushEvent eve) {
-        Log.d(TAG, "TopViewBrushEvent: 111111111111111111111");
         setTop(mCurrentActivity);
     }
 }

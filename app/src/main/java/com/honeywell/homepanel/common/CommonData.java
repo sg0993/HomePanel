@@ -122,7 +122,7 @@ public class CommonData {
     public static final String CALL_PHONE_SUB8 = "8";
     public static final String CALL_PHONE_Cloud = "cloudphone";
 
-    public static final int CALL_CHANNEL_MAX = 10;// 1 Mainphone, 8 Subphone, 1 Cloud
+    public static final int CALL_CHANNEL_MAX = 12;// 1 Mainphone, 8 Subphone, 1 Cloud  2,ipdc
 
     public static final int CALL_STATE_UNREGISTER = 0;// First State must be zero!!! same as STATE_ANY which defined at StateHandler.java
     public static final int CALL_STATE_IDLE = 1;
@@ -146,6 +146,10 @@ public class CommonData {
     public static final String ACTION_SUBPHONE_SERVICE = "com.honeywell.homepanel.subphoneuiservice.SubPhoneUIService";
     public static final String ACTION_CONFIG_SERVICE = "com.honeywell.homepanel.configcenter.ConfigService";
     public static final String ACTION_AVRTP_SERVICE = "com.honeywell.homepanel.avrtp.AvRtp";
+    public static final String ACTION_SUBUPGRADE_SERVICE = "com.honeywell.homepanel.upgrade.subupgrader.SubupgraderService";
+    public static final String ACTION_WIDGET_SERVICE = "com.honeywell.homepanel.ui.services.WidgetInfoService";
+
+    public static final String ACTION_SYSTEMTIME_CHANGED = "android.intent.action.TIME_SET";
 
     public static final String WIFIMODULE_DEFAULT_VERSION = "0.0.1";
 
@@ -499,6 +503,7 @@ public class CommonData {
     public static final int MAX_NOTIFICATION_BULLTIN_COUNT = 1000;
     public static final int MAX_ALARM_COUNT = 1000;
     public static final int MAX_EVENT_COUNT = 1000;
+    public static final int MAX_DEVICE_COUNT_ALARM = 4; //only 4 devices are supported
 
 
     /**
@@ -572,6 +577,7 @@ public class CommonData {
     public static final String KEY_VOLUME_INNER = "volume_inner";
     public static final String KEY_VOLUME_IPDC = "volume_ipdc";
     public static final String KEY_CURRENT_SCENARIO_ID = "currentscenarioid";
+    public static final String KEY_CURRENT_SYS_ARMSTATE = "currsysarmstate";
     public static final String KEY_CARD_ACTION = "card_action";//str
 
 
@@ -681,6 +687,7 @@ public class CommonData {
 
 
     public static final String INTENT_ACTION_SCENE_CHANGED = "com.honeywell.homepanel.broadcast.scene.changed";
+    public static final String INTENT_NOTIFY_ACTIVITY_TIMEOUT = "com.honeywell.lock.NOTIFY_ACTIVITY_TIMEOUT";
 
     public static final String JSON_CONFIGDATA_CATEGORY_KEY = "category";
     public static final String JSON_CONFIGDATA_CATEGORY_PRIVATE = "privateconfig";
@@ -709,7 +716,7 @@ public class CommonData {
 
     public static final int CALL_HISTORY_MAX_COUNT = 32;
 
-    public static final String DEFAULT_ENGINEER_PWD = "085213";
+    public static final String DEFAULT_ENGINEER_PWD = "-085213";
 
     public static final int DEFAULT_IPC_COUNT = 11;
 
@@ -730,21 +737,44 @@ public class CommonData {
 
     public static final String JSON_MESSAGETYPE = "messageType";
     public static final String JSON_MESSAGEID = "messageId";
-    public static final String JSON_CALLER = "caller";
+    public static final String JSON_CALLERTYPE = "callerType";
     public static final String JSON_DATA = "data";
+    public static final String JSON_CALLERDATA = "callerData";
     public static final String JSON_TYPE = "type";
-    public static final String JSON_ENCRYPTKEY = "encryptKey";
+    public static final String JSON_CRYPTOKEY_CLOUD = "cryptoKey";
     public static final String JSON_SESSIONID = "sessionId";
-    public static final String JSON_CALL = "call";
+    public static final String JSON_VIDEO_CALL = "videoCall";
     public static final String JSON_FLAGS = "flags";
     public static final String JSON_NEED_RESPONSE = "needResponse";
     public static final String JSON_KEY_COMMANDS = "commands";
 
+    public static final String JSON_DEVICEID_CLOUD = "deviceId";
+    public static final String JSON_CLIENDUUID_CLOUD = "clientUuid";
+    public static final String JSON_TIMESTAMP_CLOUD = "timestamp";
+    public static final String JSON_SESSIONKEY_CLOUD = "sessionKey";
+    public static final String JSON_SECRET_CLOUD = "secret";
 
+
+    public static final String JSON_SUBACTION_CALLIN_CLOUD = "callIn";
+    public static final String JSON_SUBACTION_PICKUPCALL_CLOUD = "pickUpCall";
+    public static final String JSON_SUBACTION_OPENDOOR_CLOUD = "openDoor";
+    public static final String JSON_SUBACTION_ENDCALL_CLOUD = "endCall";
+    public static final String JSON_SUBACTION_CALLENDED_CLOUD = "callEnded";
+
+    public static final String JSON_SUBACTION_CALL_PICKEDUP_CLOUD = "callPickedUp";
 
     public static final String ETHERNET_IP = "ethernetip";
     public static final String ETHERNET_NETMASK = "ethernetnetmask";
     public static final String ETHERNET_GATEWAY = "ethernetgateway";
+	public static final String SCREENSAVER_QUIT = "screensaverquit";   
+	 public static final int APP_MSG_DEFAULT = 0;
+    public static final int APP_MSG_VIDEO = 1;
+    public static final int APP_MSG_VIDEO_CRYPT = 2;
+    public static final int APP_MSG_AUDIO = 3;
+    public static final int APP_MSG_AUDIO_CRYPT = 4;
+    public static final int CALLIN_TIMEOUT = 60;// should change to 30 seconds
+
+    public static final String ARMED_STATUS = "0";// 0: system disarmed 1:system armed
 
 
     public static String file_() {

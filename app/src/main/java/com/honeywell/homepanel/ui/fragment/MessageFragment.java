@@ -28,6 +28,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ import java.util.UUID;
  * Created by H135901 on 1/25/2017.
  */
 @SuppressLint("ValidFragment")
-public class MessageFragment extends Fragment implements View.OnClickListener, NotificationBridge{
+public class MessageFragment extends Fragment implements View.OnClickListener, NotificationBridge {
     private Button mNaviEvent;
     private Button mNaviAlarm;
     private Button mNaviNotification;
@@ -62,13 +63,14 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     String title_notify = null;
     String title_voice = null;
 
-    private  View mTopNavigationView = null;
+    private View mTopNavigationView = null;
 
     public static Map<String, Integer> unreadCountMap;
 
     public static Integer getUnreadCount(String type) {
         return unreadCountMap.get(type);
     }
+
 
     public static void setUnreadCount(String type, Integer count) {
         unreadCountMap.put(type, count);
@@ -84,17 +86,18 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         }
     }
 
+
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_message, null);
         initData();
         initView(view);
         initEvents();
-        if(MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_MAIN){
-            setSelect(true,MainActivity.mMessageFragPage);
+        if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_MAIN) {
+            setSelect(true, MainActivity.mMessageFragPage);
             MainActivity.mMessageFragPage = CommonData.MESSAGE_SELECT_EVENT;
-        }
-        else{
-            setSelect(true,CommonData.MESSAGE_SELECT_ALARMHITORY);
+        } else {
+            setSelect(true, CommonData.MESSAGE_SELECT_ALARMHITORY);
         }
         NotificationStatisticInfo temp = NotificationStatisticInfo.getInstance();
         updateTitle(1, String.valueOf(temp.getEventUnreadCnt()));
@@ -113,7 +116,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         title_event = getResources().getString(R.string.notification_title_event);
         title_alarm = getResources().getString(R.string.notification_title_alarm);
         title_notify = getResources().getString(R.string.notification_title_notify);
-        title_voice =  getResources().getString(R.string.notification_title_voice);
+        title_voice = getResources().getString(R.string.notification_title_voice);
         UIMessagesNotification.UIGetVoiceMsgListMessageReq dataReq = new UIMessagesNotification.UIGetVoiceMsgListMessageReq();
     }
 
@@ -182,49 +185,49 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     public MessageFragment() {
         super();
     }
-    private void setSelect(boolean bFirst,int i) {
+
+    private void setSelect(boolean bFirst, int i) {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
 
         //hideFragment(transaction);
         setStyleById(i);
         //set img to bright color
-        switch (i)
-        {
+        switch (i) {
             case CommonData.MESSAGE_SELECT_EVENT:
                 if (mTabFragEvent == null || bFirst) {
                     mTabFragEvent = new FragmentEvent();
                     mTabFragEvent.setUpdateTitleCB(this);
                     transaction.replace(R.id.id_msg_body, mTabFragEvent);
                 } else {
-                    transaction.replace(R.id.id_msg_body,mTabFragEvent);
+                    transaction.replace(R.id.id_msg_body, mTabFragEvent);
                 }
                 break;
             case CommonData.MESSAGE_SELECT_ALARMHITORY:
-                if (mTabFragAlarm == null|| bFirst) {
+                if (mTabFragAlarm == null || bFirst) {
                     mTabFragAlarm = new FragmentAlarm();
                     mTabFragAlarm.setUpdateTitleCB(this);
                     transaction.replace(R.id.id_msg_body, mTabFragAlarm);
                 } else {
-                    transaction.replace(R.id.id_msg_body,mTabFragAlarm);
+                    transaction.replace(R.id.id_msg_body, mTabFragAlarm);
                 }
                 break;
             case CommonData.MESSAGE_SELECT_NOTIFICATION:
-                if (mTabFragNotify == null|| bFirst) {
+                if (mTabFragNotify == null || bFirst) {
                     mTabFragNotify = new FragmentNofity();
                     mTabFragNotify.setUpdateTitleCB(this);
                     transaction.replace(R.id.id_msg_body, mTabFragNotify);
                 } else {
-                    transaction.replace(R.id.id_msg_body,mTabFragNotify);
+                    transaction.replace(R.id.id_msg_body, mTabFragNotify);
                 }
                 break;
             case CommonData.MESSAGE_SELECT_VOICEMESSAGE:
-                if (mTabFragVoice == null|| bFirst) {
+                if (mTabFragVoice == null || bFirst) {
                     mTabFragVoice = new FragmentVoice();
                     mTabFragVoice.setUpdateTitleCB(this);
                     transaction.replace(R.id.id_msg_body, mTabFragVoice);
                 } else {
-                    transaction.replace(R.id.id_msg_body,mTabFragVoice);
+                    transaction.replace(R.id.id_msg_body, mTabFragVoice);
                 }
                 break;
         }
@@ -232,7 +235,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     }
 
     private void initEvents() {
-        if(MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB){
+        if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
             return;
         }
         mNaviEvent.setOnClickListener(this);
@@ -242,24 +245,23 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     }
 
     private void initView(View view) {
-        mNaviEvent = (Button)view.findViewById(R.id.msg_navi_event);
-        mNaviAlarm = (Button)view.findViewById(R.id.msg_navi_alarm);
-        mNaviNotification = (Button)view.findViewById(R.id.msg_navi_notify);
-        mNaviVoice = (Button)view.findViewById(R.id.msg_navi_voice);
+        mNaviEvent = (Button) view.findViewById(R.id.msg_navi_event);
+        mNaviAlarm = (Button) view.findViewById(R.id.msg_navi_alarm);
+        mNaviNotification = (Button) view.findViewById(R.id.msg_navi_notify);
+        mNaviVoice = (Button) view.findViewById(R.id.msg_navi_voice);
 
-        mEventUnderline = (View)view.findViewById(R.id.event_underline);
-        mAlarmUnderline = (View)view.findViewById(R.id.alarm_underline);
-        mNotificationUnderline = (View)view.findViewById(R.id.notify_underline);
-        mVoiceUnderline = (View)view.findViewById(R.id.voice_underline);
+        mEventUnderline = (View) view.findViewById(R.id.event_underline);
+        mAlarmUnderline = (View) view.findViewById(R.id.alarm_underline);
+        mNotificationUnderline = (View) view.findViewById(R.id.notify_underline);
+        mVoiceUnderline = (View) view.findViewById(R.id.voice_underline);
 
         mTopNavigationView = view.findViewById(R.id.topnavigation);
-        if(MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_MAIN){
+        if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_MAIN) {
             mEventUnderline.setVisibility(View.VISIBLE);
             mAlarmUnderline.setVisibility(View.INVISIBLE);
             mNotificationUnderline.setVisibility(View.INVISIBLE);
             mVoiceUnderline.setVisibility(View.INVISIBLE);
-        }
-        else{
+        } else {
             mNaviEvent.setVisibility(View.GONE);
             mNaviAlarm.setVisibility(View.GONE);
             mNaviNotification.setVisibility(View.GONE);
@@ -279,28 +281,27 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
 
     @Override
     public void onClick(View view) {
-        if(MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB){
+        if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
             return;
         }
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.msg_navi_event:
-                setSelect(false,CommonData.MESSAGE_SELECT_EVENT);
+                setSelect(false, CommonData.MESSAGE_SELECT_EVENT);
                 break;
             case R.id.msg_navi_alarm:
-                setSelect(false,CommonData.MESSAGE_SELECT_ALARMHITORY);
+                setSelect(false, CommonData.MESSAGE_SELECT_ALARMHITORY);
                 break;
             case R.id.msg_navi_notify:
-                setSelect(false,CommonData.MESSAGE_SELECT_NOTIFICATION);
+                setSelect(false, CommonData.MESSAGE_SELECT_NOTIFICATION);
                 break;
             case R.id.msg_navi_voice:
-                setSelect(false,CommonData.MESSAGE_SELECT_VOICEMESSAGE);
+                setSelect(false, CommonData.MESSAGE_SELECT_VOICEMESSAGE);
                 break;
         }
     }
 
     private void setStyleById(int id) {
-        switch (id)
-        {
+        switch (id) {
             case CommonData.MESSAGE_SELECT_EVENT:
                 mNaviEvent.setTextColor(Color.parseColor(CommonData.COLOR_DARKGREY));
                 mNaviAlarm.setTextColor(Color.parseColor(NORMAL_GREY));
@@ -368,12 +369,12 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
         String subaction = msg.optString(CommonJson.JSON_SUBACTION_KEY, "");
         String msgid = msg.optString(CommonJson.JSON_MSGID_KEY, "");
-        Log.d(TAG, "OnMessageEvent: msg:"+msg.toString()+",,1111111111111111111111");
+        Log.d(TAG, "OnMessageEvent: msg:" + msg.toString() + ",,1111111111111111111111");
         if (msgid == "" || action == "" || subaction == "") {
             return;
         }
 
-        if ( (action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
+        if ((action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
                 && subaction.equals(CommonJson.JSON_SUBACTION_VALUE_EVENTCOUNTGET))) {
             String errorcode = msg.optString(CommonJson.JSON_ERRORCODE_KEY, "");
             String datastatus = msg.optString(CommonData.JSON_KEY_DATASTATUS, "");
@@ -381,12 +382,13 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
                 setUnreadCount(CommonData.FRAGMENT_EVENT, Integer.valueOf(count));
             }*/
-            if ((errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
+            if ((errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD))) {
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
                 mNaviEvent.setText(title_event + "(" + count + ")");
             }
         }
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(UIMessagesNotification.UIGetAlarmListMessageReq msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
@@ -397,11 +399,11 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
             return;
         }
 
-        if ( (action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
+        if ((action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
                 && subaction.equals(CommonJson.JSON_SUBACTION_VALUE_ALARMCOUNTGET))) {
             String errorcode = msg.optString(CommonJson.JSON_ERRORCODE_KEY, "");
             String datastatus = msg.optString(CommonData.DATASTATUS_UNREAD, "");
-            if ( (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
+            if ((errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD))) {
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
                 setUnreadCount(CommonData.FRAGMENT_ALARM, Integer.valueOf(count));
             }
@@ -420,11 +422,11 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
             return;
         }
 
-        if ( (action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
+        if ((action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
                 && subaction.equals(CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONCOUNTGET))) {
             String errorcode = msg.optString(CommonJson.JSON_ERRORCODE_KEY, "");
             String datastatus = msg.optString(CommonData.DATASTATUS_UNREAD, "");
-            if ( (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
+            if ((errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD))) {
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
                 setUnreadCount(CommonData.FRAGMENT_NOTIFICATION, Integer.valueOf(count));
             }
@@ -443,11 +445,11 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
             return;
         }
 
-        if ( (action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
+        if ((action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)
                 && subaction.equals(CommonJson.JSON_SUBACTION_VALUE_VOICEMSGCOUNTGET))) {
             String errorcode = msg.optString(CommonJson.JSON_ERRORCODE_KEY, "");
             String datastatus = msg.optString(CommonData.DATASTATUS_UNREAD, "");
-            if ( (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD)) ) {
+            if ((errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD))) {
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
                 setUnreadCount(CommonData.FRAGMENT_VOICEMSG, Integer.valueOf(count));
             }

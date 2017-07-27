@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,9 +13,11 @@ import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.Utils.WaveViewUtil;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
@@ -38,8 +41,16 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static com.honeywell.homepanel.R.id.left_tv;
+import static com.honeywell.homepanel.R.id.right_tv;
 import static com.honeywell.homepanel.common.CommonData.CALL_LOBBY_CONNECTED;
+import static com.honeywell.homepanel.common.CommonData.LOCAL_ZONE_TYPE;
+import static org.bouncycastle.asn1.x509.X509Name.T;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -51,13 +62,10 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
     private static final String TAG = "CallLobby";
 
     private Context mContext = null;
-    private CallBottomBrusher mCallBottomBrusher = new CallBottomBrusher
-            (this, R.mipmap.call_incoming_background, R.mipmap.call_incoming_call, "Answer",
-                    R.mipmap.call_red_background, R.mipmap.call_end_image, "End",
-                    R.mipmap.call_blue_background, R.mipmap.call_dooropen, "Open");
+    private CallBottomBrusher mCallBottomBrusher = null;
     private CalRightBrusher mCallRightBrusher = new CalRightBrusher(
-            this, R.mipmap.call_right_background, R.mipmap.call_microphone,
-            R.mipmap.call_right_background, R.mipmap.call_speaker);
+            this, R.mipmap.call_right_background, R.mipmap.speaker_white,
+            R.mipmap.call_right_background, R.mipmap.volume_white);
 
     private CallTopBrusher mCallTopBrusher = new CallTopBrusher(
             "Incomming call.", "Lobby"
@@ -72,22 +80,44 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
     private final Handler mHandler = new Handler();
     private UIBaseCallInfo callInfo = new UIBaseCallInfo();
 
+    private View mView;
+    private Timer mTimer = null;
+    private long lastTime = 0;
+
+    private void initElapseTimer() {
+        if (mTimer == null) {
+            mTimer = new Timer();
+        }
+        mTimer.schedule(new TimerTask() {
+            public void run() {
+                myHandler.sendEmptyMessage(MSG_SHOW_ELAPSE_TIME);
+            }
+        }, 1000, 1000);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "CallLobbyIncomingAndConnected.onCreate() 11111111");
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+        mCallBottomBrusher = new CallBottomBrusher
+                (this, R.mipmap.call_incoming_background, R.mipmap.call, getString(R.string.answer),
+                        R.mipmap.call_red_background, R.mipmap.call_lift_image, "",
+                        R.mipmap.call_blue_background, R.mipmap.call_end_image, getString(R.string.end));
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "CallLobbyIncomingAndConnected.onCreateView() 11111111");
         mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_neighbor_lobby_incommingconnected, null);
-        initViews(view);
         mCallBottomBrusher.init(view);
-        //mCallBottomBrusher.setVisible(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,View.GONE);
         mCallRightBrusher.init(view);
         mCallTopBrusher.init(view);
+        initViews(view);
+        mCallBottomBrusher.setColor(CallBottomBrusher.BOTTOM_POSTION_LEFT, getResources().getColor(R.color.white));
+        mCallBottomBrusher.setColor(CallBottomBrusher.BOTTOM_POSTION_MIDDLE, getResources().getColor(R.color.white));
+        mCallBottomBrusher.setColor(CallBottomBrusher.BOTTOM_POSTION_RIGHT, getResources().getColor(R.color.white));
+        //mCallBottomBrusher.setVisible(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,View.GONE);
         startPlayRing(RingFileData.CALL_RING_LOBBYPHONE);
         startVideoGet();
         //for photo one bitmap to sdcard
@@ -103,10 +133,14 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         EventBus.getDefault().unregister(this);
         Log.d(TAG, "CallLobbyIncomingAndConnected.onDestroy() 11111111");
         mDecThread.stop();
-        super.onDestroy();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+        mTimer = null;
     }
 
     public CallLobbyIncomingAndConnected(String title) {
@@ -118,9 +152,14 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         super();
     }
 
+
     private void initViews(View view) {
+        mCallTopBrusher.setViewVISIBLE();
+        mCallTopBrusher.setResText(CallTopBrusher.POSITION_TOP, getString(R.string.incommingcall));
+        mCallTopBrusher.setResText(CallTopBrusher.POSITION_BOTTOM, getString(R.string.Lobby));
         mDecoderView = (TextureView) view.findViewById(R.id.texture_view); // mediacodec
         // multimedia
+        mCallBottomBrusher.setVisible(CallBottomBrusher.BOTTOM_POSTION_MIDDLE, View.GONE);
         mDecoderTextureListener = new TextureViewListener();
         mDecoderView.setSurfaceTextureListener(mDecoderTextureListener);
         mDecThread = new VideoDecoderThread(mDecoderTextureListener, mVideoPlayQueue);
@@ -175,6 +214,14 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
                 break;
             case R.id.left_btn:
                 Toast.makeText(mContext, "call_left", Toast.LENGTH_SHORT).show();
+
+                if (TextUtils.equals(mCallBottomBrusher.getLeft_Tv(), getString(R.string.open_door))) {
+                    LogMgr.d("open door");
+                    UISendCallMessage.requestForOpenDoor(MainActivity.CallBaseInfo);
+                    UISendCallMessage.requestForElevatorAuth(MainActivity.CallBaseInfo);
+                    break;
+                }
+
                 if (status == CommonData.CALL_LOBBY_INCOMMING) {
                     status = CALL_LOBBY_CONNECTED;
                     ((CallActivity) getActivity()).setCurFragmentStatus(status);
@@ -182,7 +229,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
                     ((CallActivity) getActivity()).setRingCallVolume();
 //                    switchToLobbyConnected();
 //                    //start audio
-//                    startAudio();
+                    startAudio(1.5);
                 } else {
                     status = CommonData.CALL_LOBBY_INCOMMING;
                     UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
@@ -191,11 +238,16 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
                 }
                 break;
             case R.id.right_btn:
-                int CurStatus = ((CallActivity) getActivity()).getCurFragmentStatus();
-                UISendCallMessage.requestForOpenDoor(MainActivity.CallBaseInfo);
-                //UISendCallMessage.requestForCallElevator(MainActivity.CallBaseInfo);
-                UISendCallMessage.requestForElevatorAuth(MainActivity.CallBaseInfo);
-
+                if (TextUtils.equals(mCallBottomBrusher.getRight_Tv(), getString(R.string.end))) {
+                    stopPlayRing();
+                    UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
+                    getActivity().finish();
+                }
+//                int CurStatus = ((CallActivity) getActivity()).getCurFragmentStatus();
+//                UISendCallMessage.requestForOpenDoor(MainActivity.CallBaseInfo);
+//                //UISendCallMessage.requestForCallElevator(MainActivity.CallBaseInfo);
+//                UISendCallMessage.requestForElevatorAuth(MainActivity.CallBaseInfo);
+                Toast.makeText(mContext, "right_btn", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.top_btn:
                 Toast.makeText(mContext, "bottom_btn", Toast.LENGTH_SHORT).show();
@@ -216,9 +268,13 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         if (getActivity() instanceof CallActivity) {
             //mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_MIDDLE,R.mipmap.call_blue_background,R.mipmap.call_video_image);
             mCallBottomBrusher.setVisible(CallBottomBrusher.BOTTOM_POSTION_MIDDLE, View.GONE);
-            mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_LEFT, R.mipmap.call_red_background, R.mipmap.call_end_image);
-            mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_LEFT, "End");
-            mCallTopBrusher.setResText(CallTopBrusher.POSITION_TOP, "Calling");
+            mCallBottomBrusher.setImageRes(CallBottomBrusher.BOTTOM_POSTION_LEFT, R.color.transparent, R.mipmap.opend_door);
+            mCallBottomBrusher.setTextRes(CallBottomBrusher.BOTTOM_POSTION_LEFT, getString(R.string.open_door));
+//            mCallTopBrusher.setResText(CallTopBrusher.POSITION_TOP, "Calling");
+            mCallTopBrusher.setResText(CallTopBrusher.POSITION_TOP, getString(R.string.Lobby));
+            mCallTopBrusher.setResText(CallTopBrusher.POSITION_BOTTOM, "00:00");
+            lastTime = System.currentTimeMillis();
+            initElapseTimer();
         }
     }
 
@@ -256,7 +312,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
                 String aliasName = msg.optString(CommonJson.JSON_ALIASNAME_KEY, "");
                 System.out.println("SUISTakeCallMessageRsp  uuid,callType,aliasName," + uuid + callType + aliasName);
                 switchToLobbyConnected();
-                startAudio();
+                // startAudio();
             } else {
                 Toast.makeText(getActivity(), "TakeCall failed", Toast.LENGTH_SHORT).show();
                 System.out.println("SUISTakeCallMessageRsp failed");
@@ -314,7 +370,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
     }
 
     private void autoRecordVideoAndAudio() {
-        startAudio();
+        startAudio(1.5);
         startRecord();
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -344,7 +400,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         status = CommonData.CALL_LOBBY_CONNECTED;
         ((CallActivity) getActivity()).setCurFragmentStatus(status);
         switchToLobbyConnected();
-        startAudio();
+        startAudio(1.5);
     }
 
 
@@ -391,5 +447,36 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         }
         return jsonObject;
     }
+
+    private static final int MSG_SHOW_ELAPSE_TIME = 200;
+    private Handler myHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == MSG_SHOW_ELAPSE_TIME) {
+                long nowTime = System.currentTimeMillis();
+                long l = nowTime - lastTime;
+                long hour = (l / (60 * 60 * 1000));
+                long min = ((l / (60 * 1000)) - hour * 60);
+                long s = (l / 1000 - hour * 60 * 60 - min * 60);
+
+                String minString = String.valueOf(min);
+                if (min < 10) {
+                    minString = "0" + min;
+                }
+
+                String sString = String.valueOf(s);
+                if (s < 10) {
+                    sString = "0" + s;
+                }
+                String timeString = minString + ":" + sString;
+//                calltime_tv.setText(timeString);
+//                mCallTopBrusher.setResText(CallTopBrusher.POSITION_BOTTOM, timeString);
+
+                //LogMgr.e("timeString:" + timeString);
+
+                mCallTopBrusher.setResText(CallTopBrusher.POSITION_BOTTOM, timeString);
+            }
+        }
+    };
 
 }

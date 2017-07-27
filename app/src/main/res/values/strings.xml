@@ -25,7 +25,7 @@
     <string name="device_air">Air Purifer</string>
     <string name="device_relay">Relay</string>
     <string name="device_camera">Camera</string>
-    <string name="device_elevator">Elevator</string>
+    <string name="device_elevator">Lift</string>
     <string name="device_lock">Lock</string>
     <string name="device_empty"> </string>
     <string name="devices_cameras_living_room">Living Room</string>
@@ -46,7 +46,7 @@
     <string name="welcomehome">Welcome Home</string>
 
 
-    <string name="call_title_speeddial">Speed dial</string>
+    <string name="call_title_speeddial">Speed Dial</string>
     <string name="call_title_subphone">Subphone</string>
     <string name="call_title_keypad">Keypad</string>
 
@@ -61,6 +61,7 @@
     <string name="newvisitor">You have a new visitor, tap to check.</string>
     <string name="newvoicemsg">You have a new voice message,tap to play.</string>
     <string name="newpropertymsg">You have a new property message,tap to check.</string>
+    <string name="newalarmmsg">You have a new alarm message,tap to check.</string>
 
     <string name="goodmoring">Good morning!</string>
     <string name="goodafternoon">Good afternoon!</string>
@@ -92,11 +93,14 @@
     <string name="lift">Lift</string>
     <string name="audio">Audio</string>
     <string name="video">Video</string>
+    <string name="open_door">Open Door</string>
+    <string name="cancel">Cancel</string>
 
     <string name="engin_top_title">Engineering Mode</string>
     <string name="engin_device_role">Device Role</string>
     <string name="engin_network">Network Setting</string>
     <string name="network_details">Network Details</string>
+    <string name="about">About</string>
     <string name="engin_network_dhcp">Network DHCP</string>
     <string name="engin_serverip">Server IP Setting</string>
     <string name="engin_roomno">Room Number</string>
@@ -144,7 +148,7 @@
     <string name="password">Change Disarm Password</string>
     <string name="digital">Digital Photo Frame</string>
     <string name="title_activity_card_management">CardManagementActivity</string>
-    <string name="add_card">There are no any access card yet,\nyou can tap the \'add button\' to create it first.</string>
+    <string name="add_card">There are no any access card yet,\nyou can tap the \'add button\' to create your first.</string>
     <string name="title_activity_add_card">AddCardActivity</string>
     <string name="card_type">Please select card type you want to create</string>
     <string name="card_permanent">Permanent Card</string>
@@ -159,6 +163,7 @@
     <string name="title_activity_passwd_change">PasswdChangeActivity</string>
     <string name="title_activity_new_passwd">NewPasswdActivity</string>
     <string name="Password">Password</string>
+    <string name="SubPassword">Sub Password</string>
 
     <string name="elevator_top_title">Elevator Setting</string>
     <string name="elevator_ip">IP</string>
@@ -174,14 +179,14 @@
     <string name="change_engineering_code_second_title">Comfirm Code</string>
     <string name="change_engineering_code_second_title_end">Comfirm password</string>
 
-    <string name="extension_zone_top_title">Extension zone</string>
+    <string name="extension_zone_top_title">Extension Zone</string>
     <string name="extension_zone_5804EU">5804EU</string>
     <string name="extension_zone_5800_PIR_AP">5800-PIR-AP</string>
     <string name="extension_zone_5804EU_status">online</string>
     <string name="extension_zone_5800_PIR_AP_status">online</string>
     <string name="title_activity_wifi_connect">WifiConnectActivity</string>
 
-    <string name="relay_top_title">Relay configuration</string>
+    <string name="relay_top_title">Relay Configuration</string>
     <string name="relay_alias">Alias</string>
     <string name="relay_wifi_relay_module">WIFI Relay modules (8)</string>
     <string name="relay_wifi_relay_module2">WIFI Relay modules (4)</string>
@@ -192,7 +197,7 @@
     <string name="IP_subphone_setting_master_phone_ip_address">
         Master Phone IP Address</string>
     <string name="IP_subphone_setting_ip_subphone_id">
-        IPS ubphone ID</string>
+        IP Subphone ID</string>
     <string name="IP_subphone_setting_change_ip_subphone_password">
         Change IP Subphone Password</string>
     <string name="IP_subphone_setting_change_engin_password">
@@ -225,7 +230,7 @@
     <string name="local_zone_alias_value">XXXXXX</string>
     <string name="local_zone_alarm_type">Alarm Type</string>
     <string name="local_zone_alarm_type_value">Fire</string>
-    <string name="local_zone_zone_type">Zone type</string>
+    <string name="local_zone_zone_type">Zone Type</string>
     <string name="local_zone_zone_type_value">Instant</string>
     <string name="local_zone_enable">Enable</string>
     <string name="local_zone_delay_time">Delay time</string>
@@ -245,20 +250,20 @@
     <string name="options_zone_type_24hours">24 hours</string>
     <string name="options_zone_type_delay">Delay</string>
 
-    <string name="options_alarm_type_fire">fire</string>
-    <string name="options_alarm_type_help">help</string>
-    <string name="options_alarm_type_gas">gas</string>
-    <string name="options_alarm_type_emergency">emergency</string>
+    <string name="options_alarm_type_fire">Fire</string>
+    <string name="options_alarm_type_help">Help</string>
+    <string name="options_alarm_type_gas">Gas</string>
+    <string name="options_alarm_type_emergency">Emergency</string>
 
     <string name="options_device_role_master">Master phone</string>
-    <string name="options_device_role_subphone">Sub phone</string>
+    <string name="options_device_role_subphone">Subphone</string>
 
     <string name="relay_cfg_relay">Relay</string>
     <string name="relay_cfg_relay1">Relay 1</string>
     <string name="relay_cfg_relay2">Relay 2</string>
     <string name="relay_delay_time">Relay Delay Time</string>
 
-    <string name="save_to_room_number">Save to room number</string>
+    <string name="save_to_room_number">Save To Room Number</string>
     <string name="type_engineering_code">Type Engineering Code</string>
 
     <string name="local_zone_delay_time_30s">30 seconds</string>
@@ -342,7 +347,8 @@
     <string name="Called_failed">Called failed</string>
     <string name="dong">20-1002</string>
     <string name="Cleaning">Cleaning</string>
-    <string name="clean">Please clean in under 30 seconds</string>
+    <string name="clean">Please cleaning in under 30 seconds</string>
+    <string name="clean_1">Please cleaning in under</string>
     <string name="Alias">Alias</string>
     <string name="alias">Please type this card alias</string>
     <string name="access_card">Access Card ID</string>
@@ -386,6 +392,7 @@
     <string name="Open">Open</string>
     <string name="Dialing">Dialing…20-1002</string>
     <string name="Dialing_">Dialing…</string>
+    <string name="Connected_">Connected</string>
     <string name="Devices">Devices</string>
     <string name="time">02:59</string>
     <string name="Scenes">Scenes</string>
@@ -413,12 +420,18 @@
     <string name="Edit">Edit</string>
     <string name="Indicator_Board">Indicator Board</string>
     <string name="demofloor">01</string>
+    <string name="demofloor1">Tag to call lift</string>
+    <string name="demofloor2">Lift is coming</string>
+    <string name="demofloor3">Lift was reached</string>
+
     <string name="Cameras">Cameras</string>
     <string name="Enginneering_mode">Enginneering mode</string>
     <string name="Ip_adress">Ip adress</string>
     <string name="Protecting">Protecting</string>
     <string name="exit_freely">You can exit freely within the next 30 seconds.</string>
-    <string name="not_protect">If you decide not protect,your home will return to Home Mode.</string>
+    <string name="exit_freely_1">You can exit freely within the next</string>
+    <string name="exit_freely_seconds">seconds.</string>
+    <string name="not_protect">If you decide not protect, your home will return to Home Mode.</string>
     <string name="demotime2">8/30 10:53</string>
     <string name="temperatureTv">26°</string>
     <string name="Unheathy">Unheathy</string>
@@ -439,7 +452,7 @@
     <string name="week">week</string>
     <string name="digits">1234567890</string>
     <string name="line_busy">Line is busy temporarily, Please try  again later.</string>
-    <string name="wifi_scan_text_reminder">To see avaible networks.turn Wi-Fi on</string>
+    <string name="wifi_scan_text_reminder">To see available networks, turn Wi-Fi on</string>
     <string name="wifi_scan_text_title">Scan Access Points</string>
     <string name="wifi_text_connected">Connected</string>
     <string name="wifi_text_connecting">Connecting...</string>
@@ -453,7 +466,7 @@
     <string name="datetime_setdate">Set date</string>
     <string name="datetime_text_title">Automatic Data &#038; Time</string>
     <string name="datetime_text_title_down">Use network-provided time</string>
-    <string name="datetime_text_24hformat">Use 24-hour format</string>
+    <string name="datetime_text_24hformat">Use 24-Hour Format</string>
     <string name="speeddial_gurad">Guard</string>
     <string name="speeddial_office">Office</string>
 
@@ -465,6 +478,24 @@
     <string name="wifi_network_netmask">Netmask</string>
     <string name="wifi_network_gateway">Gateway</string>
     <string name="wifi_network_forget">Forget Netmask</string>
+    <string name="activity_inputbox_title">Input record name</string>
+    <string name="activity_inputbox_btn_save">Save</string>
+    <string name="fragment_voice_full_reminder">Unable to record, Please delete some voice message and try again.</string>
+    <string name="password_lenght_reminder">"Passwords' length should be 6".</string>
+
+    <string name="about_device_name">Device Name</string>
+    <string name="about_device_hardware_version">Hardware Version</string>
+    <string name="about_device_software_version">Software Version</string>
+    <string name="about_ip_address">IP Address</string>
+    <string name="about_mac_address">MAC Address</string>
+    <string name="about_wifi_ip_address">WiFi IP Address</string>
+    <string name="about_wifi_mac_address">WiFi MAC Address</string>
+
+    <string name="currently_scene_home">Home is currently scene</string>
+    <string name="currently_scene_away">Away is currently scene</string>
+    <string name="currently_scene_sleep">Sleep is currently scene</string>
+    <string name="currently_scene_wake_up">Wake up is currently scene</string>
+
 
 
 </resources>

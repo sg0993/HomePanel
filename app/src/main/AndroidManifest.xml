@@ -7,10 +7,7 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-
     <uses-permission android:name="android.permission.CONNECTIVITY_INTERNAL" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -75,7 +72,8 @@
         <activity
             android:name=".ui.activities.ZoneDelayTimeSelectActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
             android:name=".ui.activities.ScenarioSelectHintActivity"
             android:launchMode="singleInstance"
@@ -120,7 +118,7 @@
             android:name=".ui.activities.IndicatorBoardActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.notAnimation" />
+            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" />
         <activity
             android:name=".ui.activities.NotificationNotifyPageMore"
             android:launchMode="singleInstance"
@@ -138,13 +136,12 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.honeywell.homepanel.ui.activities.WiFiConfigurationActivity"
+            android:name=".ui.activities.WiFiConfigurationActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
-
         <activity
-            android:name="com.honeywell.homepanel.ui.activities.WifiInfoConnectedActivity"
+            android:name=".ui.activities.WifiInfoConnectedActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
@@ -168,7 +165,7 @@
             android:name=".ui.activities.SetEnginModeCodeActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.notAnimation" />
+            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" />
         <activity
             android:name=".ui.activities.ChangeEngineeringCodeActivity"
             android:launchMode="singleInstance"
@@ -193,7 +190,7 @@
             android:name=".ui.activities.AddCardActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.notAnimation" />
+            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" />
         <activity
             android:name=".ui.activities.ConfigPermanentActivity"
             android:launchMode="singleInstance"
@@ -278,7 +275,7 @@
             android:name=".ui.activities.EnginModeOptionsActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.notAnimation" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
             android:name=".ui.activities.SettingBrightVolumeAdjustment"
             android:launchMode="singleInstance"
@@ -375,6 +372,13 @@
             android:theme="@style/Theme.notAnimation" />
         <activity
             android:name=".ui.activities.LocationActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.notAnimation" />
+
+
+        <activity
+            android:name=".ui.activities.AboutTunaActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
@@ -531,7 +535,6 @@
                     android:exported="false" />
             </intent-filter>
         </service>
-
         <service
             android:name=".sensingservice.SensingService"
             android:exported="false"
@@ -542,7 +545,6 @@
                     android:exported="false" />
             </intent-filter>
         </service>
-
         <service
             android:name=".miscservices.discovery.DiscoveryService"
             android:exported="false"
@@ -553,7 +555,6 @@
                     android:exported="false" />
             </intent-filter>
         </service>
-
         <service
             android:name=".miscservices.logcat.LogCaptureService"
             android:exported="false"
@@ -564,7 +565,6 @@
                     android:exported="false" />
             </intent-filter>
         </service>
-
         <service
             android:name=".upgrade.subupgrader.SubupgraderService"
             android:exported="false"
@@ -575,7 +575,6 @@
                     android:exported="false" />
             </intent-filter>
         </service>
-
         <service android:name=".ui.services.WidgetInfoService" />
         <service android:name=".ui.services.NotificationService" />
 
@@ -583,6 +582,12 @@
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".ui.commondata.WiFiConnectedBroadcastReceiver">
+            <intent-filter>
                 <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
@@ -602,6 +607,14 @@
         <meta-data
             android:name="design_height"
             android:value="600" />
+
+        <activity
+            android:name=".ui.activities.ActivityInputBox"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>

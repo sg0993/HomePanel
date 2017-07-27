@@ -6,7 +6,7 @@
     <ImageView
         android:layout_gravity="center_vertical"
         android:id="@+id/img"
-        android:src="@mipmap/home_event"
+        android:src="@mipmap/home_visitors"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <com.honeywell.homepanel.ui.widget.HoneywellTextView

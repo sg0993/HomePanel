@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="500dp"
+    android:layout_width="800dp"
+    android:padding="10dp"
     android:background="@android:color/white"
     android:layout_height="wrap_content">
+
     <GridView
         android:id="@+id/gridView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:numColumns="2"
-        android:verticalSpacing="1dp"
-        android:horizontalSpacing="1dp"
-        android:columnWidth="200dip"
+        android:numColumns="4"
+        android:columnWidth="200dp"
         android:listSelector="@drawable/grid_view_item_bg"
         android:stretchMode="columnWidth"
         android:background="#C6C6C6"
         android:gravity="center">
     </GridView>
+    <TextView
+        android:id="@+id/screen_type"
+        android:layout_width="800dp"
+        android:layout_height="80dp"
+        android:gravity="center"
+        style="@style/HoneywellTextLightStyle"
+        android:layout_marginBottom="40dp" />
 </LinearLayout>

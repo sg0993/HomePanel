@@ -108,7 +108,11 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
 
     private void addDefaultConfig(SQLiteDatabase db) {
         addDefaultSystemSettings(db);
+        //addDefaultScenarioForCommonDevice(db);
+        //addDefaultHomePanelZone(db);
+
         addDefaultScenarioForCommonDevice(db);
+
         addDefaultLocalDevices(db);
         addDefaultIPDoorCamera(db);
     }
@@ -303,7 +307,7 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
             // add one door bell
             zoneConfigs = new JSONObject();
             addDefaultLocalIODevice(db, "homePanelDoorBell", CommonData.COMMONDEVICE_TYPE_DOORBELL, ConfigConstant.HOMEPANEL_LOCALIO_HONDOORBELL_COUNT,
-                    11, CommonData.DEVADAPTER_DOORBELL_LOCAL_HON, zoneConfigs);
+                    11, CommonData.DEVADAPTER_DOORBELL_LOCAL_HON, zoneConfigs, 1);
 
             // add one sos zone
             zoneConfigs = new JSONObject();
@@ -334,6 +338,10 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void addDefaultLocalIODevice(SQLiteDatabase db, String baseName, String type, int count, int iobase, String adapter, JSONObject additionConfigs) {
+        addDefaultLocalIODevice(db, baseName, type, count, iobase, adapter, additionConfigs, 0);
+    }
+
+    private void addDefaultLocalIODevice(SQLiteDatabase db, String baseName, String type, int count, int iobase, String adapter, JSONObject additionConfigs, int enable) {
         try {
             for (int i = 0; i < count; i++) {
                 int loop = i + 1;
@@ -348,7 +356,7 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
                         .put(ConfigConstant.COLUMN_UUID, deviceUuid)
                         .put(ConfigConstant.COLUMN_NAME, name)
                         .put(ConfigConstant.COLUMN_TYPE, type)
-                        .put(ConfigConstant.COLUMN_ENABLED, 0) // default disable all zone
+                        .put(ConfigConstant.COLUMN_ENABLED, enable) // default disable all zone
                         .put(ConfigConstant.COLUMN_ADAPTERNAME, adapter)
                         .put(ConfigConstant.COLUMN_CONFIGURATION, additionConfigs.toString())
                         .put(ConfigConstant.COLUMN_PHYSICTYPE, CommonJson.JSON_LOCALDEV_PHYSICTYPE_VALUE_IOBASE + (iobase + i))
@@ -438,7 +446,7 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
             addDefaultSystemSetting(db, CommonData.KEY_AMSIP, "192.168.10.172");
             addDefaultSystemSetting(db, CommonData.KEY_AMSPORT, "085213");
             addDefaultSystemSetting(db, CommonData.KEY_SUBPHONEID, "");
-            addDefaultSystemSetting(db, CommonData.KEY_REGISTERPWD, "1111");
+            addDefaultSystemSetting(db, CommonData.KEY_REGISTERPWD, "0000");
             addDefaultSystemSetting(db, CommonData.JSON_UNIT_KEY, "0602000601");
             addDefaultSystemSetting(db, CommonData.JSON_MAINIP_KEY, "");
             addDefaultSystemSetting(db, CommonData.JSON_SUBPHONENAME_KEY, "");

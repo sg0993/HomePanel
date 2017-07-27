@@ -36,7 +36,10 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -45,6 +48,8 @@ import java.util.Date;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -157,7 +162,7 @@ public class CommonUtils {
     public static int getModuleLoopCount(String moduleType) {
         if (moduleType.equals(CommonData.JSON_MODULE_NAME_RELAY)) {
             return 4;
-        }  else if (moduleType.equals(CommonData.JSON_MODULE_NAME_ALARM)) {
+        }  else if (moduleType.equals(CommonData.JSON_KEY_DEVICETYPE_WIREDZONE)) {
             return 8;//TBD
         }
         return -1;
@@ -448,7 +453,7 @@ public class CommonUtils {
         if (nativeType.contains("RELAY") || nativeType.contains("relay")) {
             return CommonData.JSON_MODULE_NAME_RELAY;
         } else if (nativeType.contains("ALARM") || nativeType.contains("alarm")) {
-            return CommonData.JSON_MODULE_NAME_ALARM;
+            return CommonData.JSON_KEY_DEVICETYPE_WIREDZONE;
         }
         return CommonData.JSON_MODULE_NAME_UNKNOW;
     }
@@ -509,7 +514,7 @@ public class CommonUtils {
      * @return
      */
     public static String convertMillisToDate(long millis) {
-        Date date = new Date(millis);
+        Date date = new Date(millis + 8*60*60*1000);//add 8 hours
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String str = formatter.format(date);
         return str;
@@ -577,7 +582,7 @@ public class CommonUtils {
     }
 
     public static boolean isHejModule(String type) {
-        if (CommonData.JSON_MODULE_NAME_RELAY.equals(type) || CommonData.JSON_MODULE_NAME_ALARM.equals(type)) {
+        if (CommonData.JSON_MODULE_NAME_RELAY.equals(type) || CommonData.JSON_KEY_DEVICETYPE_WIREDZONE.equals(type)) {
             return true;
         }
 
@@ -757,7 +762,7 @@ public class CommonUtils {
         } else {
             size = data.length;
         }
-        Log.d(TAG, "Util.java wrapArroudData body length="+size+",,,,\r\n");
+//        Log.d(TAG, "Util.java wrapArroudData body length="+size+",,,,\r\n");
 
         // write length
         byteArray.write((size & 0xff000000) >> 24);
@@ -816,5 +821,117 @@ public class CommonUtils {
         return data;
     }
 
+    public static String getFileSHA256Str(File file) {
+        if (!file.isFile()) {
+            return null;
+        }
 
+        MessageDigest digest = null;
+        FileInputStream in = null;
+        byte buffer[] = new byte[1024];
+        int len;
+
+        try {
+            digest = MessageDigest.getInstance("SHA256");
+            in = new FileInputStream(file);
+            while ((len = in.read(buffer, 0, 1024)) != -1) {
+                digest.update(buffer, 0, len);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                in.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        BigInteger bigInt = new BigInteger(1, digest.digest());
+        // Alwin: if start with '0'，it will be removed, so checkit.
+        String retStr = bigInt.toString(16);//16->hex string
+        while(retStr.length() < 64) {
+            retStr = "0" + retStr;
+        }
+
+        return retStr;//bigInt.toString(16);
+    }
+
+    public static boolean isHomePanelByDeviceType(String deviceType) {
+        if (CommonJson.JSON_UPGRADE_DEVTYPE_VDP7KA.equals(deviceType)
+                || CommonJson.JSON_UPGRADE_DEVTYPE_VDP7PRO.equals(deviceType)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isHejModuleByDeviceType(String deviceType) {
+        if (CommonJson.JSON_UPGRADE_DEVTYPE_HEJRELAY4.equals(deviceType)
+                || CommonJson.JSON_UPGRADE_DEVTYPE_HEJALARM8.equals(deviceType)) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    //added by ellen
+    public static  ExecutorService getCachedThreadPool(int count){
+        ExecutorService cachedThreadPool = null;
+        //cached thread for not device number thread
+        if(count <= 0){
+            cachedThreadPool = Executors.newCachedThreadPool();
+        }
+        //single thread
+        else if(count == 1){
+            cachedThreadPool = Executors.newSingleThreadExecutor();
+        }
+        //inflate definite number cached thread
+        else{
+            //Runtime.getRuntime().availableProcessors()
+            cachedThreadPool = Executors.newFixedThreadPool(count);
+        }
+        return  cachedThreadPool;
+    }
+
+    //execute thread,added by ellen
+    public  static  void executeThreadPool(ExecutorService service,Runnable runnable){
+        if(null == service || null == runnable){
+            return;
+        }
+        service.execute(runnable);
+    }
+
+    // er fen cha zhao,added by ellen
+    public static int find_position_by_id(int id,int[] data){
+        int count = data.length;
+        int middle = (count - 1)/2;
+        int left = 0;
+        int right = (count - 1);
+        int position = -1;
+        while(left <= right){
+            middle = (left + right)/2;
+            if(data[middle] > id){
+                //left
+                right = middle - 1;
+            }else if(data[middle] < id){
+                //right
+                left = middle + 1;
+            }else{
+                position = middle;
+                break;
+            }
+        }
+        return position;
+    }
+
+    public static String getHomePanelDeviceId() {
+        String deviceId = NetWorkInfoUtils.getCommunityNetworkMacAddr().toLowerCase().replace(":","");
+        if(null == deviceId){
+            deviceId = "unknown";
+        }
+        return deviceId;
+    }
 }

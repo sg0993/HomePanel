@@ -46,7 +46,7 @@ android {
             buildConfigField("String", "DEVICETYPE", '"00210001"')
             buildConfigField("String", "DEVICESKU", '"VDP7-KA-B"')
             buildConfigField("String", "HWVERSION", '"1.0.0.0"')
-            buildConfigField("String", "SYSTEMVERSION", '"1.0.0.0"')
+            buildConfigField("String", "SYSTEMVERSION", '"00.01.00.00"')
             signingConfig signingConfigs.release
         }
         debug {
@@ -63,7 +63,7 @@ android {
             buildConfigField("String", "DEVICETYPE", '"00210001"')
             buildConfigField("String", "DEVICESKU", '"VDP7-KA-B"')
             buildConfigField("String", "HWVERSION", '"1.0.0.0"')
-            buildConfigField("String", "SYSTEMVERSION",'"1.0.0.0"')
+            buildConfigField("String", "SYSTEMVERSION",'"00.01.00.00"')
             signingConfig signingConfigs.debug
         }
     }

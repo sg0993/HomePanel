@@ -16,9 +16,10 @@
         <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
-            android:layout_height="62dp"
+            android:layout_height="60dp"
             android:gravity="center"
             android:text="@string/Scenes"
+            android:background="@color/notification_titlebg"
             style="@style/HoneywellTitleStyle"/>
         <LinearLayout
             android:orientation="vertical"

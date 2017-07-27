@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
-        <include
-            android:id="@+id/call_animation"
-            layout="@layout/layout_call_animarion"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:orientation="vertical">
+
+        <include layout="@layout/layout_call_waveview" />
+
         <com.honeywell.homepanel.ui.widget.HoneywellTextView
-            android:gravity="center"
+            style="@style/HoneywellCallTextStyle"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:text="@string/incommingcall"
-            style="@style/HoneywellCallTextStyle"/>
+            android:gravity="center"
+            android:text="@string/incommingcall" />
+
         <com.honeywell.homepanel.ui.widget.HoneywellTextView
             android:id="@+id/unitTv"
-            android:gravity="center"
-            android:text="@string/xxxxx"
+            style="@style/HoneywellCallTextStyle"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            style="@style/HoneywellCallTextStyle"/>
+            android:gravity="center"
+            android:text="@string/xxxxx" />
     </LinearLayout>
 
     <LinearLayout
-        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginBottom="25dp"
+        android:background="@android:color/white"
+        android:gravity="center">
+
         <include
             android:id="@+id/call_bottom"
             layout="@layout/layout_call_bottom_button" />

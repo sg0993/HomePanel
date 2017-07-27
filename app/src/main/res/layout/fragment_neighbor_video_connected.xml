@@ -24,7 +24,7 @@
             android:layout_alignParentTop="true"
             android:background="@mipmap/call_pic"
             android:padding="30dp"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/call_top"
@@ -38,14 +38,13 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/call_animation"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="30dp"
             android:orientation="vertical">
 
-            <include layout="@layout/layout_call_animarion" />
+            <include layout="@layout/layout_call_waveview" />
 
             <com.honeywell.homepanel.ui.widget.HoneywellTextView
                 android:id="@+id/unit_tv"
@@ -53,7 +52,6 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="@string/dong"
                 android:textColor="@color/black" />
 
             <com.honeywell.homepanel.ui.widget.HoneywellTextView
@@ -62,7 +60,6 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="@string/time"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -72,6 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp"
             android:background="@android:color/transparent"
             android:gravity="center">
 

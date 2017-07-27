@@ -13,9 +13,9 @@ import com.honeywell.homepanel.R;
 
 public class CallBottomBrusher {
 
-    public static final  int BOTTOM_POSTION_LEFT = 0;
-    public static final  int BOTTOM_POSTION_MIDDLE = 1;
-    public static final  int BOTTOM_POSTION_RIGHT = 2;
+    public static final int BOTTOM_POSTION_LEFT = 0;
+    public static final int BOTTOM_POSTION_MIDDLE = 1;
+    public static final int BOTTOM_POSTION_RIGHT = 2;
 
     private int left_btn_back = 0;
     private int left_image = 0;
@@ -43,18 +43,19 @@ public class CallBottomBrusher {
     private TextView right_tv = null;
 
     private View.OnClickListener mClickListener = null;
+
     public void init(View view) {
-        left_btn = (Button)view.findViewById(R.id.left_btn);
-        left_imageview = (ImageView)view.findViewById(R.id.left_imageview);
-        left_tv = (TextView)view.findViewById(R.id.left_tv);
+        left_btn = (Button) view.findViewById(R.id.left_btn);
+        left_imageview = (ImageView) view.findViewById(R.id.left_imageview);
+        left_tv = (TextView) view.findViewById(R.id.left_tv);
 
-        middle_btn = (Button)view.findViewById(R.id.middle_btn);
-        middle_imageview = (ImageView)view.findViewById(R.id.middle_imageview);
-        middle_tv = (TextView)view.findViewById(R.id.middle_tv);
+        middle_btn = (Button) view.findViewById(R.id.middle_btn);
+        middle_imageview = (ImageView) view.findViewById(R.id.middle_imageview);
+        middle_tv = (TextView) view.findViewById(R.id.middle_tv);
 
-        right_btn = (Button)view.findViewById(R.id.right_btn);
-        right_imageview = (ImageView)view.findViewById(R.id.right_imageview);
-        right_tv = (TextView)view.findViewById(R.id.right_tv);
+        right_btn = (Button) view.findViewById(R.id.right_btn);
+        right_imageview = (ImageView) view.findViewById(R.id.right_imageview);
+        right_tv = (TextView) view.findViewById(R.id.right_tv);
 
         left_btn.setOnClickListener(mClickListener);
         middle_btn.setOnClickListener(mClickListener);
@@ -62,7 +63,7 @@ public class CallBottomBrusher {
         setRes();
     }
 
-    public CallBottomBrusher(View.OnClickListener clickListener,int left_btn_back, int left_image, String left_text,
+    public CallBottomBrusher(View.OnClickListener clickListener, int left_btn_back, int left_image, String left_text,
                              int middle_btn_back, int middle_image, String middle_text,
                              int right_btn_back, int right_image, String right_text) {
         mClickListener = clickListener;
@@ -78,20 +79,21 @@ public class CallBottomBrusher {
     }
 
     private void setRes() {
-       // left_btn.setBackgroundResource(left_btn_back);
+        // left_btn.setBackgroundResource(left_btn_back);
         left_imageview.setImageResource(left_image);
         left_tv.setText(left_text);
 
-       // middle_btn.setBackgroundResource(middle_btn_back);
+        // middle_btn.setBackgroundResource(middle_btn_back);
         middle_imageview.setImageResource(middle_image);
         middle_tv.setText(middle_text);
 
-      //  right_btn.setBackgroundResource(right_btn_back);
+        //  right_btn.setBackgroundResource(right_btn_back);
         right_imageview.setImageResource(right_image);
         right_tv.setText(right_text);
     }
-    public void setVisible(int position,int visible){
-        switch (position){
+
+    public void setVisible(int position, int visible) {
+        switch (position) {
             case BOTTOM_POSTION_LEFT:
                 left_btn.setVisibility(visible);
                 left_imageview.setVisibility(visible);
@@ -112,18 +114,18 @@ public class CallBottomBrusher {
         }
     }
 
-    public void setImageRes(int position,int backRes,int imageRes){
-        switch (position){
+    public void setImageRes(int position, int backRes, int imageRes) {
+        switch (position) {
             case BOTTOM_POSTION_LEFT:
-              //  left_btn.setBackgroundResource(backRes);
+                //  left_btn.setBackgroundResource(backRes);
                 left_imageview.setImageResource(imageRes);
                 break;
             case BOTTOM_POSTION_MIDDLE:
-            //    middle_btn.setBackgroundResource(backRes);
+                //    middle_btn.setBackgroundResource(backRes);
                 middle_imageview.setImageResource(imageRes);
                 break;
             case BOTTOM_POSTION_RIGHT:
-             //   right_btn.setBackgroundResource(backRes);
+                //   right_btn.setBackgroundResource(backRes);
                 right_imageview.setImageResource(imageRes);
                 break;
             default:
@@ -131,8 +133,8 @@ public class CallBottomBrusher {
         }
     }
 
-    public void setTextRes(int position,String res){
-        switch (position){
+    public void setTextRes(int position, String res) {
+        switch (position) {
             case BOTTOM_POSTION_LEFT:
                 left_tv.setText(res);
                 break;
@@ -145,5 +147,48 @@ public class CallBottomBrusher {
             default:
                 break;
         }
+    }
+
+    public void setColor(int position, int color) {
+        switch (position) {
+            case BOTTOM_POSTION_LEFT:
+                if (left_tv != null) {
+                    left_tv.setTextColor(color);
+                }
+                break;
+            case BOTTOM_POSTION_MIDDLE:
+                if (middle_tv != null) {
+                    middle_tv.setTextColor(color);
+                }
+                break;
+            case BOTTOM_POSTION_RIGHT:
+                if (right_tv != null) {
+                    right_tv.setTextColor(color);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public String getRight_Tv() {
+        if (right_tv != null) {
+            return right_tv.getText().toString();
+        }
+        return "";
+    }
+
+    public String getLeft_Tv() {
+        if (left_tv != null) {
+            return left_tv.getText().toString();
+        }
+        return "";
+    }
+
+    public String getMiddle_Tv() {
+        if (middle_tv != null) {
+            return middle_tv.getText().toString();
+        }
+        return "";
     }
 }

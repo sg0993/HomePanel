@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
@@ -206,9 +207,16 @@ public class ScenarioLoopManager {
             ScenarioLoop loop = lists.get(i);
             JSONObject loopObject = new JSONObject();
 
-            DbCommonUtil.putKeyValueToJson(mContext,loop.mDeviceUuid,loopObject);
-            loopToJson(loopObject, loop);
-            loopMapArray.put(loopObject);
+            try {
+                DbCommonUtil.putKeyValueToJson(mContext, loop.mDeviceUuid, loopObject);
+                loopToJson(loopObject, loop);
+                loopMapArray.put(loopObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+                deleteByDeviceuuid(uuid, loop.mDeviceUuid);
+                Log.d(TAG, "getScenarioConfig, failed to get scenario config for " + loop.mName + "," + loop.mDeviceUuid);
+                Log.w(TAG, "getScenarioConfig, delete invalid scenario loop!!!!");
+            }
         }
 
         jsonObject.put(CommonJson.JSON_ALIASNAME_KEY, scenario.mName);

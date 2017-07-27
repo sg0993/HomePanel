@@ -15,12 +15,15 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUIScenario;
+import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.domain.ZoneAbnormalInfo;
 import com.honeywell.homepanel.ui.uicomponent.AdapterCallback;
 import com.honeywell.homepanel.ui.uicomponent.PasswordAdapter;
@@ -227,9 +230,12 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
     @Override
     public void subviewOnclick(int position, String more) {
         if (position == 9) {
-            clearInputText();
+//            clearInputText();
+            finish();
         } else if (position == 11) {
-            if (mPasswordStr.length() > 0) {
+            if (TextUtils.equals("long", more)) {
+                clearInputText();
+            } else if (mPasswordStr.length() > 0) {
                 mPasswordStr.deleteCharAt(mPasswordStr.length() - 1);
             }
         } else if (mPasswordStr.length() < CommonData.SRCURITY_PASSWORD_LENGTH) {
@@ -239,8 +245,14 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
                 mPasswordStr.append(position + 1);
             }
         }
+
         setPasswordImages(mPasswordStr.length());
         comparePassword(mPasswordStr);
+        if (TextUtils.equals(mPasswordHint.getText().toString().trim(),
+                getString(R.string.password_hint_passworderror))) {
+            mPasswordHint.setTextColor(getResources().getColor(R.color.black));
+            mPasswordHint.setText(getString(R.string.password_hint_disarm));
+        }
     }
 
     private void clearInputText() {
@@ -272,12 +284,35 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
             Log.d(TAG, "SCSwitchScenarioMessageRsp: " + switchScenarioResp.toString());
             if (errorcode.equals("0")) {
                 Log.d(TAG, "OnMessageEvent: scenario switch success");
-                //switchScenario(uuid, mScenarioIdx);
+                try {
+                    int scenarioId = TopStaus.getInstance
+                            (PasswordEnterActivity.this.getApplicationContext()).getCurScenario();
+                    TopStaus.getInstance(PasswordEnterActivity.this.
+                            getApplicationContext()).setCurScenario(Integer.valueOf(uuid));
+                    if (scenarioId != Integer.valueOf(uuid)) {
+                        switchScenario(uuid, mScenarioIdx);
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
                 finish();
-            } else {
-                finish();
-                showAbnormalWindow(abnormalArray);
+            } else if (errorcode.equals("4")) {
+                mPasswordHint.setTextColor(getResources().getColor(R.color.colorAccent));
+                mPasswordHint.setText(getString(R.string.password_hint_passworderror));
+                clearInputText();
+                setPasswordImages(mPasswordStr.length());
                 Log.d(TAG, "OnMessageEvent: scenario switch errorcode:" + errorcode);
+            }
+//            else if (errorcode.equals("-1")) {
+//                LogMgr.d("OnMessageEvent: scenario switch errorcode:" + errorcode);
+//                showAbnormalWindow(abnormalArray);
+//                finish();
+//            }
+            else {
+                Toast.makeText(PasswordEnterActivity.this, "Scenario Error Code: " + errorcode, Toast.LENGTH_SHORT).show();
+                showAbnormalWindow(abnormalArray);
+                finish();
             }
         } else {
             Log.d(TAG, "OnMessageEvent: subaction not correct: " + subaction);
@@ -334,6 +369,7 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
         String subaction = scenarioListResp.optString(CommonJson.JSON_SUBACTION_KEY, "");
         if (subaction.equals(CommonJson.JSON_SUBACTION_VALUE_GETSCENARIOLIST)) {
             JSONArray scenarioList = scenarioListResp.optJSONArray(CommonJson.JSON_LOOPMAP_KEY);
+            if (scenarioList == null) return;
             for (int i = 0; i < scenarioList.length(); i++) {
                 JSONObject tmp = scenarioList.optJSONObject(i);
                 String scenarioName = tmp.optString(CommonData.JSON_KEY_NAME);
@@ -355,8 +391,6 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
             Log.d(TAG, "OnMessageEvent: subaction not correct: " + subaction);
         }
     }
-
-
 
 
 }

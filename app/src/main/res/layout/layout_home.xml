@@ -4,25 +4,40 @@
     android:id="@+id/content_scrolling"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/left_navigation_background"
     android:orientation="horizontal"
-    android:background="@android:color/white"
     tools:context=".ui.activities.MainActivity">
+
 
     <include
         android:id="@+id/left_navigation"
-        layout="@layout/layout_left_navigation"/>
+        layout="@layout/layout_left_navigation" />
+
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <include
             android:id="@+id/top_status"
-            layout="@layout/layout_top_status"/>
-        <FrameLayout
-            android:layout_height="match_parent"
+            layout="@layout/layout_top_status" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:id="@+id/main_frameLayout">
-        </FrameLayout>
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:background="#9b9b9b" />
+
+            <FrameLayout
+                android:id="@+id/main_frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

@@ -35,6 +35,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import static com.honeywell.homepanel.R.id.floor;
+import static com.honeywell.homepanel.ui.fragment.Keypad123Fragment.isCall;
+
 /**
  * Created by H135901 on 1/25/2017.
  */
@@ -45,15 +48,15 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
     private static final String TAG = "CallOutgoing";
     private Context mContext = null;
 
-    private TextView mUnitTv = null;
+//    private TextView mUnitTv = null;
     private Button mCancelBtn = null;
     private WaveView mWaveView;
     private static String UNIT_PRESTR = null;
 
     private WaveViewUtil mWaveViewUtil = null;
 
-    private CallAnimationBrusher mAnimationBtusher = new
-            CallAnimationBrusher(R.mipmap.call_outgoing_bright, R.mipmap.call_outgoing_dim);
+//    private CallAnimationBrusher mAnimationBtusher = new
+//            CallAnimationBrusher(R.mipmap.call_outgoing_bright, R.mipmap.call_outgoing_dim);
     private UIBaseCallInfo uiBaseCallInfo = new UIBaseCallInfo();
 
     @Override
@@ -106,9 +109,10 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
         mWaveViewUtil = WaveViewUtil.getInstance(view, getActivity());
         mWaveViewUtil.startWavaView(true, WaveView.CallType.OUT);
 
-        mUnitTv = (TextView) view.findViewById(R.id.unit_tv);
+//        mUnitTv = (TextView) view.findViewById(R.id.wave_view_tv_textview);
         if (getActivity() instanceof CallActivity) {
-            mUnitTv.setText(UNIT_PRESTR + ((CallActivity) getActivity()).mUnit);
+//            mUnitTv.setText(UNIT_PRESTR + ((CallActivity) getActivity()).mUnit);
+            mWaveViewUtil.setText(getString(R.string.Dialing_) + ((CallActivity) getActivity()).mUnit);
         }
         mCancelBtn = (Button) view.findViewById(R.id.cancel_btn);
         mCancelBtn.setOnClickListener(this);
@@ -142,6 +146,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
             uiBaseCallInfo.setmCallType(callType);
             uiBaseCallInfo.setmCallAliasName(aliasName);
             uiBaseCallInfo.setCallUuid(uuid);
+
             System.out.println("SUISCallOutMessageRsp errorCode" + errorCode);
             if (errorCode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) {
                 System.out.println("SUISCallOutMessageRsp success");
@@ -162,6 +167,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
     public void OnMessageEvent(SUISMessagesUICall.SUISCallActivedMessageEve msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
         stopPlayRing();
+        if (mWaveViewUtil != null) mWaveViewUtil.stopWaveView();
         if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
             String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
             String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");
@@ -170,7 +176,6 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
             MainActivity.CallBaseInfo.setmCallAliasName(aliasName);
             MainActivity.CallBaseInfo.setmCallType(callType);
             CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
-            if (mWaveViewUtil != null) mWaveViewUtil.stopWaveView();
         }
     }
 

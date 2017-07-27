@@ -45,6 +45,8 @@
     <color name="white_text_transparent">#7effffff</color>
     <color name="line_color">#C6C6C6</color>
     <color name="cleaning_bg">#000000</color>
+    <color name="dialog_font">#0FA5EA</color>
+    <color name="edt_ip_border">#979797</color>
 
     <!-- Global Buttons Spec -->
     <color name="fill_primary_button_active">#1792E5</color>

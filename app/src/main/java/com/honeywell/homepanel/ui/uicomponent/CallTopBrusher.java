@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.LogMgr;
 
 /**
  * Created by H135901 on 2/23/2017.
@@ -24,8 +25,7 @@ public class CallTopBrusher {
 
     public void init(View view) {
         top_tv = (TextView) view.findViewById(R.id.top_tv);
-//        bottom_tv = (TextView) view.findViewById(R.id.bottom_tv);
-        bottom_tv = (TextView) view.findViewById(R.id.unit_tv);
+        bottom_tv = (TextView) view.findViewById(R.id.bottom_tv);
         setRes();
     }
 
@@ -36,16 +36,48 @@ public class CallTopBrusher {
 
     private void setRes() {
         top_tv.setText(topStr);
-        bottom_tv.setText(bottomStr);
+        if (bottom_tv != null) {
+            bottom_tv.setText(bottomStr);
+        }
+    }
+
+
+    public void setViewGONE() {
+        if (bottom_tv != null) {
+            bottom_tv.setVisibility(View.GONE);
+        }
+        if (top_tv != null) {
+            top_tv.setVisibility(View.GONE);
+        }
+    }
+
+    public void setViewVISIBLETop() {
+        if (top_tv != null) {
+            top_tv.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setViewVISIBLE() {
+        if (bottom_tv != null) {
+            bottom_tv.setVisibility(View.VISIBLE);
+        }
+        if (top_tv != null) {
+            top_tv.setVisibility(View.VISIBLE);
+        }
+
     }
 
     public void setResText(int postion, String text) {
         switch (postion) {
             case POSITION_TOP:
-                top_tv.setText(text);
+                if (top_tv != null) {
+                    top_tv.setText(text);
+                }
                 break;
             case POSITION_BOTTOM:
-                bottom_tv.setText(text);
+                if (bottom_tv != null) {
+                    bottom_tv.setText(text);
+                }
                 break;
             default:
                 break;

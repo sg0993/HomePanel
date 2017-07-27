@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.ui.activities.AboutTunaActivity;
 import com.honeywell.homepanel.ui.activities.AdvancedActivity;
 import com.honeywell.homepanel.ui.activities.BaseActivity;
 import com.honeywell.homepanel.ui.activities.CleaningActivity;
@@ -33,6 +34,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +53,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     private static int[] icon = {R.mipmap.setting_wifi, R.mipmap.setting_location,
             R.mipmap.setting_volume, R.mipmap.setting_date, R.mipmap.setting_account,
             R.mipmap.setting_advanced, R.mipmap.setting_cleaning, R.mipmap.setting_upgrade};
-    private static String[] iconName = {"Wi-Fi", "Location", "Brightness \n Volume", "Date & Time",
-            "Account\nSettings", "Advanced\nSettings", "Cleaning", "Upgrade"};
+    private static String[] iconName = {"WiFi", "Location", "Brightness\n Volume", "Date&Time",
+            "Remote\n Control", "Advanced\n Settings", "Cleaning", "About"};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,9 +88,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
     }
 
+
+
     @Override
     public void onClick(View v) {
-
     }
 
     class ItemClickListener implements AdapterView.OnItemClickListener {
@@ -103,35 +106,31 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 //            }
             switch (arg2) {
                 case 0:
-                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
-                        return;
-                    }
+                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) return;
+
                     //Intent intent1 = new Intent(getActivity(), WiFiConfigurationActivity.class);
                     Intent intent1 = new Intent(getActivity(), WiFiConfigurationActivity.class);
                     startActivity(intent1);
                     break;
                 case 1:
-                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
-                        return;
-                    }
+                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) return;
+
                     Intent intent2 = new Intent(getActivity(), LocationActivity.class);
                     startActivity(intent2);
                     break;
                 case 2:
                     Intent intent3 = new Intent(getActivity(), SettingBrightVolumeAdjustment.class);
+
                     startActivity(intent3);
                     break;
                 case 3:
-                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
-                        return;
-                    }
+                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) return;
                     Intent intent4 = new Intent(getActivity(), DateTimeActivity.class);
                     startActivity(intent4);
                     break;
                 case 4: {
-                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
-                        return;
-                    }
+                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) return;
+
                     Intent intent;
                     if (((BaseActivity) getActivity()).getBindState()) {
                         intent = new Intent(getActivity(), HoneywellHomeUnbinding.class);//解除绑定
@@ -142,9 +141,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                     break;
                 }
                 case 5:
-                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
-                        return;
-                    }
+                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) return;
+
                     Intent intent = new Intent(getActivity(), AdvancedActivity.class);
                     startActivity(intent);
                     break;
@@ -152,20 +150,24 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                     Intent intentCleaning = new Intent(getActivity(), CleaningActivity.class);
                     startActivity(intentCleaning);
                     break;
-                case 7: {
-                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
-                        return;
-                    }
-                    try {
-                        PackageInfo info = getActivity()
-                                .getPackageManager()
-                                .getPackageInfo(getActivity().getPackageName(), 0);
-                        Toast.makeText(getActivity(), "当前系统版本" + info.versionName, Toast.LENGTH_LONG).show();
-                    } catch (PackageManager.NameNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
+                case 7:
+//                    {
+//                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
+//                        return;
+//                    }
+//                    try {
+//                        PackageInfo info = getActivity()
+//                                .getPackageManager()
+//                                .getPackageInfo(getActivity().getPackageName(), 0);
+//                        Toast.makeText(getActivity(), "当前系统版本" + info.versionName, Toast.LENGTH_LONG).show();
+//                    } catch (PackageManager.NameNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+
+                    Intent intent7 = new Intent(getActivity(), AboutTunaActivity.class);
+                    startActivity(intent7);
+                    break;
             }
 
         }

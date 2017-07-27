@@ -27,6 +27,7 @@ import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.utils.CommonUtils;
+import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.fragment.CalIpDcIncomingAndConnected;
 import com.honeywell.homepanel.ui.fragment.CallBaseFragment;
 import com.honeywell.homepanel.ui.fragment.CallGuardIncomingAndConnected;
@@ -83,6 +84,7 @@ public class CallActivity extends FragmentActivity implements View.OnClickListen
 
     public IConfigService mIConfigService = null;
     private ServiceConnection mIConfigServiceConnect = new ServiceConnectionImpl();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

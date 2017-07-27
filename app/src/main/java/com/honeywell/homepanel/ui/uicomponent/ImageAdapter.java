@@ -20,16 +20,18 @@ public class ImageAdapter extends BaseAdapter {
     private LayoutInflater inflater = null;
     private AdapterCallback mCallBacks = null;
 
-    private int [] mTextes = null;
+    private int[] mTextes = null;
     private int[] mImages = null;
     private int[] mImages_down = null;
+    private int mPosition;
 
-    public ImageAdapter(Context c,AdapterCallback callbacks,int[] images,int[] images_down,int[]textes) {
+    public ImageAdapter(Context c, AdapterCallback callbacks, int[] images, int[] images_down, int[] textes, int position) {
         mImages = images;
         mCallBacks = callbacks;
         mImages_down = images_down;
         mTextes = textes;
         mContext = c;
+        mPosition = position;
         inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -59,7 +61,11 @@ public class ImageAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.layout_scenarioselect_item, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
             TextView textView = (TextView) view.findViewById(R.id.textview);
-            viewHolder = new ViewHolder(position,imageView,textView);
+            ImageView imageView_type = (ImageView) view.findViewById(R.id.imageview_type);
+            if (mPosition == position) {
+                imageView_type.setVisibility(View.VISIBLE);
+            }
+            viewHolder = new ViewHolder(position, imageView, textView);
             view.setTag(viewHolder);
         } else {
             view = convertView;
@@ -70,9 +76,9 @@ public class ImageAdapter extends BaseAdapter {
         return view;
     }
 
-    class ViewHolder{
+    class ViewHolder {
         private ImageView mImageView = null;
-        private   TextView mTextView = null;
+        private TextView mTextView = null;
         private int mPostion = 0;
 
         public ViewHolder(final int postion, ImageView imageView, TextView textView) {

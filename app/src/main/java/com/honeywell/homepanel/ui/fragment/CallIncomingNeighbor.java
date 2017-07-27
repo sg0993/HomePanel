@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.Utils.WaveViewUtil;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
@@ -23,6 +24,7 @@ import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
 import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
 import com.honeywell.homepanel.ui.widget.WaveView;
+import com.zhy.autolayout.utils.L;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,7 +47,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
             CallAnimationBrusher(R.mipmap.call_audio_bright, R.mipmap.call_audio_dim);
     private CallBottomBrusher mCallBottomBrusher = null;
 
-    private TextView unitTv = null;
+//    private TextView unitTv = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,8 +99,18 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
     private void initViews(View view) {
         mWaveViewUtil = WaveViewUtil.getInstance(view, getActivity());
         mWaveViewUtil.startWavaView(true, WaveView.CallType.IN);
-        unitTv = (TextView) view.findViewById(R.id.unitTv);
-        unitTv.setText(getString(R.string.neighbor) + "-" + ((CallActivity) getActivity()).mUnit);
+//        unitTv = (TextView) view.findViewById(R.id.wave_view_tv_textview);
+//        mCallBottomBrusher.setColor(CallBottomBrusher.BOTTOM_POSTION_LEFT, getResources().getColor(R.color.black));
+//        mCallBottomBrusher.setColor(CallBottomBrusher.BOTTOM_POSTION_MIDDLE, getResources().getColor(R.color.black));
+//        mCallBottomBrusher.setColor(CallBottomBrusher.BOTTOM_POSTION_RIGHT, getResources().getColor(R.color.black));
+//        unitTv = (TextView) view.findViewById(R.id.unitTv);
+//
+//        unitTv.setText(getString(R.string.neighbor) + "-" + ((CallActivity) getActivity()).mUnit);
+
+//        if (unitTv != null) {
+//            unitTv.setText(getString(R.string.incommingcall) + ((CallActivity) getActivity()).mUnit);
+//        }
+        mWaveViewUtil.setText(getString(R.string.incommingcall) + ((CallActivity) getActivity()).mUnit);
     }
 
     private static int mTestAlarmCount = 1;
@@ -111,6 +123,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
                 UISendCallMessage.requestForTakeCall(MainActivity.CallBaseInfo);
                 stopPlayRing();
                 if (mWaveViewUtil != null) mWaveViewUtil.stopWaveView();
+
                 CallActivity.switchFragmentInFragment(this, CALL_CONNECTED_AUDIO_NETGHBOR);
                 break;
             case R.id.right_btn:

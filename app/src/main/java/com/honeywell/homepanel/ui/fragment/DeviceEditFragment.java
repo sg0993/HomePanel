@@ -23,6 +23,7 @@ import com.honeywell.homepanel.ui.activities.IndicatorBoardActivity;
 import com.honeywell.homepanel.ui.activities.RelayActivity;
 import com.honeywell.homepanel.ui.uicomponent.DevicesImageAdapter;
 import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
+import com.honeywell.homepanel.ui.uicomponent.UISendCallElevatorMessage;
 import com.honeywell.homepanel.ui.uicomponent.UISendLockMessage;
 
 import org.json.JSONArray;
@@ -50,6 +51,7 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
             R.string.device_empty, R.string.device_empty, R.string.device_empty,
             R.string.device_empty};
 
+    private static int count = 0;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,13 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
                                     long id) {
                 if (position == 0) {
                     startActivity(new Intent(mContext, IndicatorBoardActivity.class));
+                    Log.d(TAG, "onItemClick: count"+count);
+                    if(count == 0)
+                    {
+                        UISendCallElevatorMessage.SendCallElevatorCommand();
+                        count++;
+                    }
+
                 } else if (position == 1) {
                     startActivity(new Intent(mContext, CamerasActivity.class));
                 } else if (position == 2) {

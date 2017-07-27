@@ -60,7 +60,7 @@ public class EventHistoryManager {
                 .put(ConfigConstant.COLUMN_ROLEID,roleid).getValues();
 
        if(DbCommonUtil.getCount(dbHelper.getWritableDatabase(),
-               ConfigConstant.TABLE_EVENTHISTORY) > CommonData.CALL_HISTORY_MAX_COUNT){
+               ConfigConstant.TABLE_EVENTHISTORY) >= CommonData.CALL_HISTORY_MAX_COUNT){
            long _id = DbCommonUtil.getFirstRecord(dbHelper,ConfigConstant.TABLE_EVENTHISTORY);
            Log.d(TAG, "add: _id:"+_id);
            if(_id > 0){

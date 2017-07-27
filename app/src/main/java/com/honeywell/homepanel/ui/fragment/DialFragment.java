@@ -27,7 +27,7 @@ import java.util.List;
  */
 
 @SuppressLint("ValidFragment")
-public class DialFragment extends Fragment implements View.OnClickListener{
+public class DialFragment extends Fragment implements View.OnClickListener {
     /*
     @Bind(R.id.dialTv)
     TextView dialTv;
@@ -92,9 +92,11 @@ public class DialFragment extends Fragment implements View.OnClickListener{
         this.title = title;
 
     }
+
     public DialFragment() {
         super();
     }
+
     private void initViews(View view) {
         speeddial = (Button) view.findViewById(R.id.speed_dial);
         subphone = (Button) view.findViewById(R.id.subphone);
@@ -105,7 +107,7 @@ public class DialFragment extends Fragment implements View.OnClickListener{
         keypadUnderline = view.findViewById(R.id.keypad_underline);
     }
 
-    private void initEvents(){
+    private void initEvents() {
         speeddial.setOnClickListener(this);
         subphone.setOnClickListener(this);
         keypad.setOnClickListener(this);
@@ -113,9 +115,9 @@ public class DialFragment extends Fragment implements View.OnClickListener{
         btnList.add(subphone);
         btnList.add(keypad);
     }
+
     private void setBackgroundColorById(int btnId) {
-        switch (btnId)
-        {
+        switch (btnId) {
             case 0:
                 speeddial.setTextColor(Color.parseColor(BLACK_GREY));
                 subphone.setTextColor(Color.parseColor(NORMAL_GREY));
@@ -147,16 +149,17 @@ public class DialFragment extends Fragment implements View.OnClickListener{
                 break;
         }
     }
-    public void onClick(View v){
+
+    public void onClick(View v) {
         fm = getFragmentManager();
         ft = fm.beginTransaction();
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.speed_dial:
                 setBackgroundColorById(0);
 //                speeddial.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_dark_pressed));
 //                subphone.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
 //                keypad.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
-                if(speedDialFragment == null)
+                if (speedDialFragment == null)
                     speedDialFragment = new SpeedDialFragment();
                 ft.replace(R.id.fragment_content, speedDialFragment);
                 break;
@@ -165,16 +168,17 @@ public class DialFragment extends Fragment implements View.OnClickListener{
 //                subphone.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_dark_pressed));
 //                speeddial.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
 //                keypad.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
-                if(subphoneFragment == null)
+                if (subphoneFragment == null)
                     subphoneFragment = new SubphoneFragment();
                 ft.replace(R.id.fragment_content, subphoneFragment);
                 break;
             case R.id.keypad:
+                Keypad123Fragment.isCall = true;
                 setBackgroundColorById(2);
 //                keypad.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_dark_pressed));
 //                speeddial.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
 //                subphone.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_light_pressed));
-                if(keyPadFragment == null)
+                if (keyPadFragment == null)
                     keyPadFragment = new KeypadFragment();
                 ft.replace(R.id.fragment_content, keyPadFragment);
                 break;
@@ -185,8 +189,7 @@ public class DialFragment extends Fragment implements View.OnClickListener{
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnMessageEvent(MessageEvent event)
-    {
+    public void OnMessageEvent(MessageEvent event) {
 
     }
 }

@@ -31,6 +31,7 @@ import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.pbx.PBXService;
 import com.honeywell.homepanel.ui.activities.PasswordEnterActivity;
 import com.honeywell.homepanel.ui.activities.ScenarioSelectActivity;
+import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.uicomponent.SencesImageAdapter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,8 +57,16 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
     private LinearLayout mLinearLayout = null;
     private Context mContext = null;
     GridView gridView;
-    private static final int[] IMAGES = {R.mipmap.home3x,
+
+    private static final int[] IMAGES1 = {R.mipmap.home_blue,
             R.mipmap.away, R.mipmap.sleep, R.mipmap.wake_up};
+    private static final int[] IMAGES2 = {R.mipmap.home3x,
+            R.mipmap.away_red, R.mipmap.sleep, R.mipmap.wake_up};
+    private static final int[] IMAGES3 = {R.mipmap.home3x,
+            R.mipmap.away, R.mipmap.sleep_red, R.mipmap.wake_up};
+    private static final int[] IMAGES4 = {R.mipmap.home3x,
+            R.mipmap.away, R.mipmap.sleep, R.mipmap.wake_up_red};
+
     private static final int[] TEXTES = {R.string.secnario_home, R.string.secnario_away,
             R.string.scenario_sleep, R.string.scenario_wakeup};
     private int mSelect_Scenario = 1;
@@ -85,6 +94,28 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        int scenario = TopStaus.getInstance(this.getContext()).getCurScenario();
+        switch (scenario){
+            case CommonData.SCENARIO_HOME:
+                gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES1, TEXTES,0));
+                break;
+            case CommonData.SCENARIO_AWAY:
+                gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES2, TEXTES,1));
+                break;
+            case CommonData.SCENARIO_SLEEP:
+                gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES3, TEXTES,2));
+                break;
+            case CommonData.SCENARIO_WAKEUP:
+                gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES4, TEXTES,3));
+                break;
+            default:
+                gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES1, TEXTES,0));
+                break;
+        }
+    }
 
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = getActivity();
@@ -96,7 +127,7 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
         mframement.getForeground().setAlpha(0);
 
         gridView = (GridView) view.findViewById(R.id.gridView);
-        gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES, TEXTES));
+
         gridView.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -123,7 +154,6 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
         return view;
     }
 
-
     private void showpopupwindow(LayoutInflater inflater, final int position) {
         Button btEdit, btCancel;
 
@@ -135,6 +165,12 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
         mpopupWindow.setBackgroundDrawable(new ColorDrawable());
         mpopupWindow.setOutsideTouchable(true);
         mpopupWindow.showAtLocation(gridView, Gravity.BOTTOM, 0, 0);
+        mpopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                mframement.getForeground().setAlpha(1);
+            }
+        });
         btCancel = (Button) popupView.findViewById(R.id.btCancel);
         btCancel.setOnClickListener(new OnClickListener() {
             @Override

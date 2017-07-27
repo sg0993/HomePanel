@@ -70,4 +70,5 @@
                 style="@style/left_image"
                 android:src="@mipmap/setting" />
         </RelativeLayout>
+
     </LinearLayout>

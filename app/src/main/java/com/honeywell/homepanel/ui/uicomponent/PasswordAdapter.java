@@ -9,18 +9,20 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.LogMgr;
 
 /**
  * Created by H135901 on 2/17/2017.
  */
-public class PasswordAdapter extends BaseAdapter{
+public class PasswordAdapter extends BaseAdapter {
 
     private AdapterCallback mAdapterCallback = null;
     private Context mContext;
     private LayoutInflater inflater = null;
-    int [] mImages = null;
-    int [] mImages_down = null;
-    public PasswordAdapter(Context c,AdapterCallback adapterCallbacks,int[] images,int[] images_down) {
+    int[] mImages = null;
+    int[] mImages_down = null;
+
+    public PasswordAdapter(Context c, AdapterCallback adapterCallbacks, int[] images, int[] images_down) {
         mAdapterCallback = adapterCallbacks;
         this.mImages = images;
         this.mImages_down = images_down;
@@ -51,23 +53,33 @@ public class PasswordAdapter extends BaseAdapter{
         ViewHolder viewHolder = null;
         if (convertView == null) {
             view = inflater.inflate(R.layout.item_passwordnumber, null);
-            viewHolder = new ViewHolder(position,(Button) view.findViewById(R.id.backgroundimage));
+            viewHolder = new ViewHolder(position, (Button) view.findViewById(R.id.backgroundimage));
             viewHolder.mBackgroundBtn.setBackgroundResource(mImages[position]);
             view.setTag(viewHolder);
         } else {
-            view =  convertView;
-            viewHolder = (ViewHolder)view.getTag();
+            view = convertView;
+            viewHolder = (ViewHolder) view.getTag();
         }
         return view;
     }
 
-    class ViewHolder{
+
+    class ViewHolder {
         private Button mBackgroundBtn = null;
         private int mPostion = 0;
 
         public ViewHolder(final int postion, Button backgroundBtn) {
             mPostion = postion;
             this.mBackgroundBtn = backgroundBtn;
+            mBackgroundBtn.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mPostion == 11) {
+                        mAdapterCallback.subviewOnclick(mPostion, "long");
+                    }
+                    return true;
+                }
+            });
             mBackgroundBtn.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -76,9 +88,9 @@ public class PasswordAdapter extends BaseAdapter{
                     } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
                             motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
                         mBackgroundBtn.setBackgroundResource(mImages[mPostion]);
-                        mAdapterCallback.subviewOnclick(mPostion,"");
+                        mAdapterCallback.subviewOnclick(mPostion, "");
                     }
-                    return true;
+                    return false;
                 }
             });
         }

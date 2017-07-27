@@ -23,8 +23,16 @@
         android:src="@mipmap/call_outgoing_bright"
         android:visibility="gone" />
 
-    <include
-        layout="@layout/layout_call_waveview" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-45dp"
+        android:orientation="horizontal">
+
+        <include
+            layout="@layout/layout_call_waveview" />
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/call_middle"

@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
@@ -19,6 +18,7 @@ import android.view.View;
 
 import com.honeywell.homepanel.IConfigService;
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.EthernetManagerUtil;
 import com.honeywell.homepanel.Utils.Ifconfiger.Ifconfig;
 import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.Utils.webserver.TunaWebServer;
@@ -28,6 +28,7 @@ import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICa
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.RingFile.RingFileCopy;
 import com.honeywell.homepanel.ui.domain.EngineerModeBrush;
+import com.honeywell.homepanel.ui.domain.NetworkInfo;
 import com.honeywell.homepanel.ui.domain.NotificationStatisticInfo;
 import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
@@ -47,11 +48,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.cert.X509Certificate;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import static com.honeywell.homepanel.common.CommonJson.JSON_CALLTYPE_VALUE_OFFICE;
 
@@ -61,29 +60,16 @@ public class MainActivity extends BaseActivity {
     private View content_scrolling = null;
     private View mTopView = null;
     //Add by xc
-    private boolean screenSaverIsRun = false;
-    private float screenSaverStartTime = 60;
-    private Date lastInputEventTime;
-    private Handler mHandler01 = new Handler();
-    private Handler mHandler02 = new Handler();
-    private final int MILLISECOND_COUNT = 1000;
-    private long timePeriod;
-    private boolean screenSaverEnabled = false;
-    private Handler mScreenSaverTimerHandler = new Handler();
     public static UIBaseCallInfo CallBaseInfo = new UIBaseCallInfo();
     private ServiceConnection mIConfigServiceConnect = new DBOperationService();
     public IConfigService mIConfigService = null;
-
     public static int mHomePanelType = CommonData.HOMEPANEL_TYPE_MAIN;
     public static String mDongHao = "";
     public static String mSubPPhoneId = CommonData.CALL_PHONE_MAIN;
     public static final String mClientCert = "/data/security/ClientCert.pem";//"/sdcard/Download/ClientCert.pem";
-
     private static final int FTRESULTCODE = 126;
     private myBroadcastReceiver myBroadcastReceiver;
-
     public Context mContext;
-    private static int mIpdcOnline = 1;
     private Intent mNotificationServiceIntent;
 
     public static int mMessageFragPage = CommonData.MESSAGE_SELECT_EVENT;
@@ -194,9 +180,9 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String[] argu = {"-d", "/sdcard/Download/", "-p", "8443", "--tls"};
-        TunaWebServer.TunaMain(argu);
+        TunaWebServer.setupTunaWebServer(argu);
         argu = new String[]{"-d", "/sdcard/Download/", "-p", "8080"};
-        TunaWebServer.TunaMain(argu);
+        TunaWebServer.setupTunaWebServer(argu);
 
         mContext = this;
         // start watch dog
@@ -220,6 +206,7 @@ public class MainActivity extends BaseActivity {
         mCenterView = findViewById(R.id.main_frameLayout);
         content_scrolling = findViewById(R.id.content_scrolling);
 
+        LogMgr.e("MainActivity-->onCreate()");
 
         myBroadcastReceiver = new myBroadcastReceiver();
         IntentFilter ift = new IntentFilter();
@@ -233,7 +220,9 @@ public class MainActivity extends BaseActivity {
                 RingFileCopy.getInstance().CopyRingFileFromCard();
             }
         }).start();
+
     }
+
 
     @Override
     protected void onStart() {
@@ -252,17 +241,17 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setCenterViewBackground(int curScenario) {
-        if (curScenario == CommonData.SCENARIO_HOME
-                || curScenario == CommonData.SCENARIO_WAKEUP
-                || curScenario == CommonData.SCENARIO_SLEEP) {
-            if (mCenterView != null) {
-                mCenterView.setBackgroundColor(getResources().getColor(R.color.home_text_transparent));
-                TopStaus.getInstance(this).setArmStatus(CommonData.ARMSTATUS_DISARM);
-            }
-        } else if (curScenario == CommonData.SCENARIO_AWAY && mCenterView != null) {
-            TopStaus.getInstance(this).setArmStatus(CommonData.ARMSTATUS_ARM);
-            mCenterView.setBackgroundColor(getResources().getColor(R.color.home_text_transparent));
-        }
+//        if (curScenario == CommonData.SCENARIO_HOME
+//                || curScenario == CommonData.SCENARIO_WAKEUP
+//                || curScenario == CommonData.SCENARIO_SLEEP) {
+//            if (mCenterView != null) {
+//                mCenterView.setBackgroundColor(getResources().getColor(R.color.home_text_transparent));
+//                TopStaus.getInstance(this).setArmStatus(CommonData.ARMSTATUS_DISARM);
+//            }
+//        } else if (curScenario == CommonData.SCENARIO_AWAY && mCenterView != null) {
+//            TopStaus.getInstance(this).setArmStatus(CommonData.ARMSTATUS_ARM);
+//            mCenterView.setBackgroundColor(getResources().getColor(R.color.home_text_transparent));
+//        }
     }
 
     private class myBroadcastReceiver extends BroadcastReceiver {
@@ -281,22 +270,12 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void screenSaverReset() {
-        if (screenSaverEnabled == true) {
-            Log.d(TAG, "screenSaverReset: ");
-            screenSaverIsRun = false;
-            lastInputEventTime = new Date(System.currentTimeMillis());
-            mScreenSaverTimerHandler.postAtTime(mScreeSaverTimerUpdateTask, MILLISECOND_COUNT);
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         int mCurScenario = TopStaus.getInstance(getApplicationContext()).getCurScenario();
         setCenterViewBackground(mCurScenario);
         Log.d(TAG, "onResume() mCurScenario:" + mCurScenario);
-        screenSaverReset();
     }
 
 
@@ -376,16 +355,22 @@ public class MainActivity extends BaseActivity {
                 }
             }
             if (bUnreadVisitor) {
-                list.add(getHashMap(R.mipmap.home_visitor, getString(R.string.newvisitor)));
+                list.add(getHashMap(R.mipmap.home_visitors, getString(R.string.newvisitor)));
             }
 
             jsonObject.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGGET);
             jsonArray = CommonUtils.getJsonArrayFromDb(jsonObject, mIConfigService);
             if (null != jsonArray && jsonArray.length() > 0) {
-                list.add(getHashMap(R.mipmap.home_temperature, getString(R.string.newvoicemsg)));
+                list.add(getHashMap(R.mipmap.home_visitors, getString(R.string.newvoicemsg)));
             }
 
-            list.add(getHashMap(R.mipmap.home_event, getString(R.string.newpropertymsg)));
+            jsonObject.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONALARMGET);
+            jsonArray = CommonUtils.getJsonArrayFromDb(jsonObject, mIConfigService);
+            if (null != jsonArray && jsonArray.length() > 0) {
+                list.add(getHashMap(R.mipmap.home_visitors, getString(R.string.newalarmmsg)));
+            }
+
+            list.add(getHashMap(R.mipmap.home_visitors, getString(R.string.newpropertymsg)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -404,42 +389,7 @@ public class MainActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private Runnable mScreeSaverTimerUpdateTask = new Runnable() {
-        @Override
-        public void run() {
-            Date timeNow = new Date(System.currentTimeMillis());
-            timePeriod = (long) timeNow.getTime() - (long) lastInputEventTime.getTime();
-            float timePeriodSecond = ((float) timePeriod / MILLISECOND_COUNT);
-            Log.d(TAG, "run: timePeriodSecond = " + timePeriodSecond);
-            if (timePeriodSecond > screenSaverStartTime) {
-                if (screenSaverIsRun == false) {
-                    screenSaverIsRun = true;
-                    showScreenSaver();
-                }
-            }
-            mScreenSaverTimerHandler.postDelayed(mScreeSaverTimerUpdateTask, MILLISECOND_COUNT);// 1 sec update cycle
-        }
-    };
 
-    private void showScreenSaver() {
-        Random random = new Random();
-        int t = random.nextInt(100);
-        if (t % 2 == 0) {
-            Intent intent = new Intent(this, ScreensaverTextClockActivity.class);
-            startActivity(intent);
-        } else {
-            Intent intent = new Intent(this, Screensaverwallpaper.class);
-            startActivity(intent);
-        }
-    }
-
-    public void updateUserActionTime() {
-        Date timeNow = new Date(System.currentTimeMillis());
-        if (null != lastInputEventTime) {
-            timePeriod = timeNow.getTime() - lastInputEventTime.getTime();
-            lastInputEventTime.setTime(timeNow.getTime());
-        }
-    }
 
     @Override
     protected void onPause() {
@@ -448,7 +398,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        updateUserActionTime();
+//        updateUserActionTime();
         return super.dispatchKeyEvent(event);
     }
 
@@ -520,8 +470,43 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(EngineerModeBrush msg) {
-//        Log.d(TAG, "EngineerModeBrush() 1111111111111111 ");
         brushHomePanelConfig();
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void OnMessageEvent(NetworkInfo msg) {
+        EthernetManagerUtil.getInstance().setEthernetStaticMode();
+        if (msg != null)
+            savaNetWork(msg);
+    }
+
+
+    private void savaNetWork(NetworkInfo msg) {
+        try {
+            EthernetManagerUtil ethernetManagerUtil = EthernetManagerUtil.getInstance();
+            for (int i = 0; i < 5; i++) {
+                Thread.sleep(1000);
+                String ipAddress = ethernetManagerUtil.getIpAddress();
+                String netmask = ethernetManagerUtil.getNetMask();
+                String gateway = ethernetManagerUtil.getGateWay();
+                LogMgr.e("当前线程:" + Thread.currentThread().getName() + "  netmask:" + netmask + " gateway:" + gateway + " ipAddress:" + ipAddress + "  msg.getNetWorkIP():" + msg.getNetWorkIP());
+
+                if (!TextUtils.equals(ipAddress, msg.getNetWorkIP())) {
+                    ethernetManagerUtil.setIpAddress(msg.getNetWorkIP());
+                } else if (msg.getNetWorkGateway() != null && !TextUtils.equals(gateway, msg.getNetWorkGateway())) {
+                    ethernetManagerUtil.setGateWay(msg.getNetWorkGateway());
+                } else if (msg.getNetWorkMask() != null && !TextUtils.equals(netmask, msg.getNetWorkMask())) {
+                    ethernetManagerUtil.setNetMask(msg.getNetWorkMask());
+                } else {
+                    ethernetManagerUtil.delete();
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

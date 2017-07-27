@@ -5,15 +5,13 @@
     android:background="@color/white">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="45dp"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/call_animation"
-            layout="@layout/layout_call_animarion" />
+        <include layout="@layout/layout_call_waveview" />
 
     </LinearLayout>
 
@@ -44,10 +42,12 @@
         </FrameLayout>
 
         <com.honeywell.homepanel.ui.widget.HoneywellTextView
-            style="@style/HoneywellCallTextStyle"
+            style="@style/HoneywellTextDowndownStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp"
             android:layout_marginTop="5dp"
-            android:text="@string/indicator_board_cancel"
-            android:textColor="@color/black" />
+            android:text="@string/indicator_board_cancel" />
     </LinearLayout>
 </RelativeLayout>

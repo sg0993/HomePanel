@@ -143,7 +143,7 @@
 
     <style name="notification_underline">
         <item name="android:background">@color/button_activity_blue</item>
-        <item name="android:layout_height">6dp</item>
+        <item name="android:layout_height">3dp</item>
     </style>
 
     <style name="title_underline_gray">
@@ -212,7 +212,7 @@
 
     <style name="button_cancle">
         <item name="android:text">@string/indicator_board_cancel</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/dialog_button_text_color</item>
         <item name="android:textSize">@dimen/normal_front_size</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">0dp</item>
@@ -285,6 +285,14 @@
         <item name="com.honeywell.homepanel:textStyle">HONEYWELL_FONTS_BOOK</item>
     </style>
 
+
+    <style name="HoneywellGridViewStyle_Time">
+        <item name="android:textColor">@color/black_grey</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="com.honeywell.homepanel:textStyle">HONEYWELL_FONTS_BOLD</item>
+    </style>
+
     <style name="HoneywellButtonStyle">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">20sp</item>
@@ -317,6 +325,15 @@
         <item name="android:textSize">24sp</item>
         <item name="android:textAllCaps">false</item>
         <item name="com.honeywell.homepanel:textStyle">HONEYWELL_FONTS_BOLD</item>
+    </style>
+
+    <style name="HoneywellCallFailedStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black_grey</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="com.honeywell.homepanel:textStyle">HONEYWELL_FONTS_BOOK</item>
     </style>
 
 </resources>

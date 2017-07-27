@@ -73,7 +73,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: 11111111111111");
         mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_home, null);
         mPageAdaper = new PageViewAdapter(view,getActivity(),R.layout.mainpage01,R.layout.mainpage02,
@@ -119,19 +118,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         switch (mCurScenario){
             case CommonData.SCENARIO_HOME:
                 scenarioResId = R.string.scenario_home;
-                scenarioImgResId = R.mipmap.choose_scenario_home;
+                scenarioImgResId = R.mipmap.home_blue;
                 break;
             case CommonData.SCENARIO_AWAY:
                 scenarioResId = R.string.scenario_away;
-                scenarioImgResId = R.mipmap.choose_scenario_away;
+                scenarioImgResId = R.mipmap.away_red;
                 break;
             case CommonData.SCENARIO_SLEEP:
                 scenarioResId = R.string.scenario_sleep;
-                scenarioImgResId = R.mipmap.choose_scenario_sleeping;
+                scenarioImgResId = R.mipmap.sleep_red;
                 break;
             case CommonData.SCENARIO_WAKEUP:
                 scenarioResId = R.string.scenario_wakeup;
-                scenarioImgResId = R.mipmap.choose_scenario_weakup;
+                scenarioImgResId = R.mipmap.wake_up_red;
                 break;
             default:
                 break;
@@ -222,6 +221,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             }
             else if(hintStr.equals(getString(R.string.newvoicemsg))){
                 page = CommonData.MESSAGE_SELECT_VOICEMESSAGE;
+            }else if(hintStr.equals(getString(R.string.newalarmmsg))){
+                Log.d(TAG, "getMessageFragPage:hintStr2222222222:"+ hintStr+",page:"+page+",,1111111111");
+                page = CommonData.MESSAGE_SELECT_ALARMHITORY;
             }
             else{
                 page = CommonData.MESSAGE_SELECT_NOTIFICATION;
