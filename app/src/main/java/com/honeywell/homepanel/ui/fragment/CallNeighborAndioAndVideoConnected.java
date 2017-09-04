@@ -1,31 +1,28 @@
 package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.Utils.CycleProgressViewUtil;
 import com.honeywell.homepanel.Utils.LogMgr;
+import com.honeywell.homepanel.Utils.RelativeTimer;
+import com.honeywell.homepanel.Utils.RelativeTimerTask;
 import com.honeywell.homepanel.Utils.WaveViewUtil;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
-import com.honeywell.homepanel.deviceadapter.messages.elevator.callAuthorityAck;
 import com.honeywell.homepanel.ui.AudioVideoUtil.CameraWrapper;
 import com.honeywell.homepanel.ui.AudioVideoUtil.TextureViewListener;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoDecoderThread;
@@ -37,18 +34,10 @@ import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallTopBrusher;
 import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
-import com.honeywell.homepanel.ui.widget.CycleProgressView;
-import com.honeywell.homepanel.ui.widget.WaveView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONObject;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static com.honeywell.homepanel.R.id.floor;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -59,7 +48,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
     private String mTitle = "";
     private static final int MSG_SHOW_ELAPSE_TIME = 100;
     private static final String TAG = "CallNeighbor";
-    private Context mContext = null;
+    //private Context mContext = null;
 
 
     private CallBottomBrusher mCallBottomBrusher = null;
@@ -82,14 +71,38 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
     private TextView calltime_tv = null;
 
     private long lastTime = System.currentTimeMillis();
-    private Timer mTimer = null;
-    private TextureView mCameraTexture = null;
 
+    private RelativeTimer mTimer = null;
+    private RelativeTimerTask mTimerTask;
+    private TextureView mCameraTexture = null;
     /******For other video***********/
     private TextureView mDecoderView;
     private TextureViewListener mDecoderTextureListener;
     private VideoDecoderThread mDecThread;
     private UIBaseCallInfo uiBaseCallInfo = new UIBaseCallInfo();
+
+    private RelativeTimerTask mCalledTimeOutTask = new RelativeTimerTask("mCalledTimeOutTask"){
+        @Override
+        public void run() {
+            Log.d(TAG, "mCalledTimeOutTask.run() 1111111111111");
+            sendHungUpAndExitActivity();
+        }
+    };
+
+    private void cancelCalled(){
+        Log.d(TAG, "cancelCalled() 1111111111111111111111");
+        if(null != mCalledTimeOutTask){
+            mCalledTimeOutTask.cancel();
+            mCalledTimeOutTask = null;
+        }
+    }
+
+    private void sendHungUpAndExitActivity(){
+        Log.d(TAG, "sendHungUpAndExitActivity() 11111111111111111");
+        stopPlayRing();
+        UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
+        getActivity().finish();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,7 +119,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "CallNeighborAndioAndVideoConnected.onCreateView() 11111111");
-        mContext = getActivity();
+        //mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_neighbor_video_connected, null);
         status = ((CallActivity) getActivity()).getCurFragmentStatus();
         initViews(view);
@@ -116,18 +129,25 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
         }
         /*****For other audio show **************/
         startAudio(1.5);
+        RelativeTimer.getDefault().schedule(mCalledTimeOutTask,CommonData.CALLED_TIMEOUT);
         return view;
     }
 
     private void initElapseTimer() {
-        if (mTimer == null) {
-            mTimer = new Timer();
+        mTimer = RelativeTimer.getDefault();
+
+        if (mTimerTask == null) {
+            mTimerTask = new RelativeTimerTask("Call-Neigh") {
+                @Override
+                public void run() {
+                    myHandler.sendEmptyMessage(MSG_SHOW_ELAPSE_TIME);
+                }
+            };
         }
-        mTimer.schedule(new TimerTask() {
-            public void run() {
-                myHandler.sendEmptyMessage(MSG_SHOW_ELAPSE_TIME);
-            }
-        }, 1000, 1000);
+
+
+        mTimer.schedule(mTimerTask, 1000, 1000);
+
     }
 
     private void changeViewStatus() {
@@ -136,7 +156,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
             if (status == CommonData.CALL_CONNECTED_AUDIO_NETGHBOR) {
                 LogMgr.e("mCycleProgressView==null:" + (mCycleProgressView == null));
                 if (mCycleProgressView != null) {
-                    mCycleProgressView.startCycleProgressView(((CallActivity) getActivity()).mUnit);
+                    mCycleProgressView.startCycleProgressView(calculateString());
                     mCycleProgressView.setTextColor(getResources().getColor(R.color.black));
                 }
                 mCallTopView.setVisibility(View.GONE);
@@ -155,6 +175,39 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
         }
     }
 
+    private String calculateString() {
+        String strMUnit = "";
+        if (getActivity() != null && getActivity() instanceof CallActivity) {
+            strMUnit = ((CallActivity) getActivity()).mUnit;
+            LogMgr.d("strMUnit.length():" + strMUnit.length() + " strMUnit:" + strMUnit);
+            try {
+                if (!TextUtils.isEmpty(strMUnit) && strMUnit.length() >= 10) {
+                    String dong = strMUnit.substring(0, 4);
+                    String hao = strMUnit.substring(4, strMUnit.length());
+                    for (int i = 0; i < dong.length(); i++) {
+                        if (dong.charAt(i) != '0') {
+                            dong = dong.substring(i, dong.length());
+                            break;
+                        }
+                    }
+                    for (int j = 0; j < hao.length(); j++) {
+                        if (hao.charAt(j) != '0') {
+                            hao = hao.substring(j, hao.length());
+                            break;
+                        }
+                    }
+                    strMUnit = dong + "-" + hao;
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                strMUnit = ((CallActivity) getActivity()).mUnit;
+            }
+        }
+
+        return strMUnit;
+    }
+
     @Override
     public void onResume() {
         Log.d(TAG, "CallNeighborAndioAndVideoConnected.onResume() 11111111");
@@ -163,16 +216,26 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         EventBus.getDefault().unregister(this);
         //mAnimationBtusher.destroy();
         Log.d(TAG, "CallNeighborAndioAndVideoConnected.onDestroy() 11111111");
-        if (mTimer != null) {
-            mTimer.cancel();
+        mCycleProgressView.stopCycleProgressView();
+        if (myHandler.hasMessages(MSG_SHOW_ELAPSE_TIME)) {
+            myHandler.removeMessages(MSG_SHOW_ELAPSE_TIME);
         }
+        myHandler.removeCallbacksAndMessages(mTimerTask);
+
+        if (mTimerTask != null) {
+            mTimerTask.cancel();
+        }
+
+        mTimerTask = null;
         mTimer = null;
+
         /****For other video show***********/
         mDecThread.stop();
-        super.onDestroy();
+        cancelCalled();
     }
 
     public CallNeighborAndioAndVideoConnected(String title) {
@@ -189,9 +252,9 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
 
 
     private void initViews(View view) {
-        mWaveView = WaveViewUtil.getInstance(view, getActivity());
+        mWaveView = WaveViewUtil.getInstance(view, getActivity().getApplicationContext());
         if (mWaveView != null) mWaveView.stopWaveView();
-        mCycleProgressView = CycleProgressViewUtil.getInstance(view, getActivity());
+        mCycleProgressView = CycleProgressViewUtil.getInstance(view, getActivity().getApplicationContext());
         mCallTopView = view.findViewById(R.id.call_top);
 //        mCallAnimationView = view.findViewById(R.id.call_animation);
         mCallBottomBrusher.init(view);
@@ -244,13 +307,11 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
                 changeViewStatus();
                 break;
             case R.id.right_btn:
-                stopPlayRing();
-                UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
-                Log.d(TAG, "onClick right_btn finish Activity");
-                getActivity().finish();
+                cancelCalled();
+                sendHungUpAndExitActivity();
                 break;
             case R.id.top_btn:
-                Toast.makeText(mContext, "bottom_btn", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "bottom_btn", Toast.LENGTH_SHORT).show();
                 UISendCallMessage.requestForMute(MainActivity.CallBaseInfo);
                 break;
             case R.id.bottom_btn:
@@ -275,7 +336,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
                 //start video
                 startVideoGet();
             } else {
-                Toast.makeText(getActivity(), "VideoAuth failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "VideoAuth failed", Toast.LENGTH_SHORT).show();
                 System.out.println("SUISVideoAuthMessageRsp failed");
             }
         }
@@ -293,7 +354,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
                 String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");
                 String aliasName = msg.optString(CommonJson.JSON_ALIASNAME_KEY, "");
             } else {
-                Toast.makeText(getActivity(), "CallElevator failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "CallElevator failed", Toast.LENGTH_SHORT).show();
                 System.out.println("SUISCallElevatorMessageRsp failed");
             }
         }
@@ -340,6 +401,7 @@ public class CallNeighborAndioAndVideoConnected extends CallBaseFragment impleme
         Log.d(TAG, "SUISCallTerminatedMessageEve = " + action.equals(CommonJson.JSON_ACTION_VALUE_EVENT));
         if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
             Log.d(TAG, "SUISCallTerminatedMessageEve finish Activity");
+            cancelCalled();
             getActivity().finish();
         }
     }

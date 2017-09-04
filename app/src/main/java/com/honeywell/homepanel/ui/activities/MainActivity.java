@@ -1,6 +1,5 @@
 package com.honeywell.homepanel.ui.activities;
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.hardware.display.DisplayManagerGlobal;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -18,25 +18,23 @@ import android.view.View;
 
 import com.honeywell.homepanel.IConfigService;
 import com.honeywell.homepanel.R;
-import com.honeywell.homepanel.Utils.EthernetManagerUtil;
-import com.honeywell.homepanel.Utils.Ifconfiger.Ifconfig;
+import com.honeywell.homepanel.Utils.IConfigServiceManageUtil;
 import com.honeywell.homepanel.Utils.LogMgr;
-import com.honeywell.homepanel.Utils.webserver.TunaWebServer;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
 import com.honeywell.homepanel.common.utils.CommonUtils;
+import com.honeywell.homepanel.ui.RingFile.LogoFileCopy;
 import com.honeywell.homepanel.ui.RingFile.RingFileCopy;
 import com.honeywell.homepanel.ui.domain.EngineerModeBrush;
-import com.honeywell.homepanel.ui.domain.NetworkInfo;
 import com.honeywell.homepanel.ui.domain.NotificationStatisticInfo;
 import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.fragment.HomeFragment;
-import com.honeywell.homepanel.ui.services.NotificationService;
+import com.honeywell.homepanel.ui.services.WidgetInfoService;
+import com.honeywell.homepanel.ui.uicomponent.UIEventBusCommonCmd;
 import com.honeywell.homepanel.watchdog.WatchDogService;
 
-import org.bouncycastle.openssl.PEMReader;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
@@ -44,10 +42,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +63,6 @@ public class MainActivity extends BaseActivity {
     public static final String mClientCert = "/data/security/ClientCert.pem";//"/sdcard/Download/ClientCert.pem";
     private static final int FTRESULTCODE = 126;
     private myBroadcastReceiver myBroadcastReceiver;
-    public Context mContext;
     private Intent mNotificationServiceIntent;
 
     public static int mMessageFragPage = CommonData.MESSAGE_SELECT_EVENT;
@@ -78,10 +71,13 @@ public class MainActivity extends BaseActivity {
         Log.d(TAG, "checkAndStartFTApplication: ");
         File file = new File(mClientCert);
         if (file.exists()) {
-            String macAddress = getMacAddressFromCert(file);
-            if (macAddress != null) {
-                Ifconfig.setEthernetMacAddress(macAddress);
-            }
+            /*String macAddr = getMacAddressFromCert(file);
+            String curMac = EthernetManagerUtil
+                    .getInstance()
+                    .getMACAddress();
+            if (macAddr != null && !curMac.equals(macAddr)) {
+                Ifconfig.setEthernetMacAddress(macAddr);
+            }*/
             return false;
         }
 
@@ -100,7 +96,7 @@ public class MainActivity extends BaseActivity {
         return true;
     }
 
-    private String getMacAddressFromCert(File file) {
+ /*   private String getMacAddressFromCert(File file) {
         /// read file
         InputStreamReader inputStream = null;
         try {
@@ -121,6 +117,7 @@ public class MainActivity extends BaseActivity {
             e.printStackTrace();
         } finally {
             try {
+                inputStream.close();
                 pemReader.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -164,7 +161,7 @@ public class MainActivity extends BaseActivity {
         Log.d(TAG, "getMacAddressFromCert: mac address is " + macAddress);
 
         return macAddress;
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -179,30 +176,20 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String[] argu = {"-d", "/sdcard/Download/", "-p", "8443", "--tls"};
-        TunaWebServer.setupTunaWebServer(argu);
-        argu = new String[]{"-d", "/sdcard/Download/", "-p", "8080"};
-        TunaWebServer.setupTunaWebServer(argu);
-
-        mContext = this;
         // start watch dog
-        /*if (!checkAndStartFTApplication()) {
+        if (!checkAndStartFTApplication()) {
             startService(new Intent(this, WatchDogService.class));
             //bind database config service
+            IConfigServiceManageUtil.getInstance(this);
             CommonUtils.startAndBindService(this, CommonData.ACTION_CONFIG_SERVICE, mIConfigServiceConnect);// using getContext()???
-        }*/
+        }
 
-        startService(new Intent(this, WatchDogService.class));
-        //bind database config service
-        CommonUtils.startAndBindService(this, CommonData.ACTION_CONFIG_SERVICE, mIConfigServiceConnect);// using getContext()???
-
-
-        mTopView = findViewById(R.id.top_status);//for test
+      /*  mTopView = findViewById(R.id.top_status);//for test
         mTopView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
             }
-        });
+        });*/
         mCenterView = findViewById(R.id.main_frameLayout);
         content_scrolling = findViewById(R.id.content_scrolling);
 
@@ -218,21 +205,22 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 RingFileCopy.getInstance().CopyRingFileFromCard();
+                LogoFileCopy.getInstance().CopyLogoFileFromCard();
             }
         }).start();
-
+        DisplayManagerGlobal.getInstance().requestScreenOff(false);
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!isServiceWork()) {
-            if (mNotificationServiceIntent == null) {
-                mNotificationServiceIntent = new Intent(this, NotificationService.class);
-                startService(mNotificationServiceIntent);
-            }
-        }
+//        if (!isServiceWork()) {
+//            if (mNotificationServiceIntent == null) {
+//                mNotificationServiceIntent = new Intent(this, NotificationService.class);
+//                startService(mNotificationServiceIntent);
+//            }
+//        }
     }
 
     @Override
@@ -262,6 +250,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void run() {
                         RingFileCopy.getInstance().CopyRingFileFromCard();
+                        LogoFileCopy.getInstance().CopyLogoFileFromCard();
                     }
                 }).start();
                 return;
@@ -348,7 +337,11 @@ public class MainActivity extends BaseActivity {
             JSONArray jsonArray = CommonUtils.getJsonArrayFromDb(jsonObject, mIConfigService);
             if (null != jsonArray) {
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    if (!TextUtils.isEmpty(jsonArray.getJSONObject(i).optString(CommonData.JSON_KEY_VIDEONAME))) {
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    String evT = obj.optString(CommonData.JSON_KEY_EVENTTYPE);
+                    String dSta = obj.optString(CommonData.JSON_KEY_DATASTATUS);
+                    if (!TextUtils.isEmpty(evT) && (evT.equals(CommonData.JSON_VALUE_VIDEO) || evT.equals(CommonData.JSON_VALUE_VISITOR))
+                            && !TextUtils.isEmpty(dSta) && dSta.equals(CommonData.DATASTATUS_UNREAD)) {
                         bUnreadVisitor = true;
                         break;
                     }
@@ -356,28 +349,32 @@ public class MainActivity extends BaseActivity {
             }
             if (bUnreadVisitor) {
                 list.add(getHashMap(R.mipmap.home_visitors, getString(R.string.newvisitor)));
-            }
+            } else list.add(getHashMap(R.mipmap.home_visitors, getString(R.string.novisitor)));
 
             jsonObject.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONVOICEMSGGET);
             jsonArray = CommonUtils.getJsonArrayFromDb(jsonObject, mIConfigService);
             if (null != jsonArray && jsonArray.length() > 0) {
-                list.add(getHashMap(R.mipmap.home_visitors, getString(R.string.newvoicemsg)));
-            }
+                list.add(getHashMap(R.mipmap.home_voice, getString(R.string.newvoicemsg)));
+            } else list.add(getHashMap(R.mipmap.home_voice, getString(R.string.novoicemsg)));
 
-            jsonObject.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONALARMGET);
-            jsonArray = CommonUtils.getJsonArrayFromDb(jsonObject, mIConfigService);
-            if (null != jsonArray && jsonArray.length() > 0) {
-                list.add(getHashMap(R.mipmap.home_visitors, getString(R.string.newalarmmsg)));
-            }
+//            jsonObject.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONALARMGET);
+//            jsonArray = CommonUtils.getJsonArrayFromDb(jsonObject, mIConfigService);
+//            if (null != jsonArray && jsonArray.length() > 0) {
+//                list.add(getHashMap(R.mipmap.info, getString(R.string.newalarmmsg)));
+//            } else list.add(getHashMap(R.mipmap.info, getString(R.string.noalarmmsg)));
 
-            list.add(getHashMap(R.mipmap.home_visitors, getString(R.string.newpropertymsg)));
+            if (WidgetInfoService.newNotificationFlag == true) {
+                if (!list.contains(getHashMap(R.mipmap.home_property, getString(R.string.newpropertymsg)))) {
+                    list.add(getHashMap(R.mipmap.home_property, getString(R.string.newpropertymsg)));
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
     }
 
-    private Map<String, Object> getHashMap(int image, String text) {
+    public Map<String, Object> getHashMap(int image, String text) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(HomeFragment.MAP_KEY_IMG, image);
         map.put(HomeFragment.MAP_KEY_TEXT, text);
@@ -388,7 +385,6 @@ public class MainActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return super.onKeyDown(keyCode, event);
     }
-
 
 
     @Override
@@ -413,17 +409,19 @@ public class MainActivity extends BaseActivity {
             Log.d(TAG, "onServiceConnected: serviceClassName=" + serviceClassName);
             if (serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)) {
                 mIConfigService = IConfigService.Stub.asInterface(service);
-                clearDeviceConnectionStatusCB();
-                brushHomePanelConfig();
-                NotificationStatisticInfo temp = NotificationStatisticInfo.getInstance();
-                temp.getDataCountFromDB(mIConfigService);
-                if (temp.hasUnreadMsg()) {
-                    updateIndicator();
-                }
+                if (mIConfigService != null) {
+                    clearDeviceConnectionStatusCB();
+                    brushHomePanelConfig();
+                    NotificationStatisticInfo temp = NotificationStatisticInfo.getInstance();
+                    temp.getDataCountFromDB(mIConfigService);
+                    if (temp.hasUnreadMsg()) {
+                        updateIndicator();
+                    }
 
-                HomeFragment homeFragement = (HomeFragment) mFragments.get(CommonData.LEFT_SELECT_HOME);
-                if (null != homeFragement) {
-                    homeFragement.eventBrush();
+                    HomeFragment homeFragement = (HomeFragment) mFragments.get(CommonData.LEFT_SELECT_HOME);
+                    if (null != homeFragement) {
+                        homeFragement.eventBrush();
+                    }
                 }
             }
         }
@@ -473,47 +471,18 @@ public class MainActivity extends BaseActivity {
         brushHomePanelConfig();
     }
 
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void OnMessageEvent(NetworkInfo msg) {
-        EthernetManagerUtil.getInstance().setEthernetStaticMode();
-        if (msg != null)
-            savaNetWork(msg);
-    }
-
-
-    private void savaNetWork(NetworkInfo msg) {
-        try {
-            EthernetManagerUtil ethernetManagerUtil = EthernetManagerUtil.getInstance();
-            for (int i = 0; i < 5; i++) {
-                Thread.sleep(1000);
-                String ipAddress = ethernetManagerUtil.getIpAddress();
-                String netmask = ethernetManagerUtil.getNetMask();
-                String gateway = ethernetManagerUtil.getGateWay();
-                LogMgr.e("当前线程:" + Thread.currentThread().getName() + "  netmask:" + netmask + " gateway:" + gateway + " ipAddress:" + ipAddress + "  msg.getNetWorkIP():" + msg.getNetWorkIP());
-
-                if (!TextUtils.equals(ipAddress, msg.getNetWorkIP())) {
-                    ethernetManagerUtil.setIpAddress(msg.getNetWorkIP());
-                } else if (msg.getNetWorkGateway() != null && !TextUtils.equals(gateway, msg.getNetWorkGateway())) {
-                    ethernetManagerUtil.setGateWay(msg.getNetWorkGateway());
-                } else if (msg.getNetWorkMask() != null && !TextUtils.equals(netmask, msg.getNetWorkMask())) {
-                    ethernetManagerUtil.setNetMask(msg.getNetWorkMask());
-                } else {
-                    ethernetManagerUtil.delete();
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(UIEventBusCommonCmd cmd) {
+        Log.d(TAG, "OnMessageEvent: ");
+        if (cmd.getViewIdxSwitchTo() >= 0) {
+            switchForFragement(cmd.getViewIdxSwitchTo());
         }
     }
 
-
-    public boolean isServiceWork() {
+/*    private boolean isServiceWork() {
         boolean isWork = false;
         ActivityManager myAM = (ActivityManager)
-                getSystemService(Context.ACTIVITY_SERVICE);
+                getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningServiceInfo> myList = myAM.getRunningServices(40);
         if (myList.size() <= 0) {
             return false;
@@ -526,5 +495,25 @@ public class MainActivity extends BaseActivity {
             }
         }
         return isWork;
+    }*/
+
+    /**
+     * jump to specified view
+     * 0: home 1:scenario 2:device 3:message 4:dial 5:setting
+     */
+    public void jumpToSpecifiedView(int pageNumber) {
+        if (pageNumber < 0 || pageNumber > 5) {
+            return;
+        }
+//        public static final int LEFT_SELECT_HOME = 0;
+//        public static final int LEFT_SELECT_SCENARIOEDIT = 1;
+//        public static final int LEFT_SELECT_DEVICEEDIT = 2;
+//        public static final int LEFT_SELECT_MESSAGE = 3;
+//        public static final int LEFT_SELECT_DIAL = 4;
+//        public static final int LEFT_SELECT_SETTING = 5;
+
+
     }
+
+
 }

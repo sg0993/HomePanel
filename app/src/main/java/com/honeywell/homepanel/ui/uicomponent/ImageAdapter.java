@@ -32,7 +32,7 @@ public class ImageAdapter extends BaseAdapter {
         mTextes = textes;
         mContext = c;
         mPosition = position;
-        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) mContext.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     //获取图片的数量

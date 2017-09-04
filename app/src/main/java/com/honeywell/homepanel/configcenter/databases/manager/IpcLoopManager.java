@@ -196,6 +196,9 @@ public class IpcLoopManager {
             String user  = loopMapObject.optString(CommonData.JSON_USERNAME_KEY);
             String pwd  = loopMapObject.optString(CommonJson.JSON_PASSWORD_KEY);
             IpcLoop loop = getByUuid(uuid);
+            if(null == loop){
+                continue;
+            }
             if(loopMapObject.has(CommonJson.JSON_ALIASNAME_KEY)){
                 loop.mName = name;
                 DbCommonUtil.updateCommonName(mContext,uuid,name, 1);

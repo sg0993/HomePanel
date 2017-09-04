@@ -16,7 +16,6 @@ import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
 import com.honeywell.homepanel.configcenter.databases.domain.CommonDevice;
 import com.honeywell.homepanel.configcenter.databases.domain.RelayLoop;
 import com.honeywell.homepanel.configcenter.databases.domain.ZoneLoop;
-import com.honeywell.homepanel.logserver.LogDatabaseHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -282,6 +281,9 @@ public class DbCommonUtil {
         switch (tableInt){
             case ConfigConstant.TABLE_ZONELOOP_INT:
                 ZoneLoop zoneLoop = ZoneLoopManager.getInstance(mContext).getByPrimaryId(primaryId);
+                if(null == zoneLoop){
+                    break;
+                }
                 jsonObject.put(CommonJson.JSON_UUID_KEY,zoneLoop.mUuid);
                 jsonObject.put(CommonJson.JSON_ALIASNAME_KEY,zoneLoop.mName);
                 jsonObject.put(CommonData.JSON_KEY_ZONETYPE,zoneLoop.mZoneType);
@@ -291,6 +293,9 @@ public class DbCommonUtil {
                 break;
             case ConfigConstant.TABLE_RELAYLOOP_INT:
                 RelayLoop relayLoop = RelayLoopManager.getInstance(mContext).getByPrimaryId(primaryId);
+                if(null == relayLoop){
+                    break;
+                }
                 jsonObject.put(CommonJson.JSON_UUID_KEY,relayLoop.mUuid);
                 jsonObject.put(CommonJson.JSON_ALIASNAME_KEY,relayLoop.mName);
                 jsonObject.put(CommonData.JSON_KEY_LOOP,relayLoop.mLoop);
@@ -334,9 +339,9 @@ public class DbCommonUtil {
             return  _id;
         }
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(tableName, null, null, null, null, null, LogDatabaseHelper.COLUMN_ID +" asc", null);
+        Cursor cursor = db.query(tableName, null, null, null, null, null, ConfigConstant.COLUMN_ID +" asc", null);
         while(cursor.moveToNext()){
-            _id = cursor.getLong(cursor.getColumnIndex(LogDatabaseHelper.COLUMN_ID));
+            _id = cursor.getLong(cursor.getColumnIndex(ConfigConstant.COLUMN_ID));
             break;
         }
         cursor.close();
@@ -389,6 +394,9 @@ public class DbCommonUtil {
 
     public static void updateCommonName(Context context,String uuid,String name, int enable) {
         CommonDevice commonDevice = CommonDeviceManager.getInstance(context).getByUuid(uuid);
+        if(null == commonDevice){
+            return;
+        }
         commonDevice.mName = name;
         commonDevice.mEnabled = enable;
 

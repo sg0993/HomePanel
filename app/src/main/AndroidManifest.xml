@@ -27,16 +27,15 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.SET_TIME_ZONE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.OVERRIDE_WIFI_CONFIG" />
     <uses-permission android:name="android.permission.RESTART_PACKAGES" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.camera.flash" />
-
     <uses-permission android:name="android.permission.SET_TIME" />
 
     <application
@@ -61,6 +60,11 @@
         </activity>
         <activity
             android:name=".ui.activities.ScenarioSelectActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" />
+        <activity
+            android:name=".ui.activities.UpdateHintActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" />
@@ -341,14 +345,12 @@
         <activity
             android:name=".ui.activities.HoneywellHomeUnbinding"
             android:launchMode="singleInstance"
-            android:process="@string/cloudservice"
             android:screenOrientation="landscape"
             android:taskAffinity="@string/bindtask"
-            android:theme="@style/Theme.notAnimation" />
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".ui.activities.HoneywellHomeBinding"
             android:launchMode="singleInstance"
-            android:process="@string/cloudservice"
             android:screenOrientation="landscape"
             android:taskAffinity="@string/bindtask"
             android:theme="@style/Theme.notAnimation" />
@@ -356,13 +358,13 @@
             android:name=".ui.activities.DeviceBindActivity"
             android:label="@string/title_activity_device_bind"
             android:launchMode="singleInstance"
-            android:process="@string/cloudservice"
+            android:process=":cloudservice"
             android:taskAffinity="@string/bindtask"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity
             android:name=".ui.activities.HoneywellHomePasswordEnterActivity"
             android:launchMode="singleInstance"
-            android:process="@string/cloudservice"
+            android:process=":cloudservice"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.notAnimation" />
         <activity
@@ -386,7 +388,7 @@
         <service
             android:name=".call.CallService"
             android:exported="false"
-            android:process="@string/callfsm">
+            android:process=":callfsm">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.call.CallService"
@@ -396,7 +398,7 @@
         <service
             android:name=".cloud.CloudConnService"
             android:exported="false"
-            android:process="@string/cloudservice">
+            android:process=":cloudservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.cloud.CloudConnService"
@@ -406,7 +408,7 @@
         <service
             android:name=".community.CommunityService"
             android:exported="false"
-            android:process="@string/communityservice">
+            android:process=":communityservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.community.CommunityService"
@@ -415,7 +417,8 @@
         </service>
         <service
             android:name=".configcenter.ConfigService"
-            android:process="@string/configservice">
+            android:exported="false"
+            android:process=":configservice">
             <intent-filter>
                 <action android:name="com.honeywell.homepanel.configcenter.ConfigService" />
             </intent-filter>
@@ -423,7 +426,7 @@
         <service
             android:name=".control.ControlService"
             android:exported="false"
-            android:process="@string/controlservice">
+            android:process=":controlservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.control.ControlService"
@@ -433,27 +436,17 @@
         <service
             android:name=".deviceadapter.DeviceAdapterService"
             android:exported="false"
-            android:process="@string/devicemanage">
+            android:process=":devicemanage">
             <intent-filter>
                 <action
-                    android:name="com.honeywell.homepanel.deviceadapter.DeviceManageService"
-                    android:exported="false" />
-            </intent-filter>
-        </service>
-        <service
-            android:name=".ipc.IPCService"
-            android:exported="false"
-            android:process="@string/ipcservice">
-            <intent-filter>
-                <action
-                    android:name="com.honeywell.homepanel.ipc.IPCService"
+                    android:name="com.honeywell.homepanel.deviceadapter.DeviceAdapterService"
                     android:exported="false" />
             </intent-filter>
         </service>
         <service
             android:name=".ipdc.IPDCService"
             android:exported="false"
-            android:process="@string/ipdcservice">
+            android:process=":ipdcservice">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.ipdc.IPDCService"
@@ -461,18 +454,9 @@
             </intent-filter>
         </service>
         <service
-            android:name=".logserver.LogService"
-            android:exported="false"
-            android:process="@string/logservice">
-            <intent-filter>
-                <action
-                    android:name="com.honeywell.homepanel.logserver.LogService"
-                    android:exported="false" />
-            </intent-filter>
-        </service>
-        <service
             android:name=".pbx.PBXService"
-            android:process="@string/pbxservice">
+            android:exported="false"
+            android:process=":pbxservice">
             <intent-filter>
                 <action android:name="com.honeywell.homepanel.pbx.PBXService" />
             </intent-filter>
@@ -482,17 +466,17 @@
             android:exported="false">
             <intent-filter>
                 <action
-                    android:name="com.honeywell.homepanel.subphoneservice.SubPhoneClientService"
+                    android:name="com.honeywell.homepanel.subphoneservice.SubphoneClient.SubPhoneClientService"
                     android:exported="false" />
             </intent-filter>
         </service>
         <service
             android:name=".subphoneservice.SubphoneServer.SubPhoneServerService"
             android:exported="false"
-            android:process="@string/subphoneserver">
+            android:process=":subphoneserver">
             <intent-filter>
                 <action
-                    android:name="com.honeywell.homepanel.subphoneservice.SubPhoneServerService"
+                    android:name="com.honeywell.homepanel.subphoneservice.SubphoneServer.SubPhoneServerService"
                     android:exported="false" />
             </intent-filter>
         </service>
@@ -508,17 +492,17 @@
         <service
             android:name=".upgrade.upgrader.UpgraderService"
             android:exported="false"
-            android:process="@string/upgrade">
+            android:process=":upgrade">
             <intent-filter>
                 <action
-                    android:name="com.honeywell.homepanel.upgrade.UpgradeService"
+                    android:name="com.honeywell.homepanel.upgrade.upgrader.UpgraderService"
                     android:exported="false" />
             </intent-filter>
         </service>
         <service
             android:name=".watchdog.WatchDogService"
-            android:exported="true"
-            android:process="@string/watchdog">
+            android:exported="false"
+            android:process=":watchdog">
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.watchdog.WatchDogService"
@@ -538,10 +522,10 @@
         <service
             android:name=".sensingservice.SensingService"
             android:exported="false"
-            android:process="@string/security">
+            android:process=":security">
             <intent-filter>
                 <action
-                    android:name="com.honeywell.homepanel.security.SecurityService"
+                    android:name="com.honeywell.homepanel.sensingservice.SensingService"
                     android:exported="false" />
             </intent-filter>
         </service>
@@ -551,7 +535,7 @@
             android:process=":miscservice">
             <intent-filter>
                 <action
-                    android:name="com.honeywell.homepanel.miscservice.discovery.DiscoveryService"
+                    android:name="com.honeywell.homepanel.miscservices.discovery.DiscoveryService"
                     android:exported="false" />
             </intent-filter>
         </service>
@@ -575,8 +559,22 @@
                     android:exported="false" />
             </intent-filter>
         </service>
-        <service android:name=".ui.services.WidgetInfoService" />
-        <service android:name=".ui.services.NotificationService" />
+
+        <service android:name=".ui.services.WidgetInfoService">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.ui.services.WidgetInfoService"
+                    android:exported="false" />
+            </intent-filter>
+        </service>
+
+        <service android:name=".ui.services.NotificationService">
+            <intent-filter>
+                <action
+                    android:name="com.honeywell.homepanel.ui.services.NotificationService"
+                    android:exported="false" />
+            </intent-filter>
+        </service>
 
         <receiver android:name=".ui.uicomponent.NetworkConnectChangedReceiver">
             <intent-filter>

@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:orientation="horizontal">
+
             <include layout="@layout/dial_btns" />
         </LinearLayout>
     </LinearLayout>
@@ -28,5 +29,5 @@
         android:id="@+id/fragment_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout1"></FrameLayout>
+        android:layout_below="@+id/linearLayout1" />
 </RelativeLayout>

@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="horizontal">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingTop="15dp">
+
     <ImageView
-        android:layout_gravity="center_vertical"
         android:id="@+id/img"
-        android:src="@mipmap/home_visitors"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:src="@mipmap/home_visitors" />
+
     <com.honeywell.homepanel.ui.widget.HoneywellTextView
         android:id="@+id/event_tv"
-        android:layout_marginLeft="10dp"
-        android:gravity="center_vertical"
+        style="@style/HoneywellTextLightStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
         android:ellipsize="end"
+        android:gravity="center"
         android:lines="2"
-        style="@style/HoneywellTextLightStyle"
-        android:text="@string/change_lock"/>
+        android:text="@string/change_lock" />
 </LinearLayout>

@@ -6,9 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.honeywell.homepanel.R;
-
-import java.util.Timer;
-import java.util.TimerTask;
+import com.honeywell.homepanel.Utils.RelativeTimer;
+import com.honeywell.homepanel.Utils.RelativeTimerTask;
 
 /**
  * Created by H135901 on 2/23/2017.
@@ -23,7 +22,7 @@ public class CallAnimationBrusher {
     private int mCallDimRes = 0;
 
     private View mTopView = null;
-    private Timer mTimer = new Timer();
+    private RelativeTimerTask mElapseTask;
 
     private ImageView call_left = null;
     private ImageView call_middle = null;
@@ -52,14 +51,13 @@ public class CallAnimationBrusher {
         call_middle = (ImageView) mTopView.findViewById(R.id.call_middle);
         call_right = (ImageView) mTopView.findViewById(R.id.call_right);;
 
-        if(null == mTimer){
-            mTimer = new Timer();
-        }
-        mTimer.schedule(new TimerTask() {
+        mElapseTask = new RelativeTimerTask("") {
             public void run() {
                 mHandler.sendEmptyMessage(WHAT_TIME_FRESH);
             }
-        },TIME_FRESH,TIME_FRESH);
+        };
+
+        RelativeTimer.getDefault().schedule(mElapseTask,TIME_FRESH,TIME_FRESH);
     }
 
     private void setImageViewSrc() {
@@ -86,8 +84,11 @@ public class CallAnimationBrusher {
     }
 
     public void destroy(){
-        mTimer.cancel();
         mCount = 0;
-        mTimer = null;
+
+        if (mElapseTask != null) {
+            mElapseTask.cancel();
+            mElapseTask = null;
+        }
     }
 }

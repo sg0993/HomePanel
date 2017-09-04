@@ -12,10 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
-import com.honeywell.homepanel.Utils.EventBusWrapper;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUINotification;
@@ -26,9 +24,7 @@ import com.honeywell.homepanel.ui.domain.NotificationStatisticInfo;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +83,6 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     }
 
 
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_message, null);
         initData();
@@ -108,6 +103,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
 
     @Override
     public void onDestroy() {
+        tabBtnList.clear();
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -120,7 +116,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
         UIMessagesNotification.UIGetVoiceMsgListMessageReq dataReq = new UIMessagesNotification.UIGetVoiceMsgListMessageReq();
     }
 
-    private void getEventCount() {
+    /*private void getEventCount() {
         UIMessagesNotification.UIGetEventsListMessageReq dataReq = new UIMessagesNotification.UIGetEventsListMessageReq();
         UUID msgid = UUID.randomUUID();
         try {
@@ -132,9 +128,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
             e.printStackTrace();
         }
         EventBusWrapper.emitMessageToEventBus(dataReq);
-    }
+    }*/
 
-    private void getAlarmCount() {
+   /* private void getAlarmCount() {
         UIMessagesNotification.UIGetAlarmListMessageReq dataReq = new UIMessagesNotification.UIGetAlarmListMessageReq();
         UUID msgid = UUID.randomUUID();
         try {
@@ -146,9 +142,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
             e.printStackTrace();
         }
         EventBusWrapper.emitMessageToEventBus(dataReq);
-    }
+    }*/
 
-    private void getNotificationCount() {
+/*    private void getNotificationCount() {
         UIMessagesNotification.UIGetBulletinListMessageReq dataReq = new UIMessagesNotification.UIGetBulletinListMessageReq();
         UUID msgid = UUID.randomUUID();
         try {
@@ -160,9 +156,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
             e.printStackTrace();
         }
         EventBusWrapper.emitMessageToEventBus(dataReq);
-    }
+    }*/
 
-    private void getVoiceMsgCount() {
+   /* private void getVoiceMsgCount() {
         UIMessagesNotification.UIGetVoiceMsgListMessageReq dataReq = new UIMessagesNotification.UIGetVoiceMsgListMessageReq();
         UUID msgid = UUID.randomUUID();
         try {
@@ -174,7 +170,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
             e.printStackTrace();
         }
         EventBusWrapper.emitMessageToEventBus(dataReq);
-    }
+    }*/
 
 
     public MessageFragment(String title) {
@@ -187,51 +183,58 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
     }
 
     private void setSelect(boolean bFirst, int i) {
-        FragmentManager fm = getFragmentManager();
+//        FragmentManager fm = getFragmentManager();
+
+        // TODO: 2017/7/26  luoxiang
+        FragmentManager fm = getChildFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
 
         //hideFragment(transaction);
         setStyleById(i);
         //set img to bright color
-        switch (i) {
-            case CommonData.MESSAGE_SELECT_EVENT:
-                if (mTabFragEvent == null || bFirst) {
-                    mTabFragEvent = new FragmentEvent();
-                    mTabFragEvent.setUpdateTitleCB(this);
-                    transaction.replace(R.id.id_msg_body, mTabFragEvent);
-                } else {
-                    transaction.replace(R.id.id_msg_body, mTabFragEvent);
-                }
-                break;
-            case CommonData.MESSAGE_SELECT_ALARMHITORY:
-                if (mTabFragAlarm == null || bFirst) {
-                    mTabFragAlarm = new FragmentAlarm();
-                    mTabFragAlarm.setUpdateTitleCB(this);
-                    transaction.replace(R.id.id_msg_body, mTabFragAlarm);
-                } else {
-                    transaction.replace(R.id.id_msg_body, mTabFragAlarm);
-                }
-                break;
-            case CommonData.MESSAGE_SELECT_NOTIFICATION:
-                if (mTabFragNotify == null || bFirst) {
-                    mTabFragNotify = new FragmentNofity();
-                    mTabFragNotify.setUpdateTitleCB(this);
-                    transaction.replace(R.id.id_msg_body, mTabFragNotify);
-                } else {
-                    transaction.replace(R.id.id_msg_body, mTabFragNotify);
-                }
-                break;
-            case CommonData.MESSAGE_SELECT_VOICEMESSAGE:
-                if (mTabFragVoice == null || bFirst) {
-                    mTabFragVoice = new FragmentVoice();
-                    mTabFragVoice.setUpdateTitleCB(this);
-                    transaction.replace(R.id.id_msg_body, mTabFragVoice);
-                } else {
-                    transaction.replace(R.id.id_msg_body, mTabFragVoice);
-                }
-                break;
+
+        // TODO: 2017/7/26  luoxiang
+        if (R.id.id_msg_body != 0) {
+            switch (i) {
+                case CommonData.MESSAGE_SELECT_EVENT:
+                    if (mTabFragEvent == null || bFirst) {
+                        mTabFragEvent = new FragmentEvent();
+                        mTabFragEvent.setUpdateTitleCB(this);
+                        transaction.replace(R.id.id_msg_body, mTabFragEvent);
+                    } else {
+                        transaction.replace(R.id.id_msg_body, mTabFragEvent);
+                    }
+                    break;
+                case CommonData.MESSAGE_SELECT_ALARMHITORY:
+                    if (mTabFragAlarm == null || bFirst) {
+                        mTabFragAlarm = new FragmentAlarm();
+                        mTabFragAlarm.setUpdateTitleCB(this);
+                        transaction.replace(R.id.id_msg_body, mTabFragAlarm);
+                    } else {
+                        transaction.replace(R.id.id_msg_body, mTabFragAlarm);
+                    }
+                    break;
+                case CommonData.MESSAGE_SELECT_NOTIFICATION:
+                    if (mTabFragNotify == null || bFirst) {
+                        mTabFragNotify = new FragmentNofity();
+                        mTabFragNotify.setUpdateTitleCB(this);
+                        transaction.replace(R.id.id_msg_body, mTabFragNotify);
+                    } else {
+                        transaction.replace(R.id.id_msg_body, mTabFragNotify);
+                    }
+                    break;
+                case CommonData.MESSAGE_SELECT_VOICEMESSAGE:
+                    if (mTabFragVoice == null || bFirst) {
+                        mTabFragVoice = new FragmentVoice();
+                        mTabFragVoice.setUpdateTitleCB(this);
+                        transaction.replace(R.id.id_msg_body, mTabFragVoice);
+                    } else {
+                        transaction.replace(R.id.id_msg_body, mTabFragVoice);
+                    }
+                    break;
+            }
+            transaction.commitAllowingStateLoss();
         }
-        transaction.commitAllowingStateLoss();
     }
 
     private void initEvents() {
@@ -384,7 +387,13 @@ public class MessageFragment extends Fragment implements View.OnClickListener, N
             }*/
             if ((errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) && (datastatus.equals(CommonData.DATASTATUS_UNREAD))) {
                 String count = msg.optString(CommonData.JSON_KEY_COUNT, "");
-                mNaviEvent.setText(title_event + "(" + count + ")");
+                try {
+                    if(Integer.valueOf(count) >  0){
+                        mNaviEvent.setText(title_event + "(" + count + ")");
+                    }
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

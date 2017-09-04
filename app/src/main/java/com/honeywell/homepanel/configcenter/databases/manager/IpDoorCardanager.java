@@ -253,6 +253,9 @@ public class IpDoorCardanager {
             String expireTime = loopMapObject.optString(CommonData.JSON_KEY_ENDTIME);
             String action = loopMapObject.optString(CommonData.JSON_KEY_SWIPEACTION);
             IpDoorCard loop = getByUuid(uuid);
+            if(null == loop){
+                continue;
+            }
             loop.mType = type;
             loop.mName = name;
             loop.mCardNo = cardId;

@@ -23,6 +23,7 @@ import android.widget.SeekBar;
 
 import com.honeywell.homepanel.IConfigService;
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.BCrypt;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.CommonPath;
@@ -30,7 +31,10 @@ import com.honeywell.homepanel.nativeapi.NativeEncry;
 import com.honeywell.homepanel.sensingservice.security.AlarmCode;
 import com.honeywell.homepanel.ui.AudioVideoUtil.HVideoDecoder;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoInfo;
+import com.honeywell.homepanel.ui.uicomponent.UIEventBusActivityFinishCmd;
+import com.honeywell.homepanel.ui.uicomponent.UIEventBusCommonCmd;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -38,13 +42,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -52,8 +60,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static android.content.Context.BIND_AUTO_CREATE;
 
 /**
  * Created by H135901 on 3/3/2017.
@@ -66,8 +72,8 @@ public class CommonUtils {
     public static final int ENCRYPTION_TYPE_CHACHA = 1;
     public static final int ENCRYPTION_TYPE_ECC = 0x10;
 
-    public static SeekBar  showCallVolumeDialog(Activity activity, View.OnClickListener onClickListener,
-                                                SeekBar.OnSeekBarChangeListener seekBarChangeListener, boolean bSpeaker,int volume){
+    public static SeekBar showCallVolumeDialog(Activity activity, View.OnClickListener onClickListener,
+                                               SeekBar.OnSeekBarChangeListener seekBarChangeListener, boolean bSpeaker, int volume) {
         final WindowManager manager = activity.getWindowManager();
         Display display = manager.getDefaultDisplay();
         int width = display.getWidth();
@@ -82,20 +88,19 @@ public class CommonUtils {
 
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.volume_seekbar);
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
-        AudioManager am =(AudioManager)activity.getSystemService(Context.AUDIO_SERVICE);
-        if(bSpeaker){
+        AudioManager am = (AudioManager) activity.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        if (bSpeaker) {
             seekBar.setMax(am.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
             seekBar.setProgress(volume);
-        }
-        else{
+        } else {
 
         }
         AlertDialog alert = new AlertDialog.Builder(activity).create();
         alert.show();
-        alert.getWindow().setLayout(width/2, height/4);
+        alert.getWindow().setLayout(width / 2, height / 4);
         alert.setTitle("测试");
         alert.getWindow().setContentView(view);
-        return  seekBar;
+        return seekBar;
     }
 
     public static void setWindowAlpha(Window window, float f) {
@@ -104,23 +109,23 @@ public class CommonUtils {
         window.setAttributes(lp);
     }
 
-    public static void startAndBindService(Context context,String serviceAction,ServiceConnection connection){
-        if(null == serviceAction || null == connection){
+    public static void startAndBindService(Context context, String serviceAction, ServiceConnection connection) {
+        if (null == serviceAction || null == connection) {
             return;
         }
         Intent intent = new Intent(serviceAction);
         intent.setPackage(context.getPackageName());
         context.startService(intent);
-        context.bindService(intent, connection, BIND_AUTO_CREATE);
+        context.bindService(intent, connection, 0);
     }
 
     public static void stopAndUnbindService(Context context, String serviceAction, ServiceConnection connection) {
         if (null == serviceAction || null == connection || null == context) {
             return;
         }
-        Intent intent = new Intent(serviceAction);
-        intent.setPackage(context.getPackageName());
-        context.stopService(intent);
+//        Intent intent = new Intent(serviceAction);
+//        intent.setPackage(context.getPackageName());
+//        context.stopService(intent);
         context.unbindService(connection);
     }
 
@@ -162,20 +167,20 @@ public class CommonUtils {
     public static int getModuleLoopCount(String moduleType) {
         if (moduleType.equals(CommonData.JSON_MODULE_NAME_RELAY)) {
             return 4;
-        }  else if (moduleType.equals(CommonData.JSON_KEY_DEVICETYPE_WIREDZONE)) {
+        } else if (moduleType.equals(CommonData.JSON_KEY_DEVICETYPE_WIREDZONE)) {
             return 8;//TBD
         }
         return -1;
     }
 
     public static boolean isValidMac(String mac) {
-        String pattern1="^[A-F0-9]{2}(:[A-F0-9]{2}){5}$";
-        if(Pattern.compile(pattern1).matcher(mac).find()) {
+        String pattern1 = "^[A-F0-9]{2}(:[A-F0-9]{2}){5}$";
+        if (Pattern.compile(pattern1).matcher(mac).find()) {
             return true;
         }
 
-        String pattern2="^[A-F0-9]{2}(-[A-F0-9]{2}){5}$";
-        if(Pattern.compile(pattern2).matcher(mac).find()) {
+        String pattern2 = "^[A-F0-9]{2}(-[A-F0-9]{2}){5}$";
+        if (Pattern.compile(pattern2).matcher(mac).find()) {
             return true;
         }
 
@@ -218,7 +223,7 @@ public class CommonUtils {
         if (null == ctx) {
             return;
         }
-        PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+        PowerManager pm = (PowerManager) ctx.getApplicationContext().getSystemService(Context.POWER_SERVICE);
         pm.reboot("null");
     }
 
@@ -226,7 +231,7 @@ public class CommonUtils {
         if (null == ctx) {
             return;
         }
-        PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+        PowerManager pm = (PowerManager) ctx.getApplicationContext().getSystemService(Context.POWER_SERVICE);
         pm.reboot("recovery");
     }
 
@@ -239,16 +244,18 @@ public class CommonUtils {
     }
 
     public static String generateCommonEventCloudEncryption() {
-            int len = 32;
-            String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            Random random=new Random();
-            StringBuffer sb=new StringBuffer();
-            for(int i=0;i<len;i++){
-                int number=random.nextInt(62);
-                sb.append(str.charAt(number));
-            }
-            return sb.toString();
+        int len = 32;
+        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < len; i++) {
+            int number = random.nextInt(62);
+            sb.append(str.charAt(number));
+        }
 
+        String sbString = sb.toString();
+        sb.delete(0, sb.length());
+        return sbString;
     }
 
     public static String saveBitmap(Bitmap bitmap, String bitName) {
@@ -267,21 +274,28 @@ public class CommonUtils {
         }
         filepath = file.getAbsolutePath();
         Log.d(TAG, "saveBitmap: file name:" + filepath);
-        FileOutputStream out;
+        FileOutputStream out = null;
         try {
             file.createNewFile();
             out = new FileOutputStream(file);
             if (bitmap.compress(Bitmap.CompressFormat.PNG, 90, out)) {
                 out.flush();
-                out.close();
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "saveBitmap: exception11111111111");
             e.printStackTrace();
             filepath = null;
         }
-        return  filepath;
+        finally {
+            if(null != out){
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return filepath;
     }
 
     public static Bitmap getBitmapFromFile(String name, int width, int height) {
@@ -293,7 +307,7 @@ public class CommonUtils {
                 opts.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(file.getPath(), opts);
                 final int minSideLength = Math.min(width, height);
-                opts.inSampleSize = computeSampleSize(opts, minSideLength,width * height);
+                opts.inSampleSize = computeSampleSize(opts, minSideLength, width * height);
                 opts.inJustDecodeBounds = false;
                 opts.inInputShareable = true;
                 opts.inPurgeable = true;
@@ -306,8 +320,9 @@ public class CommonUtils {
         }
         return null;
     }
-    public static Bitmap getBitmapFromFile(String path,String name, int width, int height) {
-        File file = new File(path,name);
+
+    public static Bitmap getBitmapFromFile(String path, String name, int width, int height) {
+        File file = new File(path, name);
         BitmapFactory.Options opts = null;
         if (null != file && file.exists()) {
             if (width > 0 && height > 0) {
@@ -315,7 +330,7 @@ public class CommonUtils {
                 opts.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(file.getPath(), opts);
                 final int minSideLength = Math.min(width, height);
-                opts.inSampleSize = computeSampleSize(opts, minSideLength,width * height);
+                opts.inSampleSize = computeSampleSize(opts, minSideLength, width * height);
                 opts.inJustDecodeBounds = false;
                 opts.inInputShareable = true;
                 opts.inPurgeable = true;
@@ -328,7 +343,8 @@ public class CommonUtils {
         }
         return null;
     }
-    public static int computeSampleSize(BitmapFactory.Options options,int minSideLength, int maxNumOfPixels) {
+
+    public static int computeSampleSize(BitmapFactory.Options options, int minSideLength, int maxNumOfPixels) {
         int initialSize = computeInitialSampleSize(options, minSideLength, maxNumOfPixels);
         int roundedSize;
         if (initialSize <= 8) {
@@ -342,11 +358,11 @@ public class CommonUtils {
         return roundedSize;
     }
 
-    private static int computeInitialSampleSize(BitmapFactory.Options options,int minSideLength, int maxNumOfPixels) {
+    private static int computeInitialSampleSize(BitmapFactory.Options options, int minSideLength, int maxNumOfPixels) {
         double w = options.outWidth;
         double h = options.outHeight;
         int lowerBound = (maxNumOfPixels == -1) ? 1 : (int) Math.ceil(Math.sqrt(w * h / maxNumOfPixels));
-        int upperBound = (minSideLength == -1) ? 128 : (int) Math.min(Math.floor(w / minSideLength),Math.floor(h / minSideLength));
+        int upperBound = (minSideLength == -1) ? 128 : (int) Math.min(Math.floor(w / minSideLength), Math.floor(h / minSideLength));
         if (upperBound < lowerBound) {
             // return the larger one when there is no overlapping zone.
             return lowerBound;
@@ -359,6 +375,7 @@ public class CommonUtils {
             return upperBound;
         }
     }
+
     public static String getLobbyBitMapName() {
         SimpleDateFormat sdf = new SimpleDateFormat(CommonData.TIME_STR_FORMAT);
         String time = sdf.format(new Date());
@@ -375,38 +392,42 @@ public class CommonUtils {
 
     public static String getIpcBitMapName(String ipcName) {
         String name = ipcName;
-        if(TextUtils.isEmpty(ipcName)){
+        if (TextUtils.isEmpty(ipcName)) {
             name = CommonUtils.generateCommonEventUuid();
         }
         name += ".png";
         return name;
     }
+
     public static MediaFormat getVideoFormat(VideoInfo mVideoInfo) {
         //ByteBuffer bb = ByteBuffer.wrap(mVideoInfo.mCsdInfo);
-        MediaFormat media_format = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC,CommonData.VIDEO_WIDTH,CommonData.VIDEO_HEIGHT);
-       // media_format.setByteBuffer("csd-0", bb);
+        MediaFormat media_format = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC, CommonData.VIDEO_WIDTH, CommonData.VIDEO_HEIGHT);
+        // media_format.setByteBuffer("csd-0", bb);
         HVideoDecoder.setSpsPps(media_format);
         media_format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, CommonData.VIDEO_WIDTH * CommonData.VIDEO_HEIGHT);
-        media_format.setInteger(MediaFormat.KEY_FRAME_RATE,25);
-        return  media_format;
+        media_format.setInteger(MediaFormat.KEY_FRAME_RATE, 25);
+        return media_format;
     }
-    public static  MediaCodec.BufferInfo getBufferInfo(int length){
+
+    public static MediaCodec.BufferInfo getBufferInfo(int length) {
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
         info.flags = MediaCodec.BUFFER_FLAG_KEY_FRAME;
         info.offset = 0;
         info.size = length;
-        return  info;
+        return info;
     }
+
     public static String convertCFormateString(byte[] asciiBytes) {
         int cZeroPosition = 0;
         int arraySize = asciiBytes.length;
 
-        for (; cZeroPosition < arraySize && asciiBytes[cZeroPosition] != 0x00; cZeroPosition++ ) {
+        for (; cZeroPosition < arraySize && asciiBytes[cZeroPosition] != 0x00; cZeroPosition++) {
 
         }
 
         return new String(asciiBytes, 0, cZeroPosition);
     }
+
     public static String hexBytesToHexString(byte[] hexBytes) {
         StringBuilder hexValues = new StringBuilder();
         for (int i = 0; i < hexBytes.length; i++) {
@@ -415,9 +436,10 @@ public class CommonUtils {
 
         return hexValues.toString();
     }
+
     public static String hexBytesToHexString(byte[] hexBytes, int length) {
         StringBuilder hexValues = new StringBuilder();
-        length = length>=hexBytes.length? hexBytes.length:length;
+        length = length >= hexBytes.length ? hexBytes.length : length;
         for (int i = 0; i < length; i++) {
             hexValues.append(String.format("%02x", hexBytes[i]));
         }
@@ -426,14 +448,14 @@ public class CommonUtils {
     }
 
     public static boolean isValidUUID(String uuid) {
-        if ( (uuid == null) || (uuid.length() == 1) ) {
+        if ((uuid == null) || (uuid.length() == 1)) {
             return false;
         }
         return true;
     }
 
     public static byte[] intToByteArray(int a) {
-        return new byte[] {
+        return new byte[]{
                 (byte) ((a >> 24) & 0xFF),
                 (byte) ((a >> 16) & 0xFF),
                 (byte) ((a >> 8) & 0xFF),
@@ -441,14 +463,15 @@ public class CommonUtils {
         };
     }
 
-    public  static  void deleteOneFile(String fileName){
-        if(!TextUtils.isEmpty(fileName)){
+    public static void deleteOneFile(String fileName) {
+        if (!TextUtils.isEmpty(fileName)) {
             File file = new File(fileName);
-            if(file.exists()){
+            if (file.exists()) {
                 file.delete();
             }
         }
     }
+
     public static String convertNativeModuleType(String nativeType) {
         if (nativeType.contains("RELAY") || nativeType.contains("relay")) {
             return CommonData.JSON_MODULE_NAME_RELAY;
@@ -488,7 +511,7 @@ public class CommonUtils {
     public static String deISO8601TimeStampForCurrTime(String ISO8601TimeStamp) {
         //timeStamp:2010-01-01T00:03:24Z
         //remove 'Z'
-        String str = ISO8601TimeStamp.substring(0,ISO8601TimeStamp.length()-1).replace("T", " ");
+        String str = ISO8601TimeStamp.substring(0, ISO8601TimeStamp.length() - 1).replace("T", " ");
         if (str.length() != 19) {
             Log.w(TAG, "deISO8601TimeStampForCurrTime: error");
         }
@@ -497,7 +520,6 @@ public class CommonUtils {
 
 
     /**
-     *
      * @param strDate must be align with SimpleDateFormat() prarmeter
      * @return a Long type of date
      */
@@ -509,46 +531,185 @@ public class CommonUtils {
     }
 
     /**
+     * Input integer year, month, day  return a "yyyy/MM/dd" format date string
+     * @return
+     */
+    public static String convertLongDateToSlashFormat(int year, int month, int day) {
+        GregorianCalendar date1 = new GregorianCalendar(year, month, day);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        formatter.setCalendar(date1);
+        return formatter.format(date1.getTime());
+    }
+
+    /**
+     * Input integer year, month, day  return a "yyyy/MM/dd" format date string
+     * @return
+     */
+    public static String convertDateToyyyyMMdd(int year, int month, int day) {
+        GregorianCalendar date1 = new GregorianCalendar(year, month, day);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        formatter.setCalendar(date1);
+        return formatter.format(date1.getTime());
+    }
+
+    /**
      *
+     * @param dateString 20170810
+     * @return 2017/08/10
+     */
+    public static String convertyyyyMMddToSlashFormat(String dateString) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        try {
+            Date date = formatter.parse(dateString);
+            return convertMillisToSlashFormat(date.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
+    public static long convertyyyyMMddToMillis(String dateString) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        try {
+            Date date = formatter.parse(dateString);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static long convertyyyyMMddToMillis_zh(String dateString) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        try {
+            Date date = formatter.parse(dateString);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+    public static long convertyyyyMMddToMillis_en(String dateString) {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM, dd, yyyy");
+        try {
+            Date date = formatter.parse(dateString);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * @param millis
+     * @return
+     */
+    public static String convertMillisToSlashFormat(long millis) {
+        Date date = new Date(millis );
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        return formatter.format(date);
+    }
+
+    public static String convertMillisToEnglishFormat(long millis){
+        Date date = new Date(millis);
+        SimpleDateFormat formatter = new SimpleDateFormat("MM, dd, yyyy");
+        return formatter.format(date);
+    }
+
+    /**
+     * @param year 2017
+     * @param month 03
+     * @param day 10
+     * @return 10, April, 2017
+     */
+    public static String convertToEnglisthDate(int year, int month, int day) {
+        GregorianCalendar date1 = new GregorianCalendar(year, month, day);
+        SimpleDateFormat formatter = new SimpleDateFormat("MM, dd, yyyy");
+        formatter.setCalendar(date1);
+        String dateString = formatter.format(date1.getTime());
+        return dateString;
+    }
+
+
+    /**
      * @param millis millis of date
      * @return
      */
     public static String convertMillisToDate(long millis) {
-        Date date = new Date(millis + 8*60*60*1000);//add 8 hours
+        Date date = new Date(millis );
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String str = formatter.format(date);
         return str;
     }
 
+    public static String getconvertMillisToDate(String data) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        try {
+            Date date = format.parse(data);
+            return convertMillisToDate(date.getTime() + (8 * 60 * 60000));//workaround
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     /**
-     *
      * @param millis millis of date
      * @return
      */
     public static String convertMillisToDateForAms(long millis) {
         Date date = new Date(millis);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHMMSS");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String str = formatter.format(date);
         return str;
     }
 
+//    public static String convertDateForNotification(String str) {
+//        SimpleDateFormat formatterOri = new SimpleDateFormat("yyyyMMddHHMMSS");
+//        ParsePosition pos = new ParsePosition(0);
+//        Date dest = formatterOri.parse(str, pos);
+//        SimpleDateFormat formatterDest = new SimpleDateFormat("yyyy.MM.dd HH:MM");
+//        String destFormatDate = formatterDest.format(dest);
+//        Log.d(TAG, "convertDateForNotification: " + destFormatDate);
+//        return destFormatDate;
+//    }
 
+    public static Date strToDate(String strDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        ParsePosition pos = new ParsePosition(0);
+        Date date = formatter.parse(strDate, pos);
+        return date;
+    }
+
+    public static String formatterDate(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+        String dateString = formatter.format(date);
+        return dateString;
+    }
+
+    public static String formatterDate2(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(date);
+        return dateString;
+    }
     /**
-     *
-     * @param millis millis of date
+     * This is only necessary when upload data to cloud with 'datatime'( currently cloud only support UTC+0 TimeZone)
+     * @param localMillis localMillis of date
      * @return
      */
-    public static String convertMillisToISO8601Date(long millis) {
-        Date date = new Date(millis);
+    public static String convertMillisToISO8601Date(long localMillis) {
+        Date date = new Date(localMillis);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC+0"));
         String str = formatter.format(date);
         return str;
     }
 
 
-
     /**
-     *
      * @param ISO8601Date millis of date
      * @return
      */
@@ -570,12 +731,12 @@ public class CommonUtils {
 
     public static boolean judgeZoneType(String zoneType) {
         boolean bRet = false;
-        if(null == zoneType){
+        if (null == zoneType) {
             return bRet;
         }
-        if(zoneType.equals(CommonData.ZONETYPE_24H) || zoneType.equals(CommonData.ZONETYPE_TRIGGER)
-                || zoneType.equals(CommonData.ZONETYPE_DELAY)  || zoneType.equals(CommonData.ZONETYPE_ENVIRONMENT)
-                ||zoneType.equals(CommonData.ZONETYPE_INSTANT)){
+        if (zoneType.equals(CommonData.ZONETYPE_24H) || zoneType.equals(CommonData.ZONETYPE_TRIGGER)
+                || zoneType.equals(CommonData.ZONETYPE_DELAY) || zoneType.equals(CommonData.ZONETYPE_ENVIRONMENT)
+                || zoneType.equals(CommonData.ZONETYPE_INSTANT)) {
             bRet = true;
         }
         return bRet;
@@ -590,7 +751,6 @@ public class CommonUtils {
     }
 
     /**
-     *
      * @param doorType eg:front door  back door
      * @return
      */
@@ -604,7 +764,6 @@ public class CommonUtils {
     }
 
     /**
-     *
      * @param role eg:front door  back door
      * @return
      */
@@ -615,7 +774,7 @@ public class CommonUtils {
             return "1";
         } else if (role.contains(CommonData.JSON_VALUE_ROLE_CHILD)) {
             return "2";
-        } else if(role.contains(CommonData.JSON_VALUE_ROLE_HOUSEKEEPER)) {
+        } else if (role.contains(CommonData.JSON_VALUE_ROLE_HOUSEKEEPER)) {
             return "3";
         } else if (role.contains(CommonData.JSON_VALUE_ROLE_FRIEND)) {
             return "4";
@@ -627,19 +786,19 @@ public class CommonUtils {
             return "7";
         }
     }
-	
-	public static JSONArray getJsonArrayFromDb(JSONObject jsonObject, IConfigService mIConfigService) throws Exception{
-        if(null != mIConfigService && null != jsonObject){
+
+    public static JSONArray getJsonArrayFromDb(JSONObject jsonObject, IConfigService mIConfigService) throws Exception {
+        if (null != mIConfigService && null != jsonObject) {
             byte[] resp = mIConfigService.getFromDbManager(jsonObject.toString().getBytes());
-            if(null != resp){
+            if (null != resp) {
                 String jStr = new String(resp);
                 Log.d(TAG, "getJsonArrayFromDb: json:" + jStr);
                 JSONObject respObj = new JSONObject(jStr);
                 JSONArray jsonArray = respObj.optJSONArray(CommonJson.JSON_LOOPMAP_KEY);
-                return  jsonArray;
+                return jsonArray;
             }
         }
-        return  null;
+        return null;
     }
 
     public static int convertAlarmMsgIdToResId(String alarmMsgId) {
@@ -702,20 +861,21 @@ public class CommonUtils {
             resourceId = R.string.alarmtype_tamper;
         }
 
-        return  resourceId;
+        return resourceId;
     }
 
     /**
      * byte array to hex string
+     *
      * @param bytes
      * @return
      */
     public static String byteArrayToHexString(byte[] bytes) {
-        if(null == bytes) {
+        if (null == bytes) {
             return "";
         }
         char[] hexArray =
-                {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+                {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
         char[] hexChars = new char[bytes.length * 2];
         int v;
 
@@ -728,8 +888,8 @@ public class CommonUtils {
         return new String(hexChars);
     }
 
-    public static  byte[] appendSendingBytes(byte[] bytes, int size, int encType,
-                                             byte [] encKey){
+    public static byte[] appendSendingBytes(byte[] bytes, int size, int encType,
+                                            byte[] encKey) {
         byte[] data;
         if (bytes == null || size == 0) {
             return null;
@@ -744,7 +904,7 @@ public class CommonUtils {
         return data;
     }
 
-    private static  byte[] wrapArroudData(byte[] bytes, int encType, byte[] encKey) {
+    private static byte[] wrapArroudData(byte[] bytes, int encType, byte[] encKey) {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         int size;
         byte[] header = FIXSTRING.getBytes();
@@ -757,7 +917,7 @@ public class CommonUtils {
         byteArray.write(encType);
 
         data = encryptData(bytes, encType, encKey);
-        if(null == data) {
+        if (null == data) {
             size = 0;
         } else {
             size = data.length;
@@ -777,7 +937,7 @@ public class CommonUtils {
     }
 
     private static byte[] encryptData(byte[] bytes, int encType, byte[] encKey) {
-        byte ret [] = null;
+        byte ret[] = null;
         switch (encType) {
             case ENCRYPTION_TYPE_NONE:
                 ret = bytes;
@@ -786,7 +946,7 @@ public class CommonUtils {
                 ret = bytes;
                 break;
             case ENCRYPTION_TYPE_ECC:
-                if(null != encKey) {
+                if (null != encKey) {
                     ret = NativeEncry.encWithKey(bytes,
                             bytes.length, encKey);
                 } else {
@@ -800,6 +960,7 @@ public class CommonUtils {
 
     /**
      * hex string to byte array
+     *
      * @param s
      * @return
      */
@@ -808,7 +969,7 @@ public class CommonUtils {
         if (len % 2 != 0) {
             len = len - 1; //maybe should return null.
         }
-        if(len <= 0) {
+        if (len <= 0) {
             return null;
         }
         byte[] data = new byte[len / 2];
@@ -842,7 +1003,9 @@ public class CommonUtils {
             return null;
         } finally {
             try {
-                in.close();
+                if(null != in){
+                    in.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -851,7 +1014,7 @@ public class CommonUtils {
         BigInteger bigInt = new BigInteger(1, digest.digest());
         // Alwin: if start with '0'，it will be removed, so checkit.
         String retStr = bigInt.toString(16);//16->hex string
-        while(retStr.length() < 64) {
+        while (retStr.length() < 64) {
             retStr = "0" + retStr;
         }
 
@@ -876,50 +1039,60 @@ public class CommonUtils {
         return false;
     }
 
+    public static String covertHejModuleDeviceType(String deviceTypeName) {
+        if (CommonJson.JSON_UPGRADE_DEVTYPE_HEJRELAY4.equals(deviceTypeName)) {
+            return CommonData.JSON_MODULE_NAME_RELAY;
+        } else if (CommonJson.JSON_UPGRADE_DEVTYPE_HEJALARM8.equals(deviceTypeName)) {
+            return CommonData.JSON_MODULE_NAME_ALARM;
+        }
+
+        return CommonData.JSON_MODULE_NAME_RELAY;
+    }
+
 
     //added by ellen
-    public static  ExecutorService getCachedThreadPool(int count){
+    public static ExecutorService getCachedThreadPool(int count) {
         ExecutorService cachedThreadPool = null;
         //cached thread for not device number thread
-        if(count <= 0){
+        if (count <= 0) {
             cachedThreadPool = Executors.newCachedThreadPool();
         }
         //single thread
-        else if(count == 1){
+        else if (count == 1) {
             cachedThreadPool = Executors.newSingleThreadExecutor();
         }
         //inflate definite number cached thread
-        else{
+        else {
             //Runtime.getRuntime().availableProcessors()
             cachedThreadPool = Executors.newFixedThreadPool(count);
         }
-        return  cachedThreadPool;
+        return cachedThreadPool;
     }
 
     //execute thread,added by ellen
-    public  static  void executeThreadPool(ExecutorService service,Runnable runnable){
-        if(null == service || null == runnable){
+    public static void executeThreadPool(ExecutorService service, Runnable runnable) {
+        if (null == service || null == runnable) {
             return;
         }
         service.execute(runnable);
     }
 
     // er fen cha zhao,added by ellen
-    public static int find_position_by_id(int id,int[] data){
+    public static int find_position_by_id(int id, int[] data) {
         int count = data.length;
-        int middle = (count - 1)/2;
+        int middle = (count - 1) / 2;
         int left = 0;
         int right = (count - 1);
         int position = -1;
-        while(left <= right){
-            middle = (left + right)/2;
-            if(data[middle] > id){
+        while (left <= right) {
+            middle = (left + right) / 2;
+            if (data[middle] > id) {
                 //left
                 right = middle - 1;
-            }else if(data[middle] < id){
+            } else if (data[middle] < id) {
                 //right
                 left = middle + 1;
-            }else{
+            } else {
                 position = middle;
                 break;
             }
@@ -928,10 +1101,143 @@ public class CommonUtils {
     }
 
     public static String getHomePanelDeviceId() {
-        String deviceId = NetWorkInfoUtils.getCommunityNetworkMacAddr().toLowerCase().replace(":","");
-        if(null == deviceId){
-            deviceId = "unknown";
+        String deviceId = NetWorkInfoUtils.getCommunityNetworkMacAddr();
+        if(TextUtils.isEmpty(deviceId)){
+            return  "unknown";
+        }
+        if(null != deviceId){
+            deviceId = deviceId.toLowerCase().replace(":", "");
         }
         return deviceId;
+    }
+
+    public static String file_() {
+        StackTraceElement ste = new Throwable().getStackTrace()[1];
+        return ste.getFileName();
+    }
+
+    public static int line_() {
+        StackTraceElement ste = new Throwable().getStackTrace()[1];
+        return ste.getLineNumber();
+    }
+
+    public static String fileLine() {
+        StackTraceElement ste = new Throwable().getStackTrace()[1];
+        return ste.getFileName() + ste.getLineNumber();
+    }
+
+    public static String getStringSHA256Str(String  str) {
+        if (TextUtils.isEmpty(str)) {
+            return null;
+        }
+        byte[] buffer = str.getBytes();
+        MessageDigest digest = null;
+
+        try {
+            digest = MessageDigest.getInstance("SHA256");
+            digest.update(buffer, 0, buffer.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        BigInteger bigInt = new BigInteger(1, digest.digest());
+        String retStr = bigInt.toString(16);//16->hex string
+        while(retStr.length() < 64) {
+            retStr = "0" + retStr;
+        }
+        return retStr;
+    }
+
+
+    public  static  final String getBcryptStr(String pwd){
+        if(TextUtils.isEmpty(pwd)){
+            return pwd;
+        }
+        String pwd_sha256 = CommonUtils.getStringSHA256Str(pwd);
+        Log.d(TAG, "getBcryptStr() pwd_sha256:"+pwd_sha256+",,1111111111");
+        String hashed = BCrypt.hashpw(pwd_sha256,BCrypt.gensalt());
+        Log.d(TAG, "getBcryptStr() hashed:"+hashed+",,22222222");
+        return  hashed;
+    }
+
+
+    public  static  final boolean checkBcryptStr(String pwd,String dbPwd){
+        if(TextUtils.isEmpty(pwd) || TextUtils.isEmpty(dbPwd)){
+            return  false;
+        }
+        if(pwd.equals(dbPwd)){
+            return  true;
+        }
+        String pwd_sha256 = CommonUtils.getStringSHA256Str(pwd);
+        Log.d(TAG, "checkBcryptStr() pwd_sha256:"+pwd_sha256);
+        boolean bRet = BCrypt.checkpw(pwd_sha256, dbPwd);
+        Log.d(TAG, "checkBcryptStr() bRet:"+bRet);
+        return bRet;
+    }
+
+    public static boolean checkBcryptStr_sha256(String cloudPwd, String dbPwd) {
+        if(TextUtils.isEmpty(cloudPwd) || TextUtils.isEmpty(dbPwd)){
+            return  false;
+        }
+        if(cloudPwd.equals(dbPwd)){
+            return  true;
+        }
+        Log.d(TAG, "checkBcryptStr() pwd_sha256:"+cloudPwd);
+        boolean bRet = BCrypt.checkpw(cloudPwd,dbPwd);
+        Log.d(TAG, "checkBcryptStr() bRet:"+bRet);
+        return bRet;
+    }
+
+    /**
+     * send common command in ui thread
+     * @param cmd
+     */
+    public static void sendUIEventBusCommonCmd(int cmd) {
+        UIEventBusCommonCmd tmp = new UIEventBusCommonCmd();
+        if (tmp != null) {
+            tmp.setScreenSaverCtrlCmd(cmd);
+            EventBus.getDefault().post(tmp);
+        }
+    }
+
+    public static void sendUIEventBusFinishCmd(int cmd) {
+        UIEventBusActivityFinishCmd tmp = new UIEventBusActivityFinishCmd();
+        if (tmp != null) {
+            tmp.setCmd(cmd);
+            EventBus.getDefault().post(tmp);
+        }
+    }
+
+    public  static  String getFileName(String fileName){
+        String name = "";
+        if(TextUtils.isEmpty(fileName)){
+            return name;
+        }
+        int index = fileName.indexOf(".");
+        if(index >= 0){
+            String pre = fileName.substring(0, index);
+            String[] aa = pre.split("/");
+            if(null != aa){
+                name = aa[aa.length -1];
+            }
+        }
+        return name;
+    }
+
+    /**
+     * convert dongho 4-4 to 4-6
+     * dongho must be 06020306
+     */
+    public static String convertDongHao44To46(String donghao) {
+        String strDong = null;
+        String strHao = null;
+
+        if (!TextUtils.isEmpty(donghao)) {
+            int hao = Integer.valueOf(donghao.substring(4));
+            strDong = donghao.substring(0, 4);
+            strHao =  String.format("%06d", hao);
+        }
+        return strDong+strHao;
     }
 }

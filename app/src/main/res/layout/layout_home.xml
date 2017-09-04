@@ -4,7 +4,7 @@
     android:id="@+id/content_scrolling"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/left_navigation_background"
+    android:background="@color/welcome_white"
     android:orientation="horizontal"
     tools:context=".ui.activities.MainActivity">
 
@@ -29,7 +29,7 @@
             android:orientation="horizontal">
 
             <View
-                android:layout_width="2px"
+                android:layout_width="1px"
                 android:layout_height="match_parent"
                 android:background="#9b9b9b" />
 

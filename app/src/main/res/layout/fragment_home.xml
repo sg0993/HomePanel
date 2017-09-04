@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pagerRootId"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_marginLeft="60dp"
-    android:orientation="vertical"
-
-    android:id="@+id/pagerRootId" >
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -14,10 +12,11 @@
         android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:orientation="vertical">
+
         <android.support.v4.view.ViewPager
             android:id="@+id/pageView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <LinearLayout
@@ -30,31 +29,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
-                android:visibility="gone"
-                android:layout_marginTop="5dp"
                 android:id="@+id/dotViewRoot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/centerbackground_disarm"
                 android:layout_alignParentBottom="true"
+                android:layout_marginTop="5dp"
+                android:background="@color/centerbackground_disarm"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
+
                 <ImageView
                     android:id="@+id/left_view"
                     android:layout_width="7dp"
-                    android:layout_gravity="center"
+                    android:layout_height="7dp"
+                    android:layout_gravity="center" />
 
-                    android:layout_height="7dp" />
                 <ImageView
-                    android:layout_marginLeft="5dp"
-                    android:layout_gravity="center"
                     android:id="@+id/right_view"
                     android:layout_width="5dp"
                     android:layout_height="5dp"
-                    />
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp" />
             </LinearLayout>
         </RelativeLayout>
-
     </LinearLayout>
 </FrameLayout>

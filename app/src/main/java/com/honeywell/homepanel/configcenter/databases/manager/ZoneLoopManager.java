@@ -183,6 +183,9 @@ public class ZoneLoopManager {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
             String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             ZoneLoop loop = getByUuid(uuid);
+            if(null == loop){
+                continue;
+            }
             loopForUpdate(loop,loopMapObject);
             long num = updateByUuid(uuid,loop);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
@@ -283,7 +286,7 @@ public class ZoneLoopManager {
         getAlarmableDeviceLoopDetailsInfo(jsonObject);
     }
 
-    public void getDeviceLoopDetailsInfo(JSONObject jsonObject) throws JSONException {
+    public void getDeviceLoopDetailsInfo(JSONObject jsonObject) {
         JSONArray loopMapArray = jsonObject.optJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         Cursor cursor = DbCommonUtil.getDeviceLoopDetails(dbHelper, ConfigConstant.TABLE_ZONELOOP);
 
@@ -292,52 +295,64 @@ public class ZoneLoopManager {
             loopMapArray = new JSONArray();
         }
 
-        // query loop from database and fill json object
-        while(cursor.moveToNext()){
-            ZoneLoop loop = fillDefault(cursor);
-
-            JSONObject loopMapObject = new JSONObject();
-            loopMapObject.put(CommonData.JSON_TYPE_KEY, CommonData.COMMONDEVICE_TYPE_ZONE);
-            loopToJson(loopMapObject, loop);
-            loopMapArray.put(loopMapObject);
-        }
-
-        // close cursor
-        cursor.close();
-
-        // updatet jsonObject passed in
-        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
-        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
-    }
-
-    public void getAlarmableDeviceLoopDetailsInfo(JSONObject jsonObject) throws JSONException {
-        JSONArray loopMapArray = jsonObject.optJSONArray(CommonJson.JSON_LOOPMAP_KEY);
-        Cursor cursor = DbCommonUtil.getDeviceLoopDetails(dbHelper, ConfigConstant.TABLE_ZONELOOP);
-
-        // Use the original jsonArray if JSONObject contains one, construct new JSONArray otherwise
-        if (loopMapArray == null) {
-            loopMapArray = new JSONArray();
-        }
-
-        // query loop from database and fill json object
-        while(cursor.moveToNext()){
-            ZoneLoop loop = fillDefault(cursor);
-            JSONObject loopMapObject = new JSONObject();
-
-            loopMapObject.put(CommonData.JSON_TYPE_KEY, CommonData.COMMONDEVICE_TYPE_ZONE);
-            loopToJson(loopMapObject, loop);
-
-            if (!CommonData.ZONETYPE_24H.equals(loopMapObject.optString(CommonData.JSON_KEY_ZONETYPE))
-                    && loop.mEnabled == CommonData.ENABLE) {
+        try {
+            // query loop from database and fill json object
+            while(cursor.moveToNext()){
+                ZoneLoop loop = fillDefault(cursor);
+                if(null == loop){
+                    continue;
+                }
+                JSONObject loopMapObject = new JSONObject();
+                loopMapObject.put(CommonData.JSON_TYPE_KEY, CommonData.COMMONDEVICE_TYPE_ZONE);
+                loopToJson(loopMapObject, loop);
                 loopMapArray.put(loopMapObject);
             }
+            // updatet jsonObject passed in
+            jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
+            jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        finally {
+            // close cursor
+            cursor.close();
+        }
+    }
 
-        // close cursor
-        cursor.close();
+    public void getAlarmableDeviceLoopDetailsInfo(JSONObject jsonObject) {
+        JSONArray loopMapArray = jsonObject.optJSONArray(CommonJson.JSON_LOOPMAP_KEY);
+        Cursor cursor = DbCommonUtil.getDeviceLoopDetails(dbHelper, ConfigConstant.TABLE_ZONELOOP);
 
-        // updatet jsonObject passed in
-        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
-        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
+        // Use the original jsonArray if JSONObject contains one, construct new JSONArray otherwise
+        if (loopMapArray == null) {
+            loopMapArray = new JSONArray();
+        }
+        if(null == cursor){
+            return;
+        }
+        try {
+            // query loop from database and fill json object
+            while(cursor.moveToNext()){
+                ZoneLoop loop = fillDefault(cursor);
+                JSONObject loopMapObject = new JSONObject();
+
+                loopMapObject.put(CommonData.JSON_TYPE_KEY, CommonData.COMMONDEVICE_TYPE_ZONE);
+                loopToJson(loopMapObject, loop);
+
+                if (!CommonData.ZONETYPE_24H.equals(loopMapObject.optString(CommonData.JSON_KEY_ZONETYPE))
+                        && loop.mEnabled == CommonData.ENABLE) {
+                    loopMapArray.put(loopMapObject);
+                }
+            }
+            // updatet jsonObject passed in
+            jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
+            jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            if(null != cursor){
+                cursor.close();
+            }
+        }
     }
 }

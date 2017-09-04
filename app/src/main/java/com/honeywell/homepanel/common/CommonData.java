@@ -312,6 +312,7 @@ public class CommonData {
     public static final String JSON_AMSIP_KEY = "amsip";
     public static final String JSON_AMSPORT_KEY = "amsport";
     public static final String JSON_HOMEPANELTYPE_KEY = "homepaneltype";
+    public static final String JSON_CLOUD_ENVIORNMENT_TYPE ="cloudenviornmenttype";
     public static final String JSON_KEY_VERSION = "version";
     public static final String JSON_KEY_VERSIONTYPE = "versiontype";
     public static final String JSON_KEY_MAC = "mac";
@@ -415,6 +416,7 @@ public class CommonData {
     public final static String JSON_KEY_ALARMRECORDID = "alarmrecordid";
     public final static String JSON_KEY_ABNORMALSTATUS = "abnormalstatus";
     public final static String JSON_KEY_ALARMZONEID = "alarmzoneid";
+    public final static String JSON_KEY_EVENTCODE = "eventcode";
 
     //add by ailynn for door open event
     public static final String JSON_VALUE_OPEN_FRONTDOOR = "openfrontdoor";
@@ -526,10 +528,29 @@ public class CommonData {
     public final static String ALARMLOG_ISTOCLOUD = "istocloud";// str
 
     // Full path name for services name
-    public final static String ACTION_SERVICE_LOGCENTER = "com.honeywell.homepanel.logserver.LogService";
+
+    public final static String ACTION_SERVICE_CALL = "com.honeywell.homepanel.call.CallService";
+    public final static String ACTION_SERVICE_CLOUD = "com.honeywell.homepanel.cloud.CloudConnService";
+    public final static String ACTION_SERVICE_COMMUNITY = "com.honeywell.homepanel.community.CommunityService";
     public final static String ACTION_SERVICE_CONFIG = "com.honeywell.homepanel.configcenter.ConfigService";
+    public final static String ACTION_SERVICE_CONTROL = "com.honeywell.homepanel.control.ControlService";
+    public final static String ACTION_SERVICE_DEVICEADAPTER = "com.honeywell.homepanel.deviceadapter.DeviceAdapterService";
+    public final static String ACTION_SERVICE_IPDC = "com.honeywell.homepanel.ipdc.IPDCService";
     public final static String ACTION_SERVICE_PBX = "com.honeywell.homepanel.pbx.PBXService";
-    public final static String ACTION_SERVICE_MONITOR = "com.honeywell.homepanel.watchdog.WatchDogService";
+    public final static String ACTION_SERVICE_SUBCLIENT = "com.honeywell.homepanel.subphoneservice.SubphoneClient.SubPhoneClientService";
+    public final static String ACTION_SERVICE_SUBSERVER = "com.honeywell.homepanel.subphoneservice.SubphoneServer.SubPhoneServerService";
+    public final static String ACTION_SERVICE_SUBPHONEUI = "com.honeywell.homepanel.subphoneuiservice.SubPhoneUIService";
+    public final static String ACTION_SERVICE_UPGRADE = "com.honeywell.homepanel.upgrade.upgrader.UpgraderService";
+    public final static String ACTION_SERVICE_SUBUPGRADE = "com.honeywell.homepanel.upgrade.subupgrader.SubupgraderService";
+    public final static String ACTION_SERVICE_AVRTP = "com.honeywell.homepanel.avrtp.AvRtp";
+    public final static String ACTION_SERVICE_SENSING = "com.honeywell.homepanel.sensingservice.SensingService";
+    public final static String ACTION_SERVICE_DISCOVERY = "com.honeywell.homepanel.miscservices.discovery.DiscoveryService";
+    public final static String ACTION_SERVICE_LOGCAPTURE = "com.honeywell.homepanel.miscservices.logcat.LogCaptureService";
+    public final static String ACTION_SERVICE_WIDGETINFO = "com.honeywell.homepanel.ui.services.WidgetInfoService";
+    public final static String ACTION_SERVICE_NOTIFICATION = "com.honeywell.homepanel.ui.services.NotificationService";
+    public final static String ACTION_SERVICE_WATCHDOG = "com.honeywell.homepanel.watchdog.WatchDogService";
+
+
     public final static String ACTION_ENGINEERING_CHANGE = "com.honeywell.homepanel.engineering.change";
 
     public final static String SIPAPP_PACKAGE_NAME = "com.honeywell.sipapp";
@@ -562,7 +583,7 @@ public class CommonData {
     public static final String KEY_ENGINEERPWD = "engineerpwd";//str
     public static final String KEY_HOMEPANELTYPE = JSON_HOMEPANELTYPE_KEY;//int
     public static final String KEY_HOMESCREEN = "homescreen";//int
-    public static final String KEY_TEMPER = "temper";//home panel 防拆 int
+    public static final String KEY_TEMPER = "tamper";//home panel 防拆 int
     public static final String KEY_CURSCENARIO = "curscenario";//cur scenario uuid
     public static final String KEY_IPDC_FRONT_VERSION = "ipdcfrontversion";
     public static final String KEY_IPDC_BACK_VERSION = "ipdcbackversion";
@@ -647,6 +668,7 @@ public class CommonData {
     public static final String ZONE_ALARM_STATUS_IPVDP_HELP = "help";
     public static final String ZONE_ALARM_STATUS_IPVDP_THIEF = "thief";
     public static final String ZONE_ALARM_STATUS_IPVDP_EMERGENCY = "emergency";
+    public static final String ZONE_ALARM_STATUS_IPVDP_EMERGENCYSILENCE = "emergencysilence";
     public static final String ZONE_ALARM_STATUS_IPVDP_ARMALL = "armall";
     public static final String ZONE_ALARM_STATUS_IPVDP_DISARMALL = "disarmall";
     public static final String IPVDPZONELOOP = "ipvdpzoneloopmap";
@@ -684,7 +706,9 @@ public class CommonData {
     public final static String INTENT_ACTION_CONFIGINFO_CHANGED = "com.honeywell.homepanel.broadcast.configinfoupdated";
     public static final String INTENT_ACTION_LOCKSTATUS_CHANGED = "com.honeywell.homepanel.broadcast.lockstatusupdated";
     public static final String INTENT_ACTION_DOORBELLSTATUS_CHANGED = "com.honeywell.homepanel.broadcast.doorbellstatusupdated";
+    public static final String INTENT_ACTION_CLEARREGISTEREDPHONES = "com.honeywell.homepanel.broadcast.clearregisteredphones";
 
+    public static final String INTENT_ACTION_EXTENSIONMODULE_CLOUD = "com.honeywell.homepanel.broadcast.extensionmodulecloud";
 
     public static final String INTENT_ACTION_SCENE_CHANGED = "com.honeywell.homepanel.broadcast.scene.changed";
     public static final String INTENT_NOTIFY_ACTIVITY_TIMEOUT = "com.honeywell.lock.NOTIFY_ACTIVITY_TIMEOUT";
@@ -717,6 +741,7 @@ public class CommonData {
     public static final int CALL_HISTORY_MAX_COUNT = 32;
 
     public static final String DEFAULT_ENGINEER_PWD = "-085213";
+    public static final String DEFAULT_ENGINEER_PWD_ = "085213";
 
     public static final int DEFAULT_IPC_COUNT = 11;
 
@@ -747,6 +772,11 @@ public class CommonData {
     public static final String JSON_FLAGS = "flags";
     public static final String JSON_NEED_RESPONSE = "needResponse";
     public static final String JSON_KEY_COMMANDS = "commands";
+    public static final String JSON_RESULT = "result";
+    public static final String JSON_REQUEST = "request";
+    public static final String WRONG_PWD = "wrongPassword";
+    public static final String DOOROPENED = "doorOpened";
+    public static final String OPENDOORRESULT = "openDoorResult";
 
     public static final String JSON_DEVICEID_CLOUD = "deviceId";
     public static final String JSON_CLIENDUUID_CLOUD = "clientUuid";
@@ -763,19 +793,44 @@ public class CommonData {
 
     public static final String JSON_SUBACTION_CALL_PICKEDUP_CLOUD = "callPickedUp";
 
+    public static final String JSON_SUBACTION_USERID = "userId";
+
     public static final String ETHERNET_IP = "ethernetip";
     public static final String ETHERNET_NETMASK = "ethernetnetmask";
     public static final String ETHERNET_GATEWAY = "ethernetgateway";
-	public static final String SCREENSAVER_QUIT = "screensaverquit";   
-	 public static final int APP_MSG_DEFAULT = 0;
+    public static final String SCREENSAVER_QUIT = "screensaverquit";
+    public static final String SCREENOFF = "screenoff";
+    public static final String DEVICE_ONLINE = "1";
+    public static final String DEVICE_OFFLINE = "0";
+
+
+    public static final int APP_MSG_DEFAULT = 0;
     public static final int APP_MSG_VIDEO = 1;
     public static final int APP_MSG_VIDEO_CRYPT = 2;
     public static final int APP_MSG_AUDIO = 3;
     public static final int APP_MSG_AUDIO_CRYPT = 4;
-    public static final int CALLIN_TIMEOUT = 60;// should change to 30 seconds
+    public static final int CALLIN_TIMEOUT = 30;// should change to 30 seconds
 
     public static final String ARMED_STATUS = "0";// 0: system disarmed 1:system armed
 
+    public static final String JSON_KEY_TRIGGERID = "triggerid";
+
+    public static final int SCREEN_DISABLE = 1;
+    public static final int SCREEN_ENABLE = 2;
+    public static final int SCREEN_WEAKUP = 3;
+    public static final int SCREEN_QUIT = 4;
+    public static final int SCREEN_WEAKUP_AND_DISABLE = 10;
+    public static final int SCREEN_WEAKUP_AND_ENABLE = 11;
+
+
+    public static final int SCREEN_WAKEUP_SRC_NORMAL = 2;
+    public static final int SCREEN_WAKEUP_SRC_STARTUP = 1;
+    public static final int SCREEN_WAKEUP_SRC_MANUAL = 3;
+    public static final int SCREEN_WAKEUP_SRC_AUTOEVENT = 11;
+
+    public static final int CALLING_TIMEOUT = 30 * 1000;
+
+    public static final int CALLED_TIMEOUT = 3 * 60 * 1000;
 
     public static String file_() {
 

@@ -42,12 +42,14 @@ public class AlarmHistoryManager {
         dbHelper= ConfigDatabaseHelper.getInstance(mContext);
     }
 
-    public synchronized long add(String uuid,String time,String aliasName, String alarmType,String message,int read, int uploadAms, int uploadCloud){
+    public synchronized long add(String uuid, String triggerid, String time,String aliasName, String alarmType,String message,int read, int uploadAms, int uploadCloud){
         String str = CommonUtils.deISO8601TimeStampForCurrTime(time);//add by xiaochao
         long ltime = CommonUtils.convertStringDateToLong(str);
+        ltime += 8*60*60*1000;//add 8 hours
         int time1 = 0;
         ContentValues values = new ContentValuesFactory()
                 .put(ConfigConstant.COLUMN_UUID, uuid)
+                .put(ConfigConstant.COLUMN_TRIGGERID, triggerid)
                 .put(ConfigConstant.COLUMN_TIME, ltime)
                 .put(ConfigConstant.COLUMN_NAME, aliasName)
                 .put(ConfigConstant.COLUMN_ALARMTYPE, alarmType)
@@ -145,6 +147,9 @@ public class AlarmHistoryManager {
     public synchronized int getAlarmCountByStatus(int status) {
         Cursor cursor = DbCommonUtil.getByIntField(dbHelper,ConfigConstant.TABLE_ALARMHISTORY,ConfigConstant.COLUMN_READ,status);
         int count = 0;
+        if(null == cursor){
+            return count;
+        }
         while(cursor.moveToNext()){
             count++;
         }
@@ -173,12 +178,13 @@ public class AlarmHistoryManager {
                 AlarmHistorys = new ArrayList<AlarmHistory>();
             }
             String uuid = cursor.getString(cursor.getColumnIndex(CommonJson.JSON_UUID_KEY));
+            String triggerid = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_TRIGGERID));
             long time = cursor.getLong(cursor.getColumnIndex(CommonData.JSON_KEY_SETTIME));
             String aliasName = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_NAME));
             String alarmtype = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_ALARMTYPE));
             String message = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_MESSAGE));
             int read = cursor.getInt(cursor.getColumnIndex(CommonData.DATASTATUS_READ));
-            AlarmHistory item = new AlarmHistory(uuid, time,aliasName, message, alarmtype, read, 0, 0);
+            AlarmHistory item = new AlarmHistory(uuid, triggerid, time,aliasName, message, alarmtype, read, 0, 0);
             AlarmHistorys.add(item);
         }
         cursor.close();
@@ -197,12 +203,13 @@ public class AlarmHistoryManager {
 
         while(cursor.moveToNext()) {
             String uuid = cursor.getString(cursor.getColumnIndex(CommonJson.JSON_UUID_KEY));
+            String triggerid = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_TRIGGERID));
             long time = cursor.getLong(cursor.getColumnIndex(CommonData.JSON_KEY_SETTIME));
             String aliasName = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_NAME));
             String alarmtype = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_ALARMTYPE));
             String message = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_MESSAGE));
             int read = cursor.getInt(cursor.getColumnIndex(CommonData.DATASTATUS_READ));
-            AlarmHistory item = new AlarmHistory(uuid, time,aliasName, message, alarmtype, read, 0, 0);
+            AlarmHistory item = new AlarmHistory(uuid, triggerid, time, aliasName, message, alarmtype, read, 0, 0);
             AlarmHistorys.add(item);
         }
         cursor.close();
@@ -210,14 +217,12 @@ public class AlarmHistoryManager {
     }
 
     public synchronized List<AlarmHistory> getUnreportedAlarmList(String type, int start, int count) {
-        List<AlarmHistory> AlarmHistorys = null;
+        List<AlarmHistory> AlarmHistorys = new ArrayList<AlarmHistory>();
 //        Cursor cursor = DbCommonUtil.getAll(dbHelper,ConfigConstant.TABLE_ALARMHISTORY);
         Cursor cursor = DbCommonUtil.getUnreportedAlarmByType(dbHelper,ConfigConstant.TABLE_ALARMHISTORY, type, start, count);
         while(cursor.moveToNext()) {
-            if( null == AlarmHistorys) {
-                AlarmHistorys = new ArrayList<AlarmHistory>();
-            }
             String uuid = cursor.getString(cursor.getColumnIndex(CommonJson.JSON_UUID_KEY));
+            String triggerid = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_TRIGGERID));
             long time = cursor.getLong(cursor.getColumnIndex(CommonData.JSON_KEY_SETTIME));
             String aliasName = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_NAME));
             String alarmtype = cursor.getString(cursor.getColumnIndex(CommonData.JSON_KEY_ALARMTYPE));
@@ -225,7 +230,7 @@ public class AlarmHistoryManager {
             int read = cursor.getInt(cursor.getColumnIndex(CommonData.DATASTATUS_READ));
             int uploadams = cursor.getInt(cursor.getColumnIndex(CommonData.JSON_KEY_UPLOADAMS));
             int uploadcloud = cursor.getInt(cursor.getColumnIndex(CommonData.JSON_KEY_UPLOADCLOUD));
-            AlarmHistory item = new AlarmHistory(uuid, time,aliasName, message, alarmtype, read, uploadams, uploadcloud);
+            AlarmHistory item = new AlarmHistory(uuid, triggerid, time, aliasName, message, alarmtype, read, uploadams, uploadcloud);
             AlarmHistorys.add(item);
         }
         cursor.close();
@@ -239,6 +244,7 @@ public class AlarmHistoryManager {
         AlarmHistory device = new AlarmHistory();
         device.mId = cursor.getLong(cursor.getColumnIndex(ConfigConstant.COLUMN_ID));
         device.mUuid = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_UUID));
+        device.mTriggerId = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_TRIGGERID));
         device.mTime = cursor.getLong(cursor.getColumnIndex(ConfigConstant.COLUMN_TIME));
         device.mAliasName = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_NAME));
         device.mAlarmType = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_ALARMTYPE));
@@ -307,6 +313,7 @@ public class AlarmHistoryManager {
 
     private void loopToJson(JSONObject loopMapObject, AlarmHistory loop) throws JSONException {
         loopMapObject.put(CommonJson.JSON_UUID_KEY,loop.mUuid);
+        loopMapObject.put(CommonData.JSON_KEY_TRIGGERID,loop.mTriggerId);
         loopMapObject.put(CommonData.JSON_KEY_TIME,loop.mTime);
         loopMapObject.put(CommonData.JSON_KEY_NAME, loop.mAliasName);
         loopMapObject.put(CommonData.JSON_KEY_ALARMTYPE,loop.mAlarmType);
@@ -322,6 +329,7 @@ public class AlarmHistoryManager {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
             String uuid = loopMapObject.getString(CommonJson.JSON_UUID_KEY);
+            String triggerid = loopMapObject.getString(CommonData.JSON_KEY_TRIGGERID);
             String message = loopMapObject.optString(CommonData.JSON_KEY_MESSAGE);
             String alias = loopMapObject.optString(CommonData.JSON_KEY_NAME);
             String alarmType = loopMapObject.optString(CommonData.JSON_KEY_ALARMTYPE);
@@ -329,7 +337,7 @@ public class AlarmHistoryManager {
             String dataStatus  = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
             int uploadAms  = loopMapObject.optInt(CommonData.JSON_KEY_UPLOADAMS);
             int uploadCloud  = loopMapObject.optInt(CommonData.JSON_KEY_UPLOADCLOUD);
-            long rowId = add(uuid, time, alias, alarmType, message,
+            long rowId = add(uuid, triggerid, time, alias, alarmType, message,
                                 DbCommonUtil.transferReadStringToInt(dataStatus),
                                 uploadAms,
                                 uploadCloud);
@@ -348,6 +356,9 @@ public class AlarmHistoryManager {
             String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             String datastatus  = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
             AlarmHistory loop = getByUuid(uuid);
+            if(null == loop){
+                continue;
+            }
             loop.mRead = DbCommonUtil.transferReadStringToInt(datastatus);
             long num = updateByUuid(uuid,loop);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
@@ -366,6 +377,9 @@ public class AlarmHistoryManager {
             Log.d(TAG, "updateAlarmReportStatus: reportType:" + reportType);
             Log.d(TAG, "updateAlarmReportStatus: reportStatus:" + reportStatus);
             AlarmHistory loop = getByUuid(uuid);
+            if(null == loop){
+                continue;
+            }
             if (reportType.equals(CommonData.ALARMREPORT_TYPE_AMS)) {
                 loop.mUploadAms = DbCommonUtil.transferUploadStatusToInt(reportStatus);
             } else if (reportType.equals(CommonData.ALARMREPORT_TYPE_CLOUD)) {

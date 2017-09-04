@@ -1,23 +1,19 @@
 package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.RelativeTimer;
+import com.honeywell.homepanel.Utils.RelativeTimerTask;
 import com.honeywell.homepanel.Utils.WaveViewUtil;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
@@ -27,16 +23,12 @@ import com.honeywell.homepanel.ui.activities.CallActivity;
 import com.honeywell.homepanel.ui.activities.CallFailedActivity;
 import com.honeywell.homepanel.ui.activities.MainActivity;
 import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
-import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
 import com.honeywell.homepanel.ui.widget.WaveView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import static com.honeywell.homepanel.R.id.floor;
-import static com.honeywell.homepanel.ui.fragment.Keypad123Fragment.isCall;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -46,7 +38,7 @@ import static com.honeywell.homepanel.ui.fragment.Keypad123Fragment.isCall;
 public class CallOutgoingNeighborFragment extends CallBaseFragment implements View.OnClickListener {
     private String mTitle = "";
     private static final String TAG = "CallOutgoing";
-    private Context mContext = null;
+    //private Context mContext = null;
 
 //    private TextView mUnitTv = null;
     private Button mCancelBtn = null;
@@ -59,6 +51,14 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
 //            CallAnimationBrusher(R.mipmap.call_outgoing_bright, R.mipmap.call_outgoing_dim);
     private UIBaseCallInfo uiBaseCallInfo = new UIBaseCallInfo();
 
+    private RelativeTimerTask mCallingTimeOutTask = new RelativeTimerTask("CallingTimeOutTask"){
+        @Override
+        public void run() {
+            Log.d(TAG, "CallingTimeOutTask.run() 1111111111111");
+            sendHungUpAndExitActivity();
+        }
+    };
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +67,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContext = getActivity();
+        //mContext = getActivity();
         UNIT_PRESTR = getString(R.string.dialing);
         View view = inflater.inflate(R.layout.fragment_calloutgoing_neighborl, null);
         initViews(view);
@@ -77,6 +77,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
         uiBaseCallInfo.setmCallType(((CallActivity) getActivity()).mCallType);
         uiBaseCallInfo.setmCallAliasName(((CallActivity) getActivity()).mUnit);
         UISendCallMessage.requestForCallOut(uiBaseCallInfo);
+        RelativeTimer.getDefault().schedule(mCallingTimeOutTask,CommonData.CALLING_TIMEOUT);
         return view;
     }
 
@@ -91,6 +92,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
         Log.d(TAG, "CallOutgoingNeighborFragment.onDestroy() 11111111");
         EventBus.getDefault().unregister(this);
         //mAnimationBtusher.destroy();
+        cancelCalling();
         super.onDestroy();
     }
 
@@ -106,18 +108,25 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
 
     private void initViews(View view) {
 
-        mWaveViewUtil = WaveViewUtil.getInstance(view, getActivity());
+        mWaveViewUtil = WaveViewUtil.getInstance(view, getActivity().getApplicationContext());
         mWaveViewUtil.startWavaView(true, WaveView.CallType.OUT);
 
 //        mUnitTv = (TextView) view.findViewById(R.id.wave_view_tv_textview);
         if (getActivity() instanceof CallActivity) {
 //            mUnitTv.setText(UNIT_PRESTR + ((CallActivity) getActivity()).mUnit);
-            mWaveViewUtil.setText(getString(R.string.Dialing_) + ((CallActivity) getActivity()).mUnit);
+            mWaveViewUtil.setText(getString(R.string.Dialing_) +" "+  ((CallActivity) getActivity()).mUnit);
         }
         mCancelBtn = (Button) view.findViewById(R.id.cancel_btn);
         mCancelBtn.setOnClickListener(this);
     }
 
+    private void sendHungUpAndExitActivity(){
+        Log.d(TAG, "sendHungUpAndExitActivity() 11111111111111111");
+        UISendCallMessage.requestForHungUp(uiBaseCallInfo);
+        stopPlayRing();
+        if (mWaveViewUtil != null) mWaveViewUtil.stopWaveView();
+        getActivity().finish();
+    }
 
     @Override
     public void onClick(View view) {
@@ -125,10 +134,11 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
         switch (viewId) {
             case R.id.cancel_btn:
                 //startActivity(new Intent(getActivity(),MainActivity.class));
-                UISendCallMessage.requestForHungUp(uiBaseCallInfo);
+                /*UISendCallMessage.requestForHungUp(uiBaseCallInfo);
                 stopPlayRing();
                 if (mWaveViewUtil != null) mWaveViewUtil.stopWaveView();
-                getActivity().finish();
+                getActivity().finish();*/
+                sendHungUpAndExitActivity();
             default:
                 break;
         }
@@ -152,7 +162,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
                 System.out.println("SUISCallOutMessageRsp success");
             } else {
                 stopPlayRing();
-                Toast.makeText(getActivity(), "callout failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "callout failed", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), CallFailedActivity.class);
                 intent.putExtra(CommonData.INTENT_KEY_UNIT, aliasName);
                 startActivity(intent);
@@ -167,6 +177,7 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
     public void OnMessageEvent(SUISMessagesUICall.SUISCallActivedMessageEve msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
         stopPlayRing();
+        Log.d(TAG, "SUISCallActivedMessageEve() msg:"+msg.toString()+",,111111111111");
         if (mWaveViewUtil != null) mWaveViewUtil.stopWaveView();
         if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
             String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
@@ -176,6 +187,15 @@ public class CallOutgoingNeighborFragment extends CallBaseFragment implements Vi
             MainActivity.CallBaseInfo.setmCallAliasName(aliasName);
             MainActivity.CallBaseInfo.setmCallType(callType);
             CallActivity.switchFragmentInFragment(this, CommonData.CALL_CONNECTED_AUDIO_NETGHBOR);
+            cancelCalling();
+        }
+    }
+
+    private void cancelCalling(){
+        Log.d(TAG, "cancelCalling() 1111111111111111111111");
+        if(null != mCallingTimeOutTask){
+            mCallingTimeOutTask.cancel();
+            mCallingTimeOutTask = null;
         }
     }
 

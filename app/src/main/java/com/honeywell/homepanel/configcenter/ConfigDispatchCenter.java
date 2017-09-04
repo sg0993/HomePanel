@@ -290,6 +290,9 @@ public class ConfigDispatchCenter implements Runnable{
 
         // get local device details
         LocalDeviceManager.getInstance(mContext).getDeviceLoopDetailsInfo(jsonObject);
+
+        // get ipdc device info
+        PeripheralDeviceManager.getInstance(mContext).getDeviceLoopDetailsInfo(jsonObject);
     }
 
     private void getAllAlarmableZonesDetailsInfo(JSONObject jsonObject) throws JSONException {
@@ -321,5 +324,9 @@ public class ConfigDispatchCenter implements Runnable{
         mContext.sendBroadcast(intent);
 
         Log.d(TAG, "broadcastConfigurationUpdated, content:" + content);
+    }
+
+    public void unregisterReceivers() {
+        LocalDeviceManager.getInstance(mContext).unregisterBroadCastReceivers();
     }
 }

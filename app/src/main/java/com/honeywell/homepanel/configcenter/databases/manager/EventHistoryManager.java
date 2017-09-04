@@ -143,6 +143,9 @@ public class EventHistoryManager {
     public synchronized int getEventCountByStatus(int status) {
         Cursor cursor = DbCommonUtil.getByIntField(dbHelper,ConfigConstant.TABLE_EVENTHISTORY,ConfigConstant.COLUMN_READ,status);
         int count = 0;
+        if(null == cursor){
+            return count;
+        }
         while(cursor.moveToNext()){
           count++;
         }
@@ -283,6 +286,9 @@ public class EventHistoryManager {
             String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             String datastatus  = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
             EventHistory loop = getByUuid(uuid);
+            if(null == loop){
+                continue;
+            }
             if(loopMapObject.has(CommonData.JSON_KEY_DATASTATUS)){
                 loop.mRead = DbCommonUtil.transferReadStringToInt(datastatus);
             }

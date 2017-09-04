@@ -1,5 +1,6 @@
 package com.honeywell.homepanel.configcenter.databases.constant;
 
+import android.util.Log;
 import android.util.SparseArray;
 
 
@@ -8,7 +9,7 @@ import android.util.SparseArray;
  */
 
 public class ConfigConstant {
-
+    private static final String TAG = "ConfigConstant";
     public static final String TABLE_PERIPHERALDEVICE = "peripheraldevice";
     public static final String TABLE_COMMONDEVICE = "commondevice";
     public static final String TABLE_RELAYLOOP = "relayloop";
@@ -81,6 +82,7 @@ public class ConfigConstant {
     public static final String COLUMN_UPLOADAMS = "uploadams";
     public static final String COLUMN_UPLOADCLOUD = "uploadcloud";
     public static final String COLUMN_ROLEID = "roleid";
+    public static final String COLUMN_TRIGGERID = "triggerid";
 
     //colume for peripheraldevice
     public final static String COLUMN_PERIPHERALDEVICE_TYPE = COLUMN_TYPE;//int,
@@ -256,9 +258,11 @@ public class ConfigConstant {
     }
 
     public static  String createAlarmHistoryTable() {
+        Log.d(TAG, "createAlarmHistoryTable: ");
         return "CREATE TABLE IF NOT EXISTS " + TABLE_ALARMHISTORY + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_UUID + " nvarchar(128), "
+                + COLUMN_TRIGGERID + " nvarchar(128), "
                 + COLUMN_TIME + " INTEGER, "
                 + COLUMN_NAME + " nvarchar(32),"
                 + COLUMN_ALARMTYPE + " nvarchar(32), "

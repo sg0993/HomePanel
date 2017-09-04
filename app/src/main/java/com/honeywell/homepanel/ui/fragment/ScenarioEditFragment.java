@@ -20,17 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.honeywell.homepanel.IConfigService;
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.Utils.IConfigServiceManageUtil;
-import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.Utils.SceneDBUtil;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
-import com.honeywell.homepanel.pbx.PBXService;
 import com.honeywell.homepanel.ui.activities.PasswordEnterActivity;
-import com.honeywell.homepanel.ui.activities.ScenarioSelectActivity;
 import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.uicomponent.SencesImageAdapter;
 
@@ -41,12 +37,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static android.R.attr.mode;
 import static android.widget.AdapterView.LayoutParams;
 import static android.widget.AdapterView.OnClickListener;
 import static android.widget.AdapterView.OnItemClickListener;
 import static android.widget.AdapterView.OnItemLongClickListener;
 import static android.widget.AdapterView.OnLongClickListener;
-import static com.honeywell.homepanel.Utils.IConfigServiceManageUtil.getIntMapConfigM;
 import static com.honeywell.homepanel.common.CommonData.SENCES_EDIT;
 
 
@@ -82,7 +78,7 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SceneDBUtil.getInstance(getActivity());
+        SceneDBUtil.getInstance(getActivity().getApplicationContext());
         GetScenarioList();
         EventBus.getDefault().register(this);
     }
@@ -98,27 +94,27 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
     public void onResume() {
         super.onResume();
         int scenario = TopStaus.getInstance(this.getContext()).getCurScenario();
-        switch (scenario){
+        switch (scenario) {
             case CommonData.SCENARIO_HOME:
-                gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES1, TEXTES,0));
+                gridView.setAdapter(new SencesImageAdapter(getActivity().getApplicationContext(), IMAGES1, TEXTES, 0));
                 break;
             case CommonData.SCENARIO_AWAY:
-                gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES2, TEXTES,1));
+                gridView.setAdapter(new SencesImageAdapter(getActivity().getApplicationContext(), IMAGES2, TEXTES, 1));
                 break;
             case CommonData.SCENARIO_SLEEP:
-                gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES3, TEXTES,2));
+                gridView.setAdapter(new SencesImageAdapter(getActivity().getApplicationContext(), IMAGES3, TEXTES, 2));
                 break;
             case CommonData.SCENARIO_WAKEUP:
-                gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES4, TEXTES,3));
+                gridView.setAdapter(new SencesImageAdapter(getActivity().getApplicationContext(), IMAGES4, TEXTES, 3));
                 break;
             default:
-                gridView.setAdapter(new SencesImageAdapter(getActivity(), IMAGES1, TEXTES,0));
+                gridView.setAdapter(new SencesImageAdapter(getActivity().getApplicationContext(), IMAGES1, TEXTES, 0));
                 break;
         }
     }
 
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContext = getActivity();
+        mContext = getActivity().getApplicationContext();
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_scenarioedit, null);
 
@@ -132,6 +128,7 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,
                                            int position, long id) {
+                if (position == 0) return true;
                 int mode = IConfigServiceManageUtil.getIntMapConfigM(CommonData.JSON_HOMEPANELTYPE_KEY);
                 Log.w(TAG, "onServiceConnected: working mode=" + mode);
                 if (0 == mode) {
@@ -264,8 +261,10 @@ public class ScenarioEditFragment extends Fragment implements OnLongClickListene
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    mSenarioName[index] = loop.optString("name", "");
-                    mSenarioUUID[index] = loop.optString("uuid", "");
+                    if (loop != null) {
+                        mSenarioName[index] = loop.optString("name", "");
+                        mSenarioUUID[index] = loop.optString("uuid", "");
+                    }
                 }
             }
         }

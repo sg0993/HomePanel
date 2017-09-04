@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class AlarmHistory implements Parcelable {
     public long mId = -1;
     public String mUuid = "";
+    public String mTriggerId = ""; //use to mark which trigger has been triggered (each alarm has a unique id eq:01212)
     public long mTime = 0;//utc time,becacuse of ams need such record
     public String mAliasName = "";
     public String mAlarmType = "";
@@ -19,9 +20,10 @@ public class AlarmHistory implements Parcelable {
     public int mUploadCloud = 0;//0: need upload to cloud  1:it's already received by cloud
     public AlarmHistory(){}
 
-    public AlarmHistory(String mUuid, long mTime, String aliasName, String mMessage, String mAlarmType,
+    public AlarmHistory(String mUuid, String mTriggerId, long mTime, String aliasName, String mMessage, String mAlarmType,
                         int mRead, int mUploadAms, int mUploadCloud) {
         this.mUuid = mUuid;
+        this.mTriggerId = mTriggerId;
         this.mTime = mTime;
         this.mAliasName = aliasName;
         this.mMessage = mMessage;
@@ -36,6 +38,7 @@ public class AlarmHistory implements Parcelable {
         return "AlarmHistory{" +
                 "mId=" + mId +
                 ", mUuid='" + mUuid + '\'' +
+                ", mTriggerId='" + mTriggerId + '\'' +
                 ", mTime=" + mTime +
                 ", mAliasName ='" + mAliasName + '\'' +
                 ", mAlarmType='" + mAlarmType + '\'' +
@@ -62,6 +65,7 @@ public class AlarmHistory implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.mId);
         dest.writeString(this.mUuid);
+        dest.writeString(this.mTriggerId);
         dest.writeLong(this.mTime);
         dest.writeString(this.mAliasName);
         dest.writeString(this.mAlarmType);
@@ -74,6 +78,7 @@ public class AlarmHistory implements Parcelable {
     protected AlarmHistory(Parcel in) {
         this.mId = in.readLong();
         this.mUuid = in.readString();
+        this.mTriggerId = in.readString();
         this.mTime = in.readLong();
         this.mAliasName = in.readString();
         this.mAlarmType = in.readString();

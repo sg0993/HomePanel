@@ -1,17 +1,18 @@
 package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.Utils.LogMgr;
+import com.honeywell.homepanel.Utils.RelativeTimer;
+import com.honeywell.homepanel.Utils.RelativeTimerTask;
 import com.honeywell.homepanel.Utils.WaveViewUtil;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
@@ -24,7 +25,6 @@ import com.honeywell.homepanel.ui.uicomponent.CallAnimationBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
 import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
 import com.honeywell.homepanel.ui.widget.WaveView;
-import com.zhy.autolayout.utils.L;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,14 +40,37 @@ import static com.honeywell.homepanel.common.CommonData.CALL_CONNECTED_AUDIO_NET
 public class CallIncomingNeighbor extends CallBaseFragment implements View.OnClickListener {
     private String mTitle = "";
     private static final String TAG = "CallIncomingNeighbor";
-    private Context mContext = null;
+    //private Context mContext = null;
     private WaveViewUtil mWaveViewUtil = null;
 
     private CallAnimationBrusher mCallAnimationBrusher = new
             CallAnimationBrusher(R.mipmap.call_audio_bright, R.mipmap.call_audio_dim);
     private CallBottomBrusher mCallBottomBrusher = null;
 
-//    private TextView unitTv = null;
+    private RelativeTimerTask mCallingTimeOutTask = new RelativeTimerTask("CallingTimeOutTask"){
+        @Override
+        public void run() {
+            Log.d(TAG, "CallingTimeOutTask.run() 1111111111111");
+            sendHungUpAndExitActivity();
+        }
+    };
+
+    private void cancelCalling(){
+        Log.d(TAG, "cancelCalling() 1111111111111111111111");
+        if(null != mCallingTimeOutTask){
+            mCallingTimeOutTask.cancel();
+            mCallingTimeOutTask = null;
+        }
+    }
+
+    private void sendHungUpAndExitActivity(){
+        Log.d(TAG, "sendHungUpAndExitActivity() 11111111111111111");
+        UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
+        stopPlayRing();
+        if (mWaveViewUtil != null) mWaveViewUtil.stopWaveView();
+        getActivity().finish();
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +84,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContext = getActivity();
+        //mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_incomingcall_neighbor, null);
         initViews(view);
         Log.d(TAG, "CallIncomingNeighbor.onCreateView() 11111111");
@@ -69,6 +92,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
         // mCallAnimationBrusher.init(view);
         mCallBottomBrusher.init(view);
         mCallBottomBrusher.setVisible(CallBottomBrusher.BOTTOM_POSTION_MIDDLE, View.GONE);
+        RelativeTimer.getDefault().schedule(mCallingTimeOutTask, CommonData.CALLING_TIMEOUT);
         return view;
     }
 
@@ -84,6 +108,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
         EventBus.getDefault().unregister(this);
         //mCallAnimationBrusher.destroy();
         Log.d(TAG, "CallIncomingNeighbor.onDestroy() 11111111");
+        cancelCalling();
         super.onDestroy();
     }
 
@@ -97,7 +122,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
     }
 
     private void initViews(View view) {
-        mWaveViewUtil = WaveViewUtil.getInstance(view, getActivity());
+        mWaveViewUtil = WaveViewUtil.getInstance(view, getActivity().getApplicationContext());
         mWaveViewUtil.startWavaView(true, WaveView.CallType.IN);
 //        unitTv = (TextView) view.findViewById(R.id.wave_view_tv_textview);
 //        mCallBottomBrusher.setColor(CallBottomBrusher.BOTTOM_POSTION_LEFT, getResources().getColor(R.color.black));
@@ -110,8 +135,42 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
 //        if (unitTv != null) {
 //            unitTv.setText(getString(R.string.incommingcall) + ((CallActivity) getActivity()).mUnit);
 //        }
-        mWaveViewUtil.setText(getString(R.string.incommingcall) + ((CallActivity) getActivity()).mUnit);
+        mWaveViewUtil.setText(getString(R.string.incommingcall) + " " + calculateString());
     }
+
+    private String calculateString() {
+        String strMUnit = "";
+        if (getActivity() != null && getActivity() instanceof CallActivity) {
+            strMUnit = ((CallActivity) getActivity()).mUnit;
+            LogMgr.d("strMUnit.length():" + strMUnit.length() + " strMUnit:" + strMUnit);
+            try {
+                if (!TextUtils.isEmpty(strMUnit) && strMUnit.length() >= 10) {
+                    String dong = strMUnit.substring(0, 4);
+                    String hao = strMUnit.substring(4, strMUnit.length());
+                    for (int i = 0; i < dong.length(); i++) {
+                        if (dong.charAt(i) != '0') {
+                            dong = dong.substring(i, dong.length());
+                            break;
+                        }
+                    }
+
+                    for (int j = 0; j < hao.length(); j++) {
+                        if (hao.charAt(j) != '0') {
+                            hao = hao.substring(j, hao.length());
+                            break;
+                        }
+                    }
+                    strMUnit = dong + "-" + hao;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                strMUnit = ((CallActivity) getActivity()).mUnit;
+            }
+        }
+
+        return strMUnit;
+    }
+
 
     private static int mTestAlarmCount = 1;
 
@@ -123,7 +182,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
                 UISendCallMessage.requestForTakeCall(MainActivity.CallBaseInfo);
                 stopPlayRing();
                 if (mWaveViewUtil != null) mWaveViewUtil.stopWaveView();
-
+                cancelCalling();
                 CallActivity.switchFragmentInFragment(this, CALL_CONNECTED_AUDIO_NETGHBOR);
                 break;
             case R.id.right_btn:
@@ -131,6 +190,7 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
                 UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
                 stopPlayRing();
                 if (mWaveViewUtil != null) mWaveViewUtil.stopWaveView();
+                cancelCalling();
                 // EventBus.getDefault().post(new AlarmHint(mTestAlarmCount++));
                 break;
             default:
@@ -162,8 +222,10 @@ public class CallIncomingNeighbor extends CallBaseFragment implements View.OnCli
         if (status == CALL_CONNECTED_AUDIO_NETGHBOR) {
             return;
         }
-        stopPlayRing();
+       /* stopPlayRing();
         status = CommonData.CALL_CONNECTED_AUDIO_NETGHBOR;
-        ((CallActivity) getActivity()).setCurFragmentStatus(status);
+        ((CallActivity) getActivity()).setCurFragmentStatus(status);*/
+        stopPlayRing();
+        getActivity().finish();
     }
 }

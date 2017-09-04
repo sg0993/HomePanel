@@ -62,10 +62,13 @@
     <string name="newvoicemsg">You have a new voice message,tap to play.</string>
     <string name="newpropertymsg">You have a new property message,tap to check.</string>
     <string name="newalarmmsg">You have a new alarm message,tap to check.</string>
-
-    <string name="goodmoring">Good morning!</string>
-    <string name="goodafternoon">Good afternoon!</string>
-    <string name="goodevening">Good evening!</string>
+    <string name="novisitor">You have no visitor.</string>
+    <string name="novoicemsg">You have no voice message.</string>
+    <string name="nopropertymsg">You have no property message.</string>
+    <string name="noalarmmsg">You have no alarm message.</string>
+    <string name="goodmoring">Good Morning!</string>
+    <string name="goodafternoon">Good Afternoon!</string>
+    <string name="goodevening">Good Evening!</string>
 
     <string name="armhint">Everything looks good, your home is secure while you’re away.</string>
     <string name="disarmhint">Everything looks good, your home is ready to arm.</string>
@@ -86,6 +89,8 @@
         <item>1080P</item>
     </string-array>
     <string name="incommingcall">InComing call...</string>
+    <string name="frontdoor">Front Door</string>
+    <string name="backdoor">Back Door</string>
     <string name="neighbor">Neighbor</string>
 
     <string name="end">End</string>
@@ -113,6 +118,7 @@
     <string name="engin_masterphone">IP Masterphone Setting</string>
     <string name="engin_camera">IP Camera Setting</string>
     <string name="engin_password_change">Engineering Mode Code</string>
+    <string name="engin_cloud_environment">Cloud Environment</string>
     <string name="engin_antidismantle">Anti-Dismantle</string>
     <string name="engin_finaltest">Start Final Tester</string>
     <string name="engin_restart">Restart</string>
@@ -131,7 +137,7 @@
 
     <string name="zone_top_title">Zone Configuration</string>
     <string name="zone_local_zone">Local Zone</string>
-    <string name="zone_extension_zone">Extension Zone</string>
+    <string name="zone_extension_zone">Extended Zone</string>
     <string name="title_activity_wifi_configure">WifiConfigureActivity</string>
     <string name="wifi_configure">Wi-Fi Configuration</string>
     <string name="wifi_scan_access_points">Scan Access Points</string>
@@ -179,7 +185,7 @@
     <string name="change_engineering_code_second_title">Comfirm Code</string>
     <string name="change_engineering_code_second_title_end">Comfirm password</string>
 
-    <string name="extension_zone_top_title">Extension Zone</string>
+    <string name="extension_zone_top_title">Extended Zone</string>
     <string name="extension_zone_5804EU">5804EU</string>
     <string name="extension_zone_5800_PIR_AP">5800-PIR-AP</string>
     <string name="extension_zone_5804EU_status">online</string>
@@ -247,15 +253,18 @@
     <string name="options_relay_delay_time_1s">1</string>
 
     <string name="options_zone_type_instant">Instant</string>
-    <string name="options_zone_type_24hours">24 hours</string>
+    <string name="options_zone_type_24hours">24 Hours</string>
     <string name="options_zone_type_delay">Delay</string>
 
     <string name="options_alarm_type_fire">Fire</string>
-    <string name="options_alarm_type_help">Help</string>
+    <string name="options_alarm_type_intrusion">Intrusion</string>
+    <string name="options_alarm_type_emergencysilence">Emergency Silence</string>
     <string name="options_alarm_type_gas">Gas</string>
     <string name="options_alarm_type_emergency">Emergency</string>
+    <string name="options_alarm_type_tamper">Tamper</string>
 
     <string name="options_device_role_master">Master phone</string>
+    <string name="options_device_role_main">MainRoom</string>
     <string name="options_device_role_subphone">Subphone</string>
 
     <string name="relay_cfg_relay">Relay</string>
@@ -296,12 +305,12 @@
     <string name="waitforexit">正在退出，请稍候！</string>
     <string name="hint">提示</string>
     <string name="exceedmaxcount">IPC添加数量超过最大限制！</string>
-    <string name="door_open">开门</string>
-    <string name="arm">布防</string>
-    <string name="dooropen_arm">开门+撤防</string>
+    <string name="door_open">dooropen</string>
+    <string name="arm">arm</string>
+    <string name="dooropen_arm">dooropen &amp; arm</string>
     <string name="honeywellhome_unbinding_left">Your Homepanel is not bound to any HoneyWell\nHome account currently.</string>
-    <string name="honeywellhome_unbinding_right_up">If you have not installed Honeywell Home App,\nscan The QR code to link to download address.</string>
-    <string name="honeywellhome_unbinding_right_down">If you have installed Honeywell Home App, scan\nthe same QR code to add device to your cloud\naccount for remote control and monitor by\nHoneywell Home App.</string>
+    <string name="honeywellhome_unbinding_right_up">Scan QR code to download Honeywell H+ APP</string>
+    <string name="honeywellhome_unbinding_right_down">Scan QR code by APP to bind the device</string>
     <string name="honeywellhome_binding_up">Your Homepanel has been bound to</string>
     <string name="honeywellhome_binding_down">\nif you want to bind other, you have to unbind first.</string>
     <string name="abnoraml_popup_title">Issue Detected</string>
@@ -413,7 +422,7 @@
     <string name="content">This is content</string>
     <string name="demotime">2017.2.20 10:00:00</string>
     <string name="demotime1">2016.9.12   16:23</string>
-    <string name="Alarm_Zone">Alarm Zone</string>
+    <string name="Alarm_Zone">honeywellhome_unbinding_right_down</string>
     <string name="Incomming_call">Incomming call.</string>
     <string name="Lobby">Lobby</string>
     <string name="Delete">Delete</string>
@@ -436,14 +445,18 @@
     <string name="temperatureTv">26°</string>
     <string name="Unheathy">Unheathy</string>
     <string name="System_disarmed">System Disarmed</string>
+    <string name="wirless_disconnect">Wi-Fi disconnected</string>
+    <string name="unbind_error">Unbind Failed</string>
+    <string name="System_armed">System Armed</string>
     <string name="Adjust_speak">Volume</string>
-    <string name="Current_Home">Current:Home</string>
+    <string name="Current_Home">Current: Home</string>
     <string name="choose_scene">Tap to choose a scene</string>
     <string name="Bedroom">Bedroom</string>
     <string name="Property_Message">Property Message</string>
     <string name="timeam">02.28.2016 11:23 AM</string>
     <string name="Time">Time</string>
     <string name="Back">Back</string>
+    <string name="Back_">Back</string>
     <string name="Empty">Empty</string>
     <string name="Note">Note: touch and hold to talk. Release to save, or slide off the button to cancel</string>
     <string name="Record_text">Tap to record</string>
@@ -496,6 +509,54 @@
     <string name="currently_scene_sleep">Sleep is currently scene</string>
     <string name="currently_scene_wake_up">Wake up is currently scene</string>
 
+
+    <string name="setting_system_language">System Language</string>
+    <string name="setting_system_language_cn">简体中文</string>
+    <string name="setting_system_language_cn_tai">繁體中文</string>
+    <string name="setting_system_language_US">English</string>
+
+    <string name="change_password_yes">Yes</string>
+    <string name="change_password_no">No</string>
+
+    <string name="setting_wifi">WiFi</string>
+    <string name="setting_location">Location</string>
+    <string name="setting_brightness_volume">Brightness\n Volume</string>
+    <string name="setting_date_time">Date&amp;Time</string>
+    <string name="setting_remote_control">Remote\n Control</string>
+    <string name="setting_advanced_settings">Advanced\n Settings</string>
+    <string name="setting_cleaning">Cleaning</string>
+    <string name="setting_about">About</string>
+
+    <string name="month_january">January</string>
+    <string name="month_february">February</string>
+    <string name="month_march">March</string>
+    <string name="month_april">April</string>
+    <string name="month_may">May</string>
+    <string name="month_june">June</string>
+    <string name="month_july">July</string>
+    <string name="month_august">August</string>
+    <string name="month_september">September</string>
+    <string name="month_october">October</string>
+    <string name="month_november">November</string>
+    <string name="month_december">December</string>
+
+    <string name="speed_dial_fail">Wait...</string>
+    <string name="wifi_password_error">Wrong password</string>
+    <string name="open_wifi_out">Time out</string>
+
+    <string name="cameras_full_hint">Hnit</string>
+    <string name="cameras_full_wait">"Please wait!"</string>
+    <string name="cameras_full_timeout">"Ipc View Timeout!"</string>
+
+    <string name="scenario_error">Switch scenario fail, please retry!</string>
+    <string name="open_front_door">Open Front Door</string>
+    <string name="open_back_door">Open Back Door</string>
+    <string name="wifi_password_length">length at least 8</string>
+
+    <string name="cloud_environment_production">Production</string>
+    <string name="cloud_environment_devops_qa">Devops QA</string>
+    <string name="cloud_environment_qa">QA</string>
+    <string name="cloud_environment_dev">Dev</string>
 
 
 </resources>

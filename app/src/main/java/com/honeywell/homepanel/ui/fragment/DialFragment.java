@@ -7,12 +7,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -41,7 +43,7 @@ public class DialFragment extends Fragment implements View.OnClickListener {
     private View subphoneUnderline = null;
     private View keypadUnderline = null;
 
-    private List<Button> btnList = new ArrayList<Button>();
+    private final List<Button> btnList = new ArrayList<Button>();
     private FragmentManager fm;
     private FragmentTransaction ft;
     private SpeedDialFragment speedDialFragment;
@@ -65,13 +67,17 @@ public class DialFragment extends Fragment implements View.OnClickListener {
         initViews(view);
         initEvents();
 
-        fm = getFragmentManager();
+        fm = getChildFragmentManager();
         ft = fm.beginTransaction();
         setBackgroundColorById(0);
 //        speeddial.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_dark_pressed));
         speeddial.setTextColor(Color.parseColor(BLACK_GREY));
-        ft.replace(R.id.fragment_content, new SpeedDialFragment());
-        ft.commitAllowingStateLoss();
+
+        // TODO: 2017/7/26  luoxiang
+        if (R.id.fragment_content != 0) {
+            ft.replace(R.id.fragment_content, new SpeedDialFragment());
+            ft.commitAllowingStateLoss();
+        }
         return view;
     }
 
@@ -83,6 +89,7 @@ public class DialFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onDestroy() {
+        btnList.clear();
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -151,7 +158,7 @@ public class DialFragment extends Fragment implements View.OnClickListener {
     }
 
     public void onClick(View v) {
-        fm = getFragmentManager();
+        fm = getChildFragmentManager();
         ft = fm.beginTransaction();
         switch (v.getId()) {
             case R.id.speed_dial:
@@ -173,6 +180,7 @@ public class DialFragment extends Fragment implements View.OnClickListener {
                 ft.replace(R.id.fragment_content, subphoneFragment);
                 break;
             case R.id.keypad:
+                LogMgr.d("keypad");
                 Keypad123Fragment.isCall = true;
                 setBackgroundColorById(2);
 //                keypad.setTextColor(getResources().getColorStateList(R.color.common_google_signin_btn_text_dark_pressed));

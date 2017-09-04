@@ -16,18 +16,21 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.EthernetManagerUtil;
 import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.cloud.Protocols;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUINotification;
+import com.honeywell.homepanel.ui.domain.NetworkInfo;
 import com.honeywell.homepanel.ui.domain.mainNavigationStatusStruct;
 import com.honeywell.homepanel.ui.fragment.DeviceEditFragment;
 import com.honeywell.homepanel.ui.fragment.DialFragment;
@@ -153,12 +156,13 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
             fragment = getNewFragMent(position);
         }
         // TODO: 2017/7/21  luoxiang
+
 //        if (bAdd) {
 //            transaction.add(R.id.main_frameLayout, fragment);
 //        } else {
 //            transaction.replace(R.id.main_frameLayout, fragment);
 //        }
-        
+
         transaction.replace(R.id.main_frameLayout, fragment);
         transaction.commitAllowingStateLoss();
     }
@@ -300,10 +304,16 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         fragmentAdd(false, page);
     }
 
+
     @Override
     public void onClick(View view) {
+
+
         for (int i = 0; i <= CommonData.LEFT_SELECT_SETTING; i++) {
             if (mLeftViews.get(i).getId() == view.getId()) {
+                if(i == mLeftCurPage){
+                    break;
+                }
                 switchForFragement(i);
                 break;
             }
@@ -325,5 +335,40 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         Log.d(TAG, "OnMessageEvent: msg.type =" + msg.type);
         Log.d(TAG, "OnMessageEvent: msg.unreadCount=" + msg.unreadCount);
         updateNewMessageIndicator(msg.unreadCount);
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void OnMessageEvent(NetworkInfo msg) {
+        EthernetManagerUtil.getInstance().setEthernetStaticMode();
+        if (msg != null)
+            savaNetWork(msg);
+    }
+
+
+    private void savaNetWork(NetworkInfo msg) {
+        try {
+            EthernetManagerUtil ethernetManagerUtil = EthernetManagerUtil.getInstance();
+            for (int i = 0; i < 5; i++) {
+                Thread.sleep(1000);
+                String ipAddress = ethernetManagerUtil.getIpAddress();
+                String netmask = ethernetManagerUtil.getNetMask();
+                String gateway = ethernetManagerUtil.getGateWay();
+                LogMgr.d("当前线程:" + Thread.currentThread().getName() + "  netmask:" + netmask + " gateway:" + gateway + " ipAddress:" + ipAddress + "  msg.getNetWorkIP():" + msg.getNetWorkIP());
+
+                if (!TextUtils.equals(ipAddress, msg.getNetWorkIP())) {
+                    ethernetManagerUtil.setIpAddress(msg.getNetWorkIP());
+                } else if (msg.getNetWorkGateway() != null && !TextUtils.equals(gateway, msg.getNetWorkGateway())) {
+                    ethernetManagerUtil.setGateWay(msg.getNetWorkGateway());
+                } else if (msg.getNetWorkMask() != null && !TextUtils.equals(netmask, msg.getNetWorkMask())) {
+                    ethernetManagerUtil.setNetMask(msg.getNetWorkMask());
+                } else {
+                    ethernetManagerUtil.delete();
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

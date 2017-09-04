@@ -4,9 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
+import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
 import com.honeywell.homepanel.configcenter.databases.manager.ContentValuesFactory;
 import com.honeywell.homepanel.configcenter.databases.manager.DbCommonUtil;
@@ -384,36 +386,6 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
         //addDefaultLocal485tDevice(db, ...)
     }
 
-    private void addDefaultLocal485tDevice(SQLiteDatabase db, String physicType, String deviceType, String adapter, String addtionConfigs) {
-        String nameBase = "485device";
-
-        for (int index = 0; index < 2; index++) {
-            String uuid = DbCommonUtil.generateDeviceUuid(ConfigConstant.TABLE_LOCALDEVICE_INT,
-                    DbCommonUtil.getSequenct(db, ConfigConstant.TABLE_LOCALDEVICE));
-            ContentValues configValues = new ContentValuesFactory()
-                    .put(ConfigConstant.COLUMN_UUID, uuid)
-                    .put(ConfigConstant.COLUMN_NAME, nameBase)
-                    .put(ConfigConstant.COLUMN_TYPE, deviceType)
-                    .put(ConfigConstant.COLUMN_PHYSICTYPE, physicType)
-                    .put(ConfigConstant.COLUMN_ADAPTERNAME, adapter)
-                    .put(ConfigConstant.COLUMN_CONFIGURATION, addtionConfigs)
-                    .put(ConfigConstant.COLUMN_ENABLED, 1)
-                    .getValues();
-
-            long rowId = db.insert(ConfigConstant.TABLE_LOCALDEVICE, null, configValues);
-            if (rowId > 0) {
-                configValues = new ContentValuesFactory()
-                        .put(ConfigConstant.COLUMN_UUID, uuid)
-                        .put(ConfigConstant.COLUMN_NAME, nameBase)
-                        .put(ConfigConstant.COLUMN_TYPE, deviceType)
-                        .put(ConfigConstant.COLUMN_ENABLED, 1)
-                        .getValues();
-
-                db.insert(ConfigConstant.TABLE_COMMONDEVICE, null, configValues);
-            }
-        }
-    }
-
     private synchronized long addDefaultSystemSetting(SQLiteDatabase db, String key, String value) {
         ContentValues values = new ContentValuesFactory()
                 .put(ConfigConstant.COLUMN_KEY, key)
@@ -421,6 +393,16 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
                 .getValues();
 
         return db.insert(ConfigConstant.TABLE_SYSTEMSETTINGS, null, values);
+    }
+
+    private static String genDefaultAlarmPwd(){
+        StringBuilder builder = new StringBuilder();
+        for (int i = 1; i < 7; i++) {
+            builder.append(i);
+        }
+        String pwd = builder.toString();
+        Log.d("SQLiteOpenHelper", "genDefaultAlarmPwd() pwd:"+pwd);
+        return  pwd;
     }
 
     private void addDefaultSystemSettings(SQLiteDatabase db) {
@@ -439,7 +421,8 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
             addDefaultSystemSetting(db, CommonData.JSON_KEY_SETTIME, "");
 
             // scenario settings
-            addDefaultSystemSetting(db, CommonData.JSON_KEY_ALARM_PWD, "123456");
+            /*addDefaultSystemSetting(db, CommonData.JSON_KEY_ALARM_PWD, "123456");*/
+            addDefaultSystemSetting(db, CommonData.JSON_KEY_ALARM_PWD, CommonUtils.getBcryptStr(genDefaultAlarmPwd()));
             addDefaultSystemSetting(db, CommonData.KEY_CURRENT_SCENARIO_ID, CommonData.SCENARIO_ID_HOME);
             addDefaultSystemSetting(db, CommonData.KEY_ENGINEERPWD, "085213");
 

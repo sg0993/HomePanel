@@ -27,7 +27,7 @@ public class PasswordAdapter extends BaseAdapter {
         this.mImages = images;
         this.mImages_down = images_down;
         mContext = c;
-        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) mContext.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     //获取图片的数量

@@ -118,6 +118,9 @@ public class VoiceMessageManager {
     public synchronized int getVoiceCountByStatus(int status) {
         Cursor cursor = DbCommonUtil.getByIntField(dbHelper,ConfigConstant.TABLE_VOICEMESSAGE,ConfigConstant.COLUMN_READ,status);
         int count = 0;
+        if(null == cursor){
+            return  count;
+        }
         while(cursor.moveToNext()){
             count++;
         }
@@ -212,6 +215,9 @@ public class VoiceMessageManager {
             String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             String datastatus  = loopMapObject.optString(CommonData.JSON_KEY_DATASTATUS);
             VoiceMessage loop = getByUuid(uuid);
+            if(null == loop){
+                continue;
+            }
             loop.mRead = DbCommonUtil.transferReadStringToInt(datastatus);
             long num = updateByUuid(uuid,loop);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);

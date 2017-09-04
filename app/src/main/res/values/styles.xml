@@ -48,15 +48,15 @@
     </style>
 
     <style name="left_view">
-        <item name="android:background">@color/mainpage_noselect_bkg</item>
+        <item name="android:background">@color/welcome_white</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/left_button_size</item>
     </style>
 
     <style name="left_image">
         <item name="android:layout_centerInParent">true</item>
-        <item name="android:layout_width">45dp</item>
-        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
     </style>
 
     <style name="top_textview">

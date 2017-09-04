@@ -1,8 +1,6 @@
 package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,16 +11,14 @@ import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.Utils.LogMgr;
-import com.honeywell.homepanel.Utils.WaveViewUtil;
+import com.honeywell.homepanel.Utils.RelativeTimer;
+import com.honeywell.homepanel.Utils.RelativeTimerTask;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUICall;
-import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.AudioVideoUtil.CallRecordReadyEvent;
 import com.honeywell.homepanel.ui.AudioVideoUtil.TextureViewListener;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoDecoderThread;
@@ -34,23 +30,14 @@ import com.honeywell.homepanel.ui.uicomponent.CalRightBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallBottomBrusher;
 import com.honeywell.homepanel.ui.uicomponent.CallTopBrusher;
 import com.honeywell.homepanel.ui.uicomponent.UISendCallMessage;
-import com.honeywell.homepanel.ui.widget.WaveView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static com.honeywell.homepanel.R.id.left_tv;
-import static com.honeywell.homepanel.R.id.right_tv;
 import static com.honeywell.homepanel.common.CommonData.CALL_LOBBY_CONNECTED;
-import static com.honeywell.homepanel.common.CommonData.LOCAL_ZONE_TYPE;
-import static org.bouncycastle.asn1.x509.X509Name.T;
 
 /**
  * Created by H135901 on 1/25/2017.
@@ -61,7 +48,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
     private String mTitle = "";
     private static final String TAG = "CallLobby";
 
-    private Context mContext = null;
+    //private Context mContext = null;
     private CallBottomBrusher mCallBottomBrusher = null;
     private CalRightBrusher mCallRightBrusher = new CalRightBrusher(
             this, R.mipmap.call_right_background, R.mipmap.speaker_white,
@@ -70,29 +57,68 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
     private CallTopBrusher mCallTopBrusher = new CallTopBrusher(
             "Incomming call.", "Lobby"
     );
-
     //for video
-
     private TextureView mDecoderView;
     private TextureViewListener mDecoderTextureListener;
     private VideoDecoderThread mDecThread;
     private int AUTO_TAKECALL_TIME = 15;
     private final Handler mHandler = new Handler();
     private UIBaseCallInfo callInfo = new UIBaseCallInfo();
-
     private View mView;
-    private Timer mTimer = null;
+    private RelativeTimer mTimer = null;
+    private RelativeTimerTask mTimerTask;
     private long lastTime = 0;
 
-    private void initElapseTimer() {
-        if (mTimer == null) {
-            mTimer = new Timer();
+    private RelativeTimerTask mCallingTimeOutTask = new RelativeTimerTask("CallingTimeOutTask"){
+        @Override
+        public void run() {
+            Log.d(TAG, "CallingTimeOutTask.run() 1111111111111");
+            sendHungUpAndExitActivity();
         }
-        mTimer.schedule(new TimerTask() {
-            public void run() {
-                myHandler.sendEmptyMessage(MSG_SHOW_ELAPSE_TIME);
-            }
-        }, 1000, 1000);
+    };
+
+    private RelativeTimerTask mCalledTimeOutTask = new RelativeTimerTask("mCalledTimeOutTask"){
+        @Override
+        public void run() {
+            Log.d(TAG, "mCalledTimeOutTask.run() 1111111111111");
+            sendHungUpAndExitActivity();
+        }
+    };
+
+    private void initElapseTimer() {
+        mTimer = RelativeTimer.getDefault();
+
+        if (mTimerTask == null) {
+            mTimerTask = new RelativeTimerTask("Call-Lobby") {
+                @Override
+                public void run() {
+                    myHandler.sendEmptyMessage(MSG_SHOW_ELAPSE_TIME);
+                }
+            };
+        }
+        mTimer.schedule(mTimerTask, 1000, 1000);
+    }
+
+    private void cancelCalling(){
+        Log.d(TAG, "cancelCalling() 1111111111111111111111");
+        if(null != mCallingTimeOutTask){
+            mCallingTimeOutTask.cancel();
+            mCallingTimeOutTask = null;
+        }
+    }
+
+    private void cancelCalled(){
+        Log.d(TAG, "cancelCalled() 1111111111111111111111");
+        if(null != mCalledTimeOutTask){
+            mCalledTimeOutTask.cancel();
+            mCalledTimeOutTask = null;
+        }
+    }
+    private void sendHungUpAndExitActivity(){
+        Log.d(TAG, "sendHungUpAndExitActivity() 11111111111111111");
+        stopPlayRing();
+        UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
+        getActivity().finish();
     }
 
     @Override
@@ -108,7 +134,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "CallLobbyIncomingAndConnected.onCreateView() 11111111");
-        mContext = getActivity();
+        //mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_neighbor_lobby_incommingconnected, null);
         mCallBottomBrusher.init(view);
         mCallRightBrusher.init(view);
@@ -121,7 +147,8 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         startPlayRing(RingFileData.CALL_RING_LOBBYPHONE);
         startVideoGet();
         //for photo one bitmap to sdcard
-        phoneOneFrame();
+        phoneOneFrame(mDecoderView);
+        RelativeTimer.getDefault().schedule(mCallingTimeOutTask,CommonData.CALLING_TIMEOUT);
         return view;
     }
 
@@ -137,10 +164,13 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         EventBus.getDefault().unregister(this);
         Log.d(TAG, "CallLobbyIncomingAndConnected.onDestroy() 11111111");
         mDecThread.stop();
-        if (mTimer != null) {
-            mTimer.cancel();
+        if (mTimerTask != null) {
+            mTimerTask.cancel();
         }
+        mTimerTask = null;
         mTimer = null;
+        cancelCalling();
+        cancelCalled();
     }
 
     public CallLobbyIncomingAndConnected(String title) {
@@ -165,42 +195,6 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         mDecThread = new VideoDecoderThread(mDecoderTextureListener, mVideoPlayQueue);
         new Thread(mDecThread).start();
     }
-
-    private void phoneOneFrame() {
-        Log.d(TAG, "phoneOneFrame: 111111111111");
-        mDecoderView.postDelayed(new Runnable() {
-            public void run() {
-                Log.d(TAG, "phoneOneFrame: 22222222222");
-                Bitmap bitmap = mDecoderView.getBitmap();
-                String filePath = CommonUtils.saveBitmap(bitmap, CommonUtils.getLobbyBitMapName());
-                //save record image history
-                if (null != getActivity()) {
-                    ((CallActivity) getActivity()).saveCallHistory(getUpdateImagePathJson(filePath));
-                }
-            }
-        }, 5000);
-    }
-
-    private JSONObject getUpdateImagePathJson(String filePath) {
-        JSONObject jsonObject = new JSONObject();
-        if (TextUtils.isEmpty(filePath)) {
-            return jsonObject;
-        }
-        try {
-            jsonObject.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_EVENT);
-            jsonObject.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONEVENTUPDATE);
-            JSONArray jsonArray = new JSONArray();
-            JSONObject mapObject = new JSONObject();
-            mapObject.put(CommonJson.JSON_UUID_KEY, MainActivity.CallBaseInfo.getCallUuid());
-            mapObject.put(CommonData.JSON_KEY_IMAGENAME, filePath);
-            jsonArray.put(mapObject);
-            jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, jsonArray);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return jsonObject;
-    }
-
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
@@ -213,7 +207,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
                 Log.d(TAG, "onClick: end!!!!!!!!!!!!");
                 break;
             case R.id.left_btn:
-                Toast.makeText(mContext, "call_left", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "call_left", Toast.LENGTH_SHORT).show();
 
                 if (TextUtils.equals(mCallBottomBrusher.getLeft_Tv(), getString(R.string.open_door))) {
                     LogMgr.d("open door");
@@ -230,6 +224,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
 //                    switchToLobbyConnected();
 //                    //start audio
                     startAudio(1.5);
+                    RelativeTimer.getDefault().schedule(mCalledTimeOutTask,CommonData.CALLED_TIMEOUT);
                 } else {
                     status = CommonData.CALL_LOBBY_INCOMMING;
                     UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
@@ -243,14 +238,8 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
                     UISendCallMessage.requestForHungUp(MainActivity.CallBaseInfo);
                     getActivity().finish();
                 }
-//                int CurStatus = ((CallActivity) getActivity()).getCurFragmentStatus();
-//                UISendCallMessage.requestForOpenDoor(MainActivity.CallBaseInfo);
-//                //UISendCallMessage.requestForCallElevator(MainActivity.CallBaseInfo);
-//                UISendCallMessage.requestForElevatorAuth(MainActivity.CallBaseInfo);
-                Toast.makeText(mContext, "right_btn", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.top_btn:
-                Toast.makeText(mContext, "bottom_btn", Toast.LENGTH_SHORT).show();
                 UISendCallMessage.requestForMute(MainActivity.CallBaseInfo);
               /*  mSpeakerAdjust = false;
                 Toast.makeText(getApplicationContext(), "bottom_btn", Toast.LENGTH_SHORT).show();*/
@@ -285,13 +274,13 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
         if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_RESPONSE)) {
             String errorCode = msg.optString(CommonJson.JSON_ERRORCODE_KEY);
             if (errorCode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) {
-                Toast.makeText(getActivity(), "OpenDoor success", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "OpenDoor success", Toast.LENGTH_SHORT).show();
                 System.out.println("SUISOpenDoorMessageRsp success");
                 String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
                 String callType = msg.optString(CommonJson.JSON_CALLTYPE_KEY, "");
                 String aliasName = msg.optString(CommonJson.JSON_ALIASNAME_KEY, "");
             } else {
-                Toast.makeText(getActivity(), "OpenDoor failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "OpenDoor failed", Toast.LENGTH_SHORT).show();
                 System.out.println("SUISOpenDoorMessageRsp failed");
             }
         }
@@ -312,9 +301,10 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
                 String aliasName = msg.optString(CommonJson.JSON_ALIASNAME_KEY, "");
                 System.out.println("SUISTakeCallMessageRsp  uuid,callType,aliasName," + uuid + callType + aliasName);
                 switchToLobbyConnected();
+                cancelCalling();
                 // startAudio();
             } else {
-                Toast.makeText(getActivity(), "TakeCall failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "TakeCall failed", Toast.LENGTH_SHORT).show();
                 System.out.println("SUISTakeCallMessageRsp failed");
             }
         }
@@ -330,7 +320,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
                 System.out.println("SUISHungUpMessageRsp success");
                 String uuid = msg.optString(CommonJson.JSON_UUID_KEY, "");
             } else {
-                Toast.makeText(getActivity(), "HungUp failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "HungUp failed", Toast.LENGTH_SHORT).show();
                 System.out.println("SUISHungUpMessageRsp failed");
             }
 
@@ -341,6 +331,7 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
     public void OnMessageEvent(SUISMessagesUICall.SUISCallTerminatedMessageEve msg) {
         String action = msg.optString(CommonJson.JSON_ACTION_KEY, "");
         stopPlayRing();
+        cancelCalled();
         if (!action.isEmpty() && action.equals(CommonJson.JSON_ACTION_VALUE_EVENT)) {
             getActivity().finish();
         }
@@ -363,9 +354,11 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
             callInfo.setmCallAliasName(aliasName);
             UISendCallMessage.responseForAutoTakeCallReq(callInfo, CommonJson.JSON_ERRORCODE_VALUE_OK);
             UISendCallMessage.requestForTakeCall(callInfo);
+            cancelCalling();
             startAutoAudioReply();
             waitAutoAudioReplyFinish();
             autoRecordVideoAndAudio();
+            RelativeTimer.getDefault().schedule(mCalledTimeOutTask,CommonData.CALLED_TIMEOUT);
         }
     }
 
@@ -398,9 +391,12 @@ public class CallLobbyIncomingAndConnected extends CallBaseFragment implements V
             return;
         }
         status = CommonData.CALL_LOBBY_CONNECTED;
-        ((CallActivity) getActivity()).setCurFragmentStatus(status);
+      /*  ((CallActivity) getActivity()).setCurFragmentStatus(status);
         switchToLobbyConnected();
-        startAudio(1.5);
+        startAudio(1.5);*/
+
+        stopPlayRing();
+        getActivity().finish();
     }
 
 

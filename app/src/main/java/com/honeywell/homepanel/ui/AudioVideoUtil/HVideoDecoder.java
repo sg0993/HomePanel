@@ -77,11 +77,23 @@ public class HVideoDecoder {
         }
         //decoder = MediaCodec.createByCodecName("OMX.google.h264.decoder");
         Log.d(TAG, "Use default video decoder");
-        decoder.configure(media_format, videoWindow, null, 0);
+
+        try {
+            decoder.configure(media_format, videoWindow, null, 0);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+
         /*outputSurface = new CodecOutputSurface(video_width, video_height);
         decoder.configure(media_format, outputSurface.getSurface(), null, 0);*/
-        decoder.start();
-        inputBuffers = decoder.getInputBuffers();
+        try {
+            decoder.start();
+            inputBuffers = decoder.getInputBuffers();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //outputBuffers = decoder.getOutputBuffers();
         info = new MediaCodec.BufferInfo();
         decoderHasStarted = true;

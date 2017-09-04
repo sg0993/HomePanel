@@ -257,6 +257,9 @@ public class ScenarioLoopManager {
               /*  if(jsonObject.has(CommonData.JSON_KEY_NAME)){
                     loop.mName = name;
                 }*/
+                if(null == loop){
+                    continue;
+                }
                 if(jsonObject.has(CommonJson.JSON_ACTION_KEY)){
                     loop.mAction = action;
                 }

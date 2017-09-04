@@ -2,8 +2,6 @@ package com.honeywell.homepanel.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.common.CommonData;
@@ -34,7 +31,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,9 +49,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     private static int[] icon = {R.mipmap.setting_wifi, R.mipmap.setting_location,
             R.mipmap.setting_volume, R.mipmap.setting_date, R.mipmap.setting_account,
             R.mipmap.setting_advanced, R.mipmap.setting_cleaning, R.mipmap.setting_upgrade};
-    private static String[] iconName = {"WiFi", "Location", "Brightness\n Volume", "Date&Time",
-            "Remote\n Control", "Advanced\n Settings", "Cleaning", "About"};
-
+    //private String[] iconName = {"WiFi", "Location", "Brightness\n Volume", "Date&Time",
+    //        "Remote\n Control", "Advanced\n Settings", "Cleaning", "About"};
+    private String[] iconName = null;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +61,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setting, null);
+        iconName = new String[]{getIconName(R.string.setting_wifi), getIconName(R.string.setting_location), getIconName(R.string.setting_brightness_volume), getIconName(R.string.setting_date_time),
+                getIconName(R.string.setting_remote_control), getIconName(R.string.setting_advanced_settings), getIconName(R.string.setting_cleaning), getIconName(R.string.setting_about)};
         gridView = (GridView) view.findViewById(R.id.gridview_setting);
         data_list = new ArrayList<Map<String, Object>>();
         getData();
@@ -79,6 +77,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
+        data_list.clear();
         super.onDestroy();
     }
 
@@ -87,8 +86,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         this.title = title;
 
     }
-
-
 
     @Override
     public void onClick(View v) {
@@ -109,23 +106,23 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                     if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) return;
 
                     //Intent intent1 = new Intent(getActivity(), WiFiConfigurationActivity.class);
-                    Intent intent1 = new Intent(getActivity(), WiFiConfigurationActivity.class);
+                    Intent intent1 = new Intent(getActivity().getApplicationContext(), WiFiConfigurationActivity.class);
                     startActivity(intent1);
                     break;
                 case 1:
                     if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) return;
 
-                    Intent intent2 = new Intent(getActivity(), LocationActivity.class);
+                    Intent intent2 = new Intent(getActivity().getApplicationContext(), LocationActivity.class);
                     startActivity(intent2);
                     break;
                 case 2:
-                    Intent intent3 = new Intent(getActivity(), SettingBrightVolumeAdjustment.class);
+                    Intent intent3 = new Intent(getActivity().getApplicationContext(), SettingBrightVolumeAdjustment.class);
 
                     startActivity(intent3);
                     break;
                 case 3:
                     if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) return;
-                    Intent intent4 = new Intent(getActivity(), DateTimeActivity.class);
+                    Intent intent4 = new Intent(getActivity().getApplicationContext(), DateTimeActivity.class);
                     startActivity(intent4);
                     break;
                 case 4: {
@@ -141,13 +138,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                     break;
                 }
                 case 5:
-                    if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) return;
-
-                    Intent intent = new Intent(getActivity(), AdvancedActivity.class);
+                    Intent intent = new Intent(getActivity().getApplicationContext(), AdvancedActivity.class);
                     startActivity(intent);
                     break;
                 case 6:
-                    Intent intentCleaning = new Intent(getActivity(), CleaningActivity.class);
+                    Intent intentCleaning = new Intent(getActivity().getApplicationContext(), CleaningActivity.class);
                     startActivity(intentCleaning);
                     break;
                 case 7:
@@ -165,7 +160,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 //                    }
 //                }
 
-                    Intent intent7 = new Intent(getActivity(), AboutTunaActivity.class);
+                    Intent intent7 = new Intent(getActivity().getApplicationContext(), AboutTunaActivity.class);
                     startActivity(intent7);
                     break;
             }
@@ -190,6 +185,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnMessageEvent(MessageEvent event) {
 
+    }
+
+    public String getIconName(int id){
+        return getResources().getString(id);
     }
 
 }

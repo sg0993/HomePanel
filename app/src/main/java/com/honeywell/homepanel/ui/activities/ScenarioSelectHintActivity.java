@@ -2,24 +2,15 @@ package com.honeywell.homepanel.ui.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.Utils.NotificationUtil;
 import com.honeywell.homepanel.common.CommonData;
-import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.widget.CycleProgressView;
-
-import org.w3c.dom.Text;
-
-import static android.R.attr.id;
 
 /**
  * Created by H135901 on 2/20/2017.
@@ -38,6 +29,7 @@ public class ScenarioSelectHintActivity extends Activity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogMgr.d("ScenarioSelectHintActivity--->:onCreate()");
         setContentView(R.layout.layout_scenarioselecthint);
         mSelect_Scenario = getIntent().getIntExtra(CommonData.INTENT_KEY_SCENARIO, 4);
         initViews();
@@ -53,10 +45,10 @@ public class ScenarioSelectHintActivity extends Activity implements View.OnClick
 //                }
 
                 while (mCurrentProgress < mProgressBar.getMax()) {
-                    if (mCurrentProgress % 100 == 0) {
+//                    if (mCurrentProgress % 100 == 0) {
 //                        Message.obtain(mHandler, 0, mCurrentProgress / 100, 0).sendToTarget();
-                        Message.obtain(mHandler, 0, size--, 0).sendToTarget();
-                    }
+//                        Message.obtain(mHandler, 0, size--, 0).sendToTarget();
+//                    }
                     mCurrentProgress++;
                     mProgressBar.setProgress(mCurrentProgress);
                     try {
@@ -68,7 +60,8 @@ public class ScenarioSelectHintActivity extends Activity implements View.OnClick
 
 
                 if (mCurrentProgress >= mProgressBar.getMax()) {
-                    TopStaus.getInstance(getApplicationContext()).setCurScenario(mSelect_Scenario);
+                    LogMgr.d("ScenarioSelectHintActivity--->:" + mSelect_Scenario);
+//                    TopStaus.getInstance(getApplicationContext()).setCurScenario(mSelect_Scenario);
                     finish();
                 }
             }
@@ -77,18 +70,18 @@ public class ScenarioSelectHintActivity extends Activity implements View.OnClick
         mRunable.start();
     }
 
-    Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            mTextView.setText(getString(R.string.exit_freely_1) + " " + (msg.arg1 < 10 ? "0" + msg.arg1 :
-                    msg.arg1) + " " + getString(R.string.exit_freely_seconds));
-        }
-    };
+//    Handler mHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            mTextView.setText(getString(R.string.exit_freely_1) + " " + (msg.arg1 < 10 ? "0" + msg.arg1 :
+//                    msg.arg1) + " " + getString(R.string.exit_freely_seconds));
+//        }
+//    };
 
-    private void postDelayed(CycleProgressView progressBar, Runnable runnable, long delay) {
+/*    private void postDelayed(CycleProgressView progressBar, Runnable runnable, long delay) {
         progressBar.postDelayed(runnable, delay);
-    }
+    }*/
 
     private void initViews() {
         mProgressBar = ((CycleProgressView) findViewById(R.id.progress_bar));
@@ -119,11 +112,13 @@ public class ScenarioSelectHintActivity extends Activity implements View.OnClick
     @Override
     protected void onPause() {
         super.onPause();
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        LogMgr.d("ScenarioSelectHintActivity--->:onStop()");
         NotificationUtil.getNotificationUtil().afreshShow();
     }
 

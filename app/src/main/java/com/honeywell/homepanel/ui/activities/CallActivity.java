@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import com.honeywell.homepanel.IAvRtpService;
 import com.honeywell.homepanel.IConfigService;
@@ -27,7 +26,6 @@ import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.utils.CommonUtils;
-import com.honeywell.homepanel.ui.domain.UIBaseCallInfo;
 import com.honeywell.homepanel.ui.fragment.CalIpDcIncomingAndConnected;
 import com.honeywell.homepanel.ui.fragment.CallBaseFragment;
 import com.honeywell.homepanel.ui.fragment.CallGuardIncomingAndConnected;
@@ -36,7 +34,6 @@ import com.honeywell.homepanel.ui.fragment.CallLobbyIncomingAndConnected;
 import com.honeywell.homepanel.ui.fragment.CallNeighborAndioAndVideoConnected;
 import com.honeywell.homepanel.ui.fragment.CallOutgoingNeighborFragment;
 import com.honeywell.homepanel.ui.fragment.CallSubponeIncomingAndConnected;
-import com.honeywell.homepanel.ui.uicomponent.Notification;
 import com.honeywell.homepanel.ui.uicomponent.TopViewBrusher;
 
 import org.greenrobot.eventbus.EventBus;
@@ -98,7 +95,7 @@ public class CallActivity extends FragmentActivity implements View.OnClickListen
         initViewAndListener();
         mTopViewBrusher.init(this);
         fragmentAdd(mCurCallStatus);
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
 
         CommonUtils.startAndBindService(getApplicationContext(), CommonData.ACTION_AVRTP_SERVICE, mIAvRtpServiceConnect);
         CommonUtils.startAndBindService(getApplicationContext(), CommonData.ACTION_CONFIG_SERVICE, mIConfigServiceConnect);
@@ -128,7 +125,7 @@ public class CallActivity extends FragmentActivity implements View.OnClickListen
 
 
     public String getCalltime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = sdf.format(new Date());
         return time;
     }
@@ -165,6 +162,7 @@ public class CallActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
+        mFragments.clear();
         super.onDestroy();
         mTopViewBrusher.destory();
         //警告恢复
@@ -175,6 +173,7 @@ public class CallActivity extends FragmentActivity implements View.OnClickListen
         if (null != mIConfigServiceConnect) {
             getApplicationContext().unbindService(mIConfigServiceConnect);
         }
+        CommonUtils.sendUIEventBusCommonCmd(CommonData.SCREEN_WEAKUP);
     }
 
 
@@ -192,6 +191,7 @@ public class CallActivity extends FragmentActivity implements View.OnClickListen
 
     private Fragment getNewFragMent(int position) {
         LogMgr.e("position:" + position);
+        Log.d(TAG, "getNewFragMent: " + position);
         CallBaseFragment fragment = null;
         switch (position) {
             case CALL_OUTGOING_NEIGHBOR:
@@ -305,7 +305,7 @@ public class CallActivity extends FragmentActivity implements View.OnClickListen
         switch (viewId) {
             case R.id.volume_decrease:
                 if (mSpeakerAdjust) {
-                    Toast.makeText(getApplicationContext(), "volume decrease!!!!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "volume decrease!!!!", Toast.LENGTH_SHORT).show();
                     mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
                     int volume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                     mCurSeekBar.setProgress(volume);
@@ -316,7 +316,7 @@ public class CallActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.volume_increase:
                 if (mSpeakerAdjust) {
-                    Toast.makeText(this, "volume increase!!!!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "volume increase!!!!", Toast.LENGTH_SHORT).show();
                     mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
                     int volume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                     mCurSeekBar.setProgress(volume);
@@ -335,7 +335,7 @@ public class CallActivity extends FragmentActivity implements View.OnClickListen
     public void volumeSpeaker() {
         mSpeakerAdjust = true;
         mCurSeekBar = CommonUtils.showCallVolumeDialog(this, this, this, mSpeakerAdjust, getVolumeForCallStatus());
-        Toast.makeText(getApplicationContext(), "top_btn", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "top_btn", Toast.LENGTH_SHORT).show();
     }
 
     public void volumeMic() {
@@ -388,8 +388,10 @@ public class CallActivity extends FragmentActivity implements View.OnClickListen
                         mCurCallStatus == CALL_IPDC_INCOMING) {
                     saveCallHistory(getCallInitJsonObject());
                 }
-                int currentVolume = getVolumeForCallStatus();
-                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_PLAY_SOUND);
+                if (mIConfigService != null) {
+                    int currentVolume = getVolumeForCallStatus();
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_PLAY_SOUND);
+                }
             }
         }
 

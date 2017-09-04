@@ -178,9 +178,12 @@ public class PListXMLHandler extends DefaultHandler2 {
             if (localName.equalsIgnoreCase(Constants.TAG_DICT) ||
                     localName.equalsIgnoreCase(Constants.TAG_PLIST_ARRAY)) {
                 try {
-                    PListObject objToAdd = pList.buildObject(localName, tempVal
-                            .getBuilder().toString());
-                    pList.stackObject(objToAdd, key);
+                    if(null != pList){
+                        PListObject objToAdd = pList.buildObject(localName, tempVal.getBuilder().toString());
+                        if(null != objToAdd){
+                            pList.stackObject(objToAdd, key);
+                        }
+                    }
                 } catch (Exception e) {
                     throw new SAXException(e);
                 }
@@ -231,7 +234,9 @@ public class PListXMLHandler extends DefaultHandler2 {
             try {
                 PListObject objToAdd = pList.buildObject(localName, tempVal
                         .getBuilder().toString());
-                pList.stackObject(objToAdd, key);
+                if(null != objToAdd){
+                    pList.stackObject(objToAdd, key);
+                }
             } catch (Exception e) {
                 throw new SAXException(e);
             }

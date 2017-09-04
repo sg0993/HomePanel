@@ -3,6 +3,8 @@ package com.honeywell.homepanel.ui.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,22 +17,25 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
 import com.honeywell.homepanel.Utils.PlistUtil;
 import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonPath;
 import com.honeywell.homepanel.common.Message.MessageEvent;
+import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUINotification;
 import com.honeywell.homepanel.ui.activities.MainActivity;
 import com.honeywell.homepanel.ui.activities.ScenarioSelectActivity;
 import com.honeywell.homepanel.ui.domain.MenuCity;
 import com.honeywell.homepanel.ui.domain.TopStaus;
+import com.honeywell.homepanel.ui.services.WidgetInfoService;
 import com.honeywell.homepanel.ui.uicomponent.PageViewAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -42,9 +47,9 @@ import java.util.Map;
  */
 
 @SuppressLint("ValidFragment")
-public class HomeFragment extends Fragment implements View.OnClickListener{
+public class HomeFragment extends Fragment implements View.OnClickListener {
     private String mTitle = "";
-    private static  final  String TAG = "HomeFragment";
+    private static final String TAG = "HomeFragment";
     private PageViewAdapter mPageAdaper = null;
     private ImageView choose_scenarioImageView = null;
     private Context mContext = null;
@@ -57,14 +62,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private TextView mArmHintHasEventTv = null;
     private TextView mArmHintNoEventTv = null;
     private TextView mCurrentScenarioTv = null;
+    private Bitmap logoBitmap = null;
+    private ImageView logoView = null;
 
     /*********For Event view logic*************/
-    private boolean  bHasEvent = true;
+    private boolean bHasEvent = true;
     private View mArmStatusNoevent = null;
     private View mArmStatusHasevent = null;
     private MyAdapter mEventadapter = null;
-    public  static  final  String MAP_KEY_IMG = "img";
-    public  static  final  String MAP_KEY_TEXT = "text";
+    public static final String MAP_KEY_IMG = "img";
+    public static final String MAP_KEY_TEXT = "text";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,10 +80,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContext = getActivity();
+        mContext = getActivity().getApplicationContext();
+
         View view = inflater.inflate(R.layout.fragment_home, null);
-        mPageAdaper = new PageViewAdapter(view,getActivity(),R.layout.mainpage01,R.layout.mainpage02,
-                R.id.pagerRootId,R.id.dotViewRoot,R.id.pageView);
+
+        mPageAdaper = new PageViewAdapter(view, getActivity(), R.layout.mainpage01, R.layout.mainpage02,
+                R.id.pagerRootId, R.id.dotViewRoot, R.id.pageView);
 
         initViews();
         return view;
@@ -85,8 +94,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-        int scenario = TopStaus.getInstance(getActivity().getApplicationContext()).getCurScenario();
-        Log.d(TAG,"onResume() mCurScenario:"+ scenario+",,1111111111");
+        int scenario = TopStaus.getInstance(getActivity()).getCurScenario();
+        Log.d(TAG, "onResume() mCurScenario:" + scenario);
         eventBrush();
         setViewTextByScenario(scenario);
     }
@@ -95,27 +104,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         String goodWhat = null;
         Calendar c = Calendar.getInstance();
         int hour = c.get(Calendar.HOUR_OF_DAY);
-        if(hour < 12){
+        if (hour < 12) {
             goodWhat = getString(R.string.goodmoring);
-        }
-        else if(hour < 16){
+        } else if (hour < 16) {
             goodWhat = getString(R.string.goodafternoon);
-        }
-        else{
+        } else {
             goodWhat = getString(R.string.goodevening);
         }
 
         String armHint = "";
-        if(mCurScenario == CommonData.SCENARIO_AWAY){
+        if (mCurScenario == CommonData.SCENARIO_AWAY) {
             armHint = getString(R.string.armhint);
-        }
-        else {
+        } else {
             armHint = getString(R.string.disarmhint);
         }
 
         int scenarioResId = 0;
         int scenarioImgResId = 0;
-        switch (mCurScenario){
+        switch (mCurScenario) {
             case CommonData.SCENARIO_HOME:
                 scenarioResId = R.string.scenario_home;
                 scenarioImgResId = R.mipmap.home_blue;
@@ -149,7 +155,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onDestroy() {
+        mEventData.clear();
         EventBus.getDefault().unregister(this);
+        if(logoBitmap != null && !logoBitmap.isRecycled()){
+            logoBitmap = null;
+        }
         super.onDestroy();
     }
 
@@ -157,17 +167,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         super();
         this.mTitle = title;
     }
+
     public HomeFragment() {
         super();
     }
 
-    public void eventBrush(){
-        if(MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB){
+    public void eventBrush() {
+        if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_SUB) {
             bHasEvent = false;
-        }
-        else {
+        } else {
             mEventData.clear();
-            ((MainActivity) getActivity()).getEventData(mEventData);
+            if (getActivity() != null) {
+                ((MainActivity) getActivity()).getEventData(mEventData);
+            }
             mEventadapter.notifyDataSetChanged();
             if (mEventData.size() > 0) {
                 bHasEvent = true;
@@ -183,16 +195,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         choose_scenarioImageView = (ImageView) mainPage1.findViewById(R.id.choose_scenarioImage);
         choose_scenarioImageView.setOnClickListener(this);
 
-        mEvent_listview = (ListView)mainPage1.findViewById(R.id.event_listview);
-        mGoodWhatHasEventTv = (TextView)mainPage1.findViewById(R.id.goodwhat_hasevent);
-        mGoodWhatNoEventTv = (TextView)mainPage1.findViewById(R.id.goodwhat_noevent);
-        mArmHintHasEventTv = (TextView)mainPage1.findViewById(R.id.arm_hint_hasevent);
-        mArmHintNoEventTv = (TextView)mainPage1.findViewById(R.id.arm_hint_noevent);
-        mCurrentScenarioTv = (TextView)mainPage1.findViewById(R.id.currentscenario);
+        mEvent_listview = (ListView) mainPage1.findViewById(R.id.event_listview);
+        mGoodWhatHasEventTv = (TextView) mainPage1.findViewById(R.id.goodwhat_hasevent);
+        mGoodWhatNoEventTv = (TextView) mainPage1.findViewById(R.id.goodwhat_noevent);
+        mArmHintHasEventTv = (TextView) mainPage1.findViewById(R.id.arm_hint_hasevent);
+        mArmHintNoEventTv = (TextView) mainPage1.findViewById(R.id.arm_hint_noevent);
+        mCurrentScenarioTv = (TextView) mainPage1.findViewById(R.id.currentscenario);
 
         mArmStatusNoevent = mainPage1.findViewById(R.id.arm_status_noevent);
         mArmStatusHasevent = mainPage1.findViewById(R.id.arm_status_hasevent);
+        logoView = (ImageView) mainPage1.findViewById(R.id.logo);
         setArmView(bHasEvent);
+        setLogoView();
+
 
         /***************For Test Call********************************/
         mGoodWhatHasEventTv.setOnClickListener(this);// for test Neighbor OutGoing call
@@ -200,13 +215,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         mCurrentScenarioTv.setOnClickListener(this);// for test Lobby Incoming call
         //mEventData = getmEventData();
         //getmEventData();
-        mEventadapter = new MyAdapter(getActivity());
+        mEventadapter = new MyAdapter(getActivity().getApplicationContext());
         mEvent_listview.setAdapter(mEventadapter);
         mEvent_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(mContext,"postion:"+position,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "postion:" + position, Toast.LENGTH_SHORT).show();
                 MainActivity.mMessageFragPage = getMessageFragPage(position);
                 ((MainActivity) getActivity()).switchForFragement(CommonData.LEFT_SELECT_MESSAGE);
+                if (mEventData.size() > 0) {
+                    Map<String, Object> map = mEventData.get(position);
+                    if (map.containsValue(getString(R.string.newpropertymsg))) {//if notification then remove
+                        mEventData.remove(position);
+                        WidgetInfoService.newNotificationFlag = false;
+                    }
+                }
             }
         });
     }
@@ -214,31 +236,29 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private int getMessageFragPage(int position) {
         int page = CommonData.MESSAGE_SELECT_EVENT;
         Map<String, Object> map = mEventData.get(position);
-        if(null != map){
-            String hintStr = (String)map.get(MAP_KEY_TEXT);
-            if(hintStr.equals(getString(R.string.newvisitor))){
+        if (null != map) {
+            String hintStr = (String) map.get(MAP_KEY_TEXT);
+            if (hintStr.equals(getString(R.string.newvisitor)) || hintStr.equals(getString(R.string.novisitor))) {
                 page = CommonData.MESSAGE_SELECT_EVENT;
-            }
-            else if(hintStr.equals(getString(R.string.newvoicemsg))){
+            } else if (hintStr.equals(getString(R.string.newvoicemsg)) || hintStr.equals(getString(R.string.novoicemsg))) {
                 page = CommonData.MESSAGE_SELECT_VOICEMESSAGE;
-            }else if(hintStr.equals(getString(R.string.newalarmmsg))){
-                Log.d(TAG, "getMessageFragPage:hintStr2222222222:"+ hintStr+",page:"+page+",,1111111111");
-                page = CommonData.MESSAGE_SELECT_ALARMHITORY;
             }
-            else{
+//            else if (hintStr.equals(getString(R.string.newalarmmsg)) || hintStr.equals(getString(R.string.noalarmmsg))) {
+//                page = CommonData.MESSAGE_SELECT_ALARMHITORY;
+//            }
+            else {
                 page = CommonData.MESSAGE_SELECT_NOTIFICATION;
             }
-            Log.d(TAG, "getMessageFragPage:hintStr:"+ hintStr+",page:"+page+",,1111111111");
+            Log.d(TAG, "getMessageFragPage:hintStr:" + hintStr + ",page:" + page + ",,1111111111");
         }
-        return  page;
+        return page;
     }
 
     private void setArmView(boolean bHasEvent) {
-        if(bHasEvent){
+        if (bHasEvent) {
             mArmStatusNoevent.setVisibility(View.GONE);
             mArmStatusHasevent.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             mArmStatusNoevent.setVisibility(View.VISIBLE);
             mArmStatusHasevent.setVisibility(View.GONE);
         }
@@ -247,13 +267,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
-        switch (viewId){
+        switch (viewId) {
             case R.id.choose_scenarioImage:
                 showScenarioSelect();
                 break;
             case R.id.goodwhat_hasevent:
                 ArrayList<MenuCity> lists = PlistUtil.getDefaultCities(getActivity().getApplicationContext());
-                Log.d(TAG,"size :" + lists.size() +",,,1111111111");
+                if (lists != null) {
+                    Log.d(TAG, "size :" + lists.size() + ",,,1111111111");
+                }
                 break;
             case R.id.arm_hint_hasevent:
                 //testCall("office",CommonData.CALL_GUARD_INCOMMING);
@@ -274,11 +296,32 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     }
 
-    private Map<String, Object> getHashMap(int image, String text) {
+  /*  private Map<String, Object> getHashMap(int image, String text) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(MAP_KEY_IMG, image);
-        map.put(MAP_KEY_TEXT,text);
+        map.put(MAP_KEY_TEXT, text);
         return map;
+    }*/
+
+    private void updateHomePageQuickNotifiction() {
+        if (mEventadapter != null) {
+            mEventadapter.notifyDataSetChanged();
+        }
+    }
+
+    private void setLogoView(){
+        if(logoBitmap == null){
+            File sdlogo = new File(CommonPath.STORAGE_LOGOFILE_PATH);
+            String[] logoList = sdlogo.list();
+            if(logoList != null && logoList.length != 0){
+                String logoPath = CommonPath.STORAGE_LOGOFILE_PATH + logoList[0];
+                logoBitmap = BitmapFactory.decodeFile(logoPath);
+            }
+
+        }
+        if(logoBitmap != null){
+            logoView.setImageBitmap(logoBitmap);
+        }
     }
 
     //ViewHolder静态类
@@ -286,11 +329,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         public ImageView img;
         public TextView event_tv;
     }
+
     public class MyAdapter extends BaseAdapter {
         private LayoutInflater mInflater = null;
-        private MyAdapter(Context context){
+
+        private MyAdapter(Context context) {
             this.mInflater = LayoutInflater.from(context);
         }
+
         @Override
         public int getCount() {
             if (mEventData != null) {
@@ -298,30 +344,44 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             }
             return 0;
         }
+
         @Override
         public Object getItem(int position) {
             return mEventData.get(position);
         }
+
         @Override
         public long getItemId(int position) {
             return position;
         }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
-            if(convertView == null){
+            if (convertView == null) {
                 holder = new ViewHolder();
                 convertView = mInflater.inflate(R.layout.item_homevent, null);
-                holder.img = (ImageView)convertView.findViewById(R.id.img);
-                holder.event_tv = (TextView)convertView.findViewById(R.id.event_tv);
+                holder.img = (ImageView) convertView.findViewById(R.id.img);
+                holder.event_tv = (TextView) convertView.findViewById(R.id.event_tv);
                 convertView.setTag(holder);
-            }
-            else {
-                holder = (ViewHolder)convertView.getTag();
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
             holder.img.setImageResource((Integer) mEventData.get(position).get(MAP_KEY_IMG));
             holder.event_tv.setText((String) mEventData.get(position).get(MAP_KEY_TEXT));
             return convertView;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnMessageEvent(SUISMessagesUINotification.SUISNewBulletinMessageEve msg) {//update homepage quick notification
+        Log.d(TAG, "received new bulletin message:" + msg.toString());
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(HomeFragment.MAP_KEY_IMG, R.mipmap.home_property);
+        map.put(HomeFragment.MAP_KEY_TEXT, getString(R.string.newpropertymsg));
+        if (!mEventData.contains(map)) {
+            mEventData.add(map);
+            updateHomePageQuickNotifiction();
         }
     }
 

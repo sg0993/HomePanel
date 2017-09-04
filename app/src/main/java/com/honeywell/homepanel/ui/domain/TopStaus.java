@@ -17,7 +17,7 @@ import com.honeywell.homepanel.ui.activities.MainActivity;
 
 public class TopStaus {
     private static final String TAG = "TopStaus";
-    private static TopStaus instance = null;
+    private volatile static TopStaus instance = null;
     public Context mContext = null;
     private  String mWeather = null;//CommonData.WEATHER_SUNNY;
     private  String healthy = null;
@@ -28,10 +28,16 @@ public class TopStaus {
     private  int mFrontIPDCStatus = CommonData.DISCONNECT;
     private  int mBackIPDCStatus = CommonData.DISCONNECT;
     private  boolean CloudBoundStatus = false;
+    private  boolean CloudConnStatus = false;//true: connected cloud success.
 
-    public static synchronized TopStaus getInstance(Context context) {
-        if (instance == null){
-            instance = new TopStaus(context);
+    public static TopStaus getInstance(Context context) {
+        if (instance == null) {
+            synchronized (TopStaus.class) {
+                if (instance == null) {
+                    Log.w(TAG, "new TopStaus: ");
+                    instance = new TopStaus(context);
+                }
+            }
         }
         return instance;
     }
@@ -154,9 +160,15 @@ public class TopStaus {
     }
 
     public void setCloudBoundStatus(boolean cloudBoundStatus) {
-        if (MainActivity.mHomePanelType == CommonData.HOMEPANEL_TYPE_MAIN) {//only mainphone need show bound status
-            CloudBoundStatus = cloudBoundStatus;
-        }
+        this.CloudBoundStatus = cloudBoundStatus;
+    }
+
+    public boolean isCloudConnStatus() {
+        return CloudConnStatus;
+    }
+
+    public void setCloudConnStatus(boolean cloudConnStatus) {
+        this.CloudConnStatus = cloudConnStatus;
     }
 
     public void updateEthernetStatus(int status) {
@@ -170,5 +182,23 @@ public class TopStaus {
     private void dataChangedNotify() {
         Log.d(TAG, "dataChangedNotify: ");
         EventBusWrapper.emitMessageToEventBus(new TopViewBrushEvent());
+    }
+
+    @Override
+    public String toString() {
+        return "TopStaus{" +
+                "mContext=" + mContext +
+                ", mWeather='" + mWeather + '\'' +
+                ", healthy='" + healthy + '\'' +
+                ", mArmStatus='" + mArmStatus + '\'' +
+                ", mTemperature=" + mTemperature +
+                ", mWifiStatus=" + mWifiStatus +
+                ", mServerStatus=" + mServerStatus +
+                ", mFrontIPDCStatus=" + mFrontIPDCStatus +
+                ", mBackIPDCStatus=" + mBackIPDCStatus +
+                ", CloudBoundStatus=" + CloudBoundStatus +
+                ", CloudConnStatus=" + CloudConnStatus +
+                ", mPrefence=" + mPrefence +
+                '}';
     }
 }

@@ -1,74 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="80dp"
-        android:orientation="vertical"
-        android:background="@color/left_navigation_background"
-        android:layout_height="match_parent">
-        <RelativeLayout
-            android:id="@+id/home_layout"
-            android:layout_weight="1"
-            style="@style/left_view">
-            <ImageView
-                android:id="@+id/home_image"
-                style="@style/left_image"
-                android:src="@mipmap/home"/>
-        </RelativeLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="95dp"
+    android:layout_height="match_parent"
+    android:background="@color/welcome_white"
+    android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/scenario_layout"
-            android:layout_weight="1"
-            style="@style/left_view">
-            <ImageView
-                android:id="@+id/scenario_image"
-                style="@style/left_image"
-                android:src="@mipmap/scenario" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/device_layout"
-            android:layout_weight="1"
-            style="@style/left_view">
-            <ImageView
-                android:id="@+id/device_image"
-                style="@style/left_image"
-                android:src="@mipmap/device" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/message_layout"
-            android:layout_weight="1"
-            style="@style/left_view">
-            <ImageView
-                android:id="@+id/message_image"
-                style="@style/left_image"
-                android:src="@mipmap/message" />
-            <ImageView
-                android:layout_toRightOf="@+id/message_image"
-                android:layout_marginTop="12dp"
-                android:layout_marginRight="12dp"
-                android:id="@+id/message_indicator"
-                android:layout_alignParentRight="true"
-                android:layout_width="12px"
-                android:layout_height="12px"
-                android:src="@drawable/msg_indicator"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/dial_layout"
-            android:layout_weight="1"
-            style="@style/left_view">
-            <ImageView
-                android:id="@+id/dial_image"
-                style="@style/left_image"
-                android:src="@mipmap/dial" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/setting_layout"
-            android:layout_weight="1"
-            style="@style/left_view">
-            <ImageView
-                android:id="@+id/setting_image"
-                style="@style/left_image"
-                android:src="@mipmap/setting" />
-        </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/home_layout"
+        style="@style/left_view"
+        android:layout_weight="1">
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/home_image"
+            style="@style/left_image"
+            android:src="@mipmap/home" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/scenario_layout"
+        style="@style/left_view"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/scenario_image"
+            style="@style/left_image"
+            android:src="@mipmap/scenario" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/device_layout"
+        style="@style/left_view"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/device_image"
+            style="@style/left_image"
+            android:src="@mipmap/device" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/message_layout"
+        style="@style/left_view"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/message_image"
+            style="@style/left_image"
+            android:src="@mipmap/message" />
+
+        <ImageView
+            android:id="@+id/message_indicator"
+            android:layout_width="12px"
+            android:layout_height="12px"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_toRightOf="@+id/message_image"
+            android:src="@drawable/msg_indicator" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/dial_layout"
+        style="@style/left_view"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/dial_image"
+            style="@style/left_image"
+            android:src="@mipmap/dial" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/setting_layout"
+        style="@style/left_view"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/setting_image"
+            style="@style/left_image"
+            android:src="@mipmap/setting" />
+    </RelativeLayout>
+
+</LinearLayout>

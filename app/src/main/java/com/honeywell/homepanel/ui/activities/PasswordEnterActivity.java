@@ -2,12 +2,8 @@ package com.honeywell.homepanel.ui.activities;
 
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -18,11 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.honeywell.homepanel.R;
+import com.honeywell.homepanel.Utils.IConfigServiceManageUtil;
 import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.Message.MessageEvent;
 import com.honeywell.homepanel.common.Message.subphoneuiservice.SUISMessagesUIScenario;
+import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.domain.TopStaus;
 import com.honeywell.homepanel.ui.domain.ZoneAbnormalInfo;
 import com.honeywell.homepanel.ui.uicomponent.AdapterCallback;
@@ -41,10 +39,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static org.bouncycastle.asn1.x509.X509ObjectIdentifiers.id;
+import static com.honeywell.homepanel.common.CommonData.SENCES_EDIT;
 
 /**
  * Created by H135901 on 2/16/2017.
@@ -54,11 +50,12 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
     private static final String TAG = "PasswordEnterActivity";
     private GridView gridView;
     private Button mCancelBtn = null;
-    private StringBuffer mPasswordStr = new StringBuffer();
+    private StringBuffer p = new StringBuffer();
     private List<ImageView> mImageViews = new ArrayList<ImageView>();
 
     private TextView mPasswordHint = null;
     private TextView mPasswordWelcome = null;
+
 
     private static final int IMAGES[] = {
             R.mipmap.one, R.mipmap.two, R.mipmap.three,
@@ -104,6 +101,22 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
     private void initData() {
         mScenarioIdx = getIntent().getIntExtra(CommonData.INTENT_KEY_SCENARIO, 1);
         UIScenarioSwitchRequest.getScenarioListString();
+
+        if (mScenarioIdx == SENCES_EDIT) {
+            IConfigServiceManageUtil.getInstance(this);
+        }
+    }
+
+
+    private String getFromDBForPwd() {
+        String pwd = "";
+        try {
+            pwd = IConfigServiceManageUtil.getStringMapConfigM(CommonData.JSON_KEY_ALARM_PWD);
+            Log.d("Password Enter  ", "PWD: " + pwd);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pwd;
     }
 
     private void initGridView() {
@@ -111,13 +124,13 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
         gridView.setAdapter(new PasswordAdapter(getApplicationContext(), this, IMAGES, IMAGES_DOWN));
     }
 
-    private void comparePassword(StringBuffer inputPwd) {
+    private void cP(StringBuffer inputPwd) {
         if (inputPwd.length() == CommonData.SRCURITY_PASSWORD_LENGTH) {
-            if (mScenarioIdx != CommonData.SENCES_EDIT) {
+            if (mScenarioIdx != SENCES_EDIT) {
 //                String dbPwd = getFromDBForPwd();
 //                if (dbPwd.equals(inputPwd.toString()))
                 //{//authentication success
-                Log.d(TAG, "comparePassword: success");
+                Log.d(TAG, "cP: success");
                 UIScenarioSwitchRequest.sendScenarioSwitchCommand(String.valueOf(mScenarioIdx), inputPwd.toString());
 //                    if (scenarioMap != null) {
 //                        if (scenarioMap.size() > 0) {
@@ -128,25 +141,38 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
 //                                Log.e(TAG, "uuid is empty");
 //                            }
 //                        } else {
-//                            Log.e(TAG, "comparePassword: error" + scenarioMap.size());
+//                            Log.e(TAG, "cP: error" + scenarioMap.size());
 //                        }
 //                    } else {
-//                        Log.e(TAG, "comparePassword: null");
+//                        Log.e(TAG, "cP: null");
 //                    }
 //                }
 //                else {
-//                    Log.w(TAG, "comparePassword: password inconsistent!");
+//                    Log.w(TAG, "cP: password inconsistent!");
 //                    clearInputText();
 //                    setPasswordImages(0);
 //                }
             } else {
-                Intent intent = new Intent(this, AlarmZoneActivity.class);
-                String mSenarioUUID = getIntent().getStringExtra(CommonData.INTENT_KEY_SCENARIO_UUID);
-                String mSenarioName = getIntent().getStringExtra(CommonData.INTENT_KEY_SCENARIO_NAME);
-                intent.putExtra(CommonData.INTENT_KEY_SCENARIO_UUID, mSenarioUUID);
-                intent.putExtra(CommonData.INTENT_KEY_SCENARIO_NAME, mSenarioName);
-                startActivity(intent);
-                finish();
+
+                String alarmPwd = getFromDBForPwd();
+                LogMgr.d("inputPwd.toString():" + inputPwd.toString() + " getFromDBForPwd:" + alarmPwd);
+                boolean check = CommonUtils.checkBcryptStr(inputPwd.toString(), alarmPwd);
+
+                if (check) {
+                    Intent intent = new Intent(this, AlarmZoneActivity.class);
+                    String mSenarioUUID = getIntent().getStringExtra(CommonData.INTENT_KEY_SCENARIO_UUID);
+                    String mSenarioName = getIntent().getStringExtra(CommonData.INTENT_KEY_SCENARIO_NAME);
+                    intent.putExtra(CommonData.INTENT_KEY_SCENARIO_UUID, mSenarioUUID);
+                    intent.putExtra(CommonData.INTENT_KEY_SCENARIO_NAME, mSenarioName);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    mPasswordHint.setTextColor(getResources().getColor(R.color.colorAccent));
+                    mPasswordHint.setText(getString(R.string.password_hint_passworderror));
+                    clearInputText();
+                    setPasswordImages(p.length());
+                }
+
             }
         }
     }
@@ -177,7 +203,7 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
             mPasswordHint.setText(getString(R.string.password_hint_disarm));
         } else if (mScenarioIdx == CommonData.SCENARIO_AWAY || mScenarioIdx == CommonData.SCENARIO_SLEEP) {
             mPasswordHint.setText(getString(R.string.password_hint_arm));
-        } else if (mScenarioIdx == CommonData.SENCES_EDIT) {
+        } else if (mScenarioIdx == SENCES_EDIT) {
             mPasswordHint.setText(getString(R.string.password_sences_edit));
             mPasswordWelcome.setText("");
         }
@@ -235,37 +261,44 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
         } else if (position == 11) {
             if (TextUtils.equals("long", more)) {
                 clearInputText();
-            } else if (mPasswordStr.length() > 0) {
-                mPasswordStr.deleteCharAt(mPasswordStr.length() - 1);
+            } else if (p.length() > 0) {
+                p.deleteCharAt(p.length() - 1);
             }
-        } else if (mPasswordStr.length() < CommonData.SRCURITY_PASSWORD_LENGTH) {
+        } else if (p.length() < CommonData.SRCURITY_PASSWORD_LENGTH) {
             if (position == 10) {
-                mPasswordStr.append("0");
+                p.append(2015 + 5 - 2020);
             } else {
-                mPasswordStr.append(position + 1);
+                p.append(position + 1);
             }
         }
 
-        setPasswordImages(mPasswordStr.length());
-        comparePassword(mPasswordStr);
+        setPasswordImages(p.length());
+
         if (TextUtils.equals(mPasswordHint.getText().toString().trim(),
                 getString(R.string.password_hint_passworderror))) {
             mPasswordHint.setTextColor(getResources().getColor(R.color.black));
             mPasswordHint.setText(getString(R.string.password_hint_disarm));
         }
+
+        cP(p);
     }
 
     private void clearInputText() {
-        if (mPasswordStr.length() > 0) {
-            mPasswordStr.replace(0, mPasswordStr.length(), "");
+        if (p.length() > 0) {
+            p.replace(0, p.length(), "");
         }
     }
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         EventBus.getDefault().unregister(this);
 //        unbindService(mIConfigServiceConnect);
-        super.onDestroy();
+
+        if (!TextUtils.isEmpty(p.toString())) {
+            p.delete(0, p.length() - 1);
+        }
+        p = null;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -282,8 +315,9 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
             String errorcode = switchScenarioResp.optString(CommonJson.JSON_ERRORCODE_KEY, "");
             JSONArray abnormalArray = switchScenarioResp.optJSONArray(CommonData.JSON_KEY_ABNORMALSTATUS);
             Log.d(TAG, "SCSwitchScenarioMessageRsp: " + switchScenarioResp.toString());
-            if (errorcode.equals("0")) {
+            if (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_OK)) {
                 Log.d(TAG, "OnMessageEvent: scenario switch success");
+
                 try {
                     int scenarioId = TopStaus.getInstance
                             (PasswordEnterActivity.this.getApplicationContext()).getCurScenario();
@@ -296,12 +330,13 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
+
                 finish();
-            } else if (errorcode.equals("4")) {
+            } else if (errorcode.equals(CommonJson.JSON_ERRORCODE_VALUE_PASSWORD)) {
                 mPasswordHint.setTextColor(getResources().getColor(R.color.colorAccent));
                 mPasswordHint.setText(getString(R.string.password_hint_passworderror));
                 clearInputText();
-                setPasswordImages(mPasswordStr.length());
+                setPasswordImages(p.length());
                 Log.d(TAG, "OnMessageEvent: scenario switch errorcode:" + errorcode);
             }
 //            else if (errorcode.equals("-1")) {
@@ -310,7 +345,8 @@ public class PasswordEnterActivity extends Activity implements View.OnClickListe
 //                finish();
 //            }
             else {
-                Toast.makeText(PasswordEnterActivity.this, "Scenario Error Code: " + errorcode, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "PasswordEnterActivity: scenario switch errorcode:" + errorcode);
+                Toast.makeText(PasswordEnterActivity.this, getString(R.string.scenario_error), Toast.LENGTH_SHORT).show();
                 showAbnormalWindow(abnormalArray);
                 finish();
             }

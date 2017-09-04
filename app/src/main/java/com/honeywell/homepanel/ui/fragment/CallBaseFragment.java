@@ -1,12 +1,21 @@
 package com.honeywell.homepanel.ui.fragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.MediaMuxer;
+import android.media.MediaPlayer;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.TextureView;
 
 import com.honeywell.homepanel.AudioPacketWithEC;
 import com.honeywell.homepanel.IAvRtpService;
+import com.honeywell.homepanel.Utils.RelativeTimer;
+import com.honeywell.homepanel.Utils.RelativeTimerTask;
+import com.honeywell.homepanel.cloud.IOUtils;
+import com.honeywell.homepanel.common.CommonData;
+import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.CommonPath;
 import com.honeywell.homepanel.common.utils.CommonUtils;
 import com.honeywell.homepanel.ui.AudioVideoUtil.AVIUtil;
@@ -14,11 +23,16 @@ import com.honeywell.homepanel.ui.AudioVideoUtil.AudioProcessWithEC;
 import com.honeywell.homepanel.ui.AudioVideoUtil.CallRecordReadyEvent;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VStreamBuffer;
 import com.honeywell.homepanel.ui.AudioVideoUtil.VideoInfo;
-import com.honeywell.homepanel.ui.RingFile.RingFileProcess;
+import com.honeywell.homepanel.ui.RingFile.AudioFilePlay;
+import com.honeywell.homepanel.ui.activities.CallActivity;
+import com.honeywell.homepanel.ui.activities.MainActivity;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -55,6 +69,8 @@ public class CallBaseFragment extends Fragment {
     private BlockingQueue<ByteBuffer> mVideoRecordQueue = null;
     private BlockingQueue<ByteBuffer> mAudioRecordQueue = null;
     private MediaMuxer mMuxer = null;
+    AudioFilePlay audioPlay ;
+	private RelativeTimerTask mScreenTask = null;
 
 
 
@@ -119,6 +135,10 @@ public class CallBaseFragment extends Fragment {
         stopVideoGet();
         stopThread();
         stopRecord();
+        if(mScreenTask != null){
+            mScreenTask.cancel();
+            mScreenTask = null;
+        }
         super.onDestroy();
     }
 
@@ -137,11 +157,11 @@ public class CallBaseFragment extends Fragment {
                         Thread.sleep(SLEEPTIME);
                         continue;
                     }
+
                     if(mBVideoGet) {
-                        Log.d(TAG, "GetThread: video"+",,111111111111111111111");
                         byte[] data = mIAvrtpService.getVideoFrame();
                         if (null != data) {
-                            Log.d(TAG, "GetThread: video"+",,22222222");
+                            //Log.d(TAG, "GetThread: 111111111111111111111");
                             getVideoInfo();
                             mVideoPlayQueue.offer(new VStreamBuffer(data));
                             if(mBRecord){
@@ -150,14 +170,13 @@ public class CallBaseFragment extends Fragment {
                         }
                         Thread.sleep(SLEEPTIME);
                     }
+
                     if(mBAudioGet) {
                         //byte [] data = mIAvrtpService.getAudioFrame();
                         byte[] data = null;
                         AudioPacketWithEC eachFrame = null;
                         if (null != mIAvrtpService) {
-                            Log.d(TAG, "GetThread: audio"+",,333333333");
                             eachFrame = mIAvrtpService.getAudioFrameWithEC();
-                            Log.d(TAG, "GetThread: audio"+",,4444444444444");
                             if (null != eachFrame) {
                                 data = eachFrame.audioFrame;
                                 Log.d(TAG, "run: get package with seq " + eachFrame.audioFrameSeq);
@@ -183,6 +202,7 @@ public class CallBaseFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+            Log.d(TAG, "run() get thread out!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
     }
     public void startVideoGet(){
@@ -202,7 +222,7 @@ public class CallBaseFragment extends Fragment {
 
     public void startRecord(){
         Log.d(TAG, "startRecord: 11111");
-        String videoRecordStoragePath = CommonPath.getVideoRecordPath();
+        final String videoRecordStoragePath = CommonPath.getVideoRecordPath();
         if (null == videoRecordStoragePath) {
             Log.d(TAG, "startRecord: 2222222222222222");
             return;
@@ -231,11 +251,16 @@ public class CallBaseFragment extends Fragment {
             e.printStackTrace();
 			return;
         }
+
         Log.d(TAG, "startRecord: file name " + fileName);
         EventBus.getDefault().post(new CallRecordReadyEvent(fileName));
         new Thread(new Runnable() {
             public void run() {
                 AVIUtil.init(fileName,320,240,30);
+                String audioName = CommonUtils.getFileName(fileName);
+                Log.d(TAG, "startRecord() audioName:"+audioName+",,111111");
+                File audioFile = IOUtils.createFile(videoRecordStoragePath,audioName+".pcm");
+                final DataOutputStream audioDos = IOUtils.getIOStream(audioFile);
                 try {
                     long videoTime = 0;
                     long startMillion = 0;
@@ -250,7 +275,7 @@ public class CallBaseFragment extends Fragment {
                                     startMillion = curMillion;
                                 }
                                 videoTime = curMillion - startMillion;
-                                Log.d(TAG, "record:run() videoTime:"+videoTime+",,111111111");
+                                Log.d(TAG, "record:run() videoTime:"+videoTime+"len,,111111111");
                                 AVIUtil.writeVideo(videoBytes,videoBytes.length,videoTime);
                                 //startMillion = curMillion;
                             }
@@ -259,7 +284,13 @@ public class CallBaseFragment extends Fragment {
                             ByteBuffer buffer = mAudioRecordQueue.take();
                             byte[] audioBytes = buffer.array();
                             Log.d(TAG, "record:run() audio len:"+audioBytes.length+",,222222");
-                            AVIUtil.writeAudio(audioBytes,audioBytes.length);
+
+                            if(null != audioDos){
+                                IOUtils.writeDataToFile(audioDos,audioBytes,0,audioBytes.length);
+                            }
+
+                          /* //for test,do not wirte audio now
+                           AVIUtil.writeAudio(audioBytes,audioBytes.length);*/
                         }
                     }
                     AVIUtil.close();
@@ -267,40 +298,15 @@ public class CallBaseFragment extends Fragment {
                 catch (Exception e){
                     e.printStackTrace();
                 }
-
-                 /*try {
-                     if(mMuxer != null){
-                         mMuxer.stop();
-                         mMuxer.release();
-                     }
-                     *//*EventBus.getDefault().post(new CallRecordReadyEvent(fileName));*//*
-                     mMuxer = new MediaMuxer(fileName,MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
-
-
-                     MediaFormat audioFormat = new MediaFormat().createAudioFormat(MediaFormat.MIMETYPE_AUDIO_AAC,AudioProcess.Sample_Rate,1);
-                     audioFormat.setInteger(MediaFormat.KEY_BIT_RATE,128000);
-                     MediaFormat videoFormat = CommonUtils.getVideoFormat(mVideoInfo);
-                     int videoTrackIndex = mMuxer.addTrack(videoFormat);
-
-                     int audioTrackIndex = mMuxer.addTrack(audioFormat);
-
-
-                     mMuxer.start();
-                     while (mBRecord){
-                         if(!mAudioRecordQueue.isEmpty()){
-                             ByteBuffer buffer = mAudioRecordQueue.take();
-                             mMuxer.writeSampleData(audioTrackIndex,buffer,CommonUtils.getBufferInfo(buffer.array().length));
-                         }
-                         if(!mVideoRecordQueue.isEmpty()){
-                             ByteBuffer buffer = mVideoRecordQueue.take();
-                             mMuxer.writeSampleData(videoTrackIndex,buffer,CommonUtils.getBufferInfo(buffer.array().length));
-                         }
-                     }
-                 }
-                 catch (Exception e){
-                     Log.e(TAG, "run: error:"+e.getMessage()+",,,11111111111111");
-                     e.printStackTrace();
-                 }*/
+                finally {
+                    if(null != audioDos){
+                        try {
+                            audioDos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         }).start();
     }
@@ -347,18 +353,18 @@ public class CallBaseFragment extends Fragment {
                 System.arraycopy(byteHead,0,spsBytes,0,spsEndPos+1);
                 mVideoInfo.mSps = ByteBuffer.wrap(spsBytes);
 
-                for (int i = 0; i < spsBytes.length; i++) {
+               /* for (int i = 0; i < spsBytes.length; i++) {
                     Log.d(TAG, "getVideoInfo: spsBytes["+i+"]"+ Integer.toHexString(spsBytes[i]));
-                }
+                }*/
 
 
                 byte[] ppsBytes = new byte[byteHead.length - spsEndPos -1];
                 System.arraycopy(byteHead,spsEndPos,ppsBytes,0,byteHead.length - spsEndPos -1);
                 mVideoInfo.mPps = ByteBuffer.wrap(ppsBytes);
 
-                for (int i = 0; i < ppsBytes.length; i++) {
+              /*  for (int i = 0; i < ppsBytes.length; i++) {
                     Log.d(TAG, "getVideoInfo: ppsBytes["+i+"]"+ Integer.toHexString(ppsBytes[i]));
-                }
+                }*/
                 
             }
             else{
@@ -399,15 +405,59 @@ public class CallBaseFragment extends Fragment {
 
     public void stopPlayRing(){
         Log.i(TAG, "stopPlayRing: ");
-        RingFileProcess.getInstance().stopPlayRing();
+        if(audioPlay != null)
+            audioPlay.stopPlayAudio();
     }
 
 
-    public void startPlayRing(String ringpath) {
+    public MediaPlayer startPlayRing(String ringpath) {
         Log.i(TAG, "startPlayRing: ");
-        RingFileProcess.getInstance().startPlayRing(getActivity(),ringpath,0);
-
+        audioPlay = new AudioFilePlay();
+        return audioPlay.startPlayAudio(getActivity().getApplicationContext(), ringpath,0);
     }
 
+    
+    public void phoneOneFrame(final TextureView decoderView) {
+        if(null == decoderView){
+            return;
+        }
+        mScreenTask = new RelativeTimerTask("ScreenTask"){
+            @Override
+            public void run() {
+                Log.d(TAG, "phoneOneFrame ");
+
+                Bitmap bitmap = decoderView.getBitmap();
+                String filePath = CommonUtils.saveBitmap(bitmap, CommonUtils.getLobbyBitMapName());
+                //save record image history
+                if (null != getActivity()) {
+                    ((CallActivity) getActivity()).saveCallHistory(getUpdateImagePathJson(filePath));
+                }
+                if(bitmap != null && !bitmap.isRecycled()){
+                    bitmap.recycle();
+                }
+                mScreenTask = null;
+            }
+        };
+        RelativeTimer.getDefault().schedule(mScreenTask,5*1000);
+    }
+    private JSONObject getUpdateImagePathJson(String filePath) {
+        JSONObject jsonObject = new JSONObject();
+        if (TextUtils.isEmpty(filePath)) {
+            return jsonObject;
+        }
+        try {
+            jsonObject.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_EVENT);
+            jsonObject.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_NOTIFICATIONEVENTUPDATE);
+            JSONArray jsonArray = new JSONArray();
+            JSONObject mapObject = new JSONObject();
+            mapObject.put(CommonJson.JSON_UUID_KEY, MainActivity.CallBaseInfo.getCallUuid());
+            mapObject.put(CommonData.JSON_KEY_IMAGENAME, filePath);
+            jsonArray.put(mapObject);
+            jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, jsonArray);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
 
 }

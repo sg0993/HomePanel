@@ -195,6 +195,9 @@ public class RelayLoopManager {
             JSONObject loopMapObject = jsonArray.getJSONObject(i);
             String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             RelayLoop loop = getByUuid(uuid);
+            if(null == loop){
+                continue;
+            }
             loopForUpdate(loop,loopMapObject);
             long num = updateByUuid(uuid,loop);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
@@ -232,32 +235,37 @@ public class RelayLoopManager {
         }
     }
 
-    public void getDeviceLoopDetailsInfo(JSONObject jsonObject) throws JSONException {
+    public void getDeviceLoopDetailsInfo(JSONObject jsonObject) {
         JSONArray loopMapArray = jsonObject.optJSONArray(CommonJson.JSON_LOOPMAP_KEY);
         Cursor cursor = DbCommonUtil.getDeviceLoopDetails(dbHelper, ConfigConstant.TABLE_RELAYLOOP);
-
         // Use the original jsonArray if JSONObject contains one, construct new JSONArray otherwise
         if (loopMapArray == null) {
             loopMapArray = new JSONArray();
         }
-
-        // query loop from database and fill json object
-        while(cursor.moveToNext()){
-            RelayLoop loop = fillDefault(cursor);
-            JSONObject loopMapObject = new JSONObject();
-            String devLoopType = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_TYPE));
-
-            loopMapObject.put(CommonData.JSON_TYPE_KEY, devLoopType);
-            loopToJson(loopMapObject, loop);
-
-            loopMapArray.put(loopMapObject);
+        try{
+            // query loop from database and fill json object
+            while(cursor.moveToNext()){
+                RelayLoop loop = fillDefault(cursor);
+                if(null == loop){
+                    continue;
+                }
+                JSONObject loopMapObject = new JSONObject();
+                String devLoopType = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_TYPE));
+                loopMapObject.put(CommonData.JSON_TYPE_KEY, devLoopType);
+                loopToJson(loopMapObject, loop);
+                loopMapArray.put(loopMapObject);
+            }
+            // updatet jsonObject passed in
+            jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
+            jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
         }
-
-        // close cursor
-        cursor.close();
-
-        // updatet jsonObject passed in
-        jsonObject.put(CommonJson.JSON_LOOPMAP_KEY, loopMapArray);
-        jsonObject.put(CommonJson.JSON_ERRORCODE_KEY, CommonJson.JSON_ERRORCODE_VALUE_OK);
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            if(null != cursor){
+                cursor.close();
+            }
+        }
     }
 }

@@ -51,36 +51,37 @@ public class DeviceEditFragment extends Fragment implements View.OnClickListener
             R.string.device_empty, R.string.device_empty, R.string.device_empty,
             R.string.device_empty};
 
-    private static int count = 0;
+    private int count = 0;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity();
+        mContext = getActivity().getApplicationContext();
         View view = inflater.inflate(R.layout.fragment_devices, null);
         gridView = (GridView) view.findViewById(R.id.gridView);
-        gridView.setAdapter(new DevicesImageAdapter(getActivity(), IMAGES, TEXTES));
+        gridView.setAdapter(new DevicesImageAdapter(getActivity().getApplicationContext(), IMAGES, TEXTES));
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position,
                                     long id) {
-                if (position == 0) {
-                    startActivity(new Intent(mContext, IndicatorBoardActivity.class));
-                    Log.d(TAG, "onItemClick: count"+count);
-                    if(count == 0)
-                    {
-                        UISendCallElevatorMessage.SendCallElevatorCommand();
-                        count++;
-                    }
-
-                } else if (position == 1) {
-                    startActivity(new Intent(mContext, CamerasActivity.class));
-                } else if (position == 2) {
-                    startActivity(new Intent(mContext, RelayActivity.class));
-                } else if (position == 3) {
-                    //UISendLockMessage.SendLockControlCommand(mStatus);
-                    //mStatus = !mStatus;
+            if (position == 0) {
+                startActivity(new Intent(mContext, IndicatorBoardActivity.class));
+                Log.d(TAG, "onItemClick: count"+count);
+                if(count == 0)
+                {
+                    UISendCallElevatorMessage.SendCallElevatorCommand();
+                    count++;
                 }
+
+            } else if (position == 1) {
+                startActivity(new Intent(mContext, CamerasActivity.class));
+            } else if (position == 2) {
+                startActivity(new Intent(mContext, RelayActivity.class));
+            } else if (position == 3) {
+                //UISendLockMessage.SendLockControlCommand(mStatus);
+                //mStatus = !mStatus;
+            }
+
             }
         });
         return view;

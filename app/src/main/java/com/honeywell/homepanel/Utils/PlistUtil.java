@@ -28,7 +28,7 @@ public class PlistUtil {
 
     public static PlistUtil newInstance(Context context) {
         if (plistUtil == null) {
-            plistUtil = new PlistUtil(context);
+            plistUtil = new PlistUtil(context.getApplicationContext());
         }
         return plistUtil;
     }

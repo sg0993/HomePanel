@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
 
-import com.honeywell.homepanel.Utils.LogMgr;
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.utils.CommonUtils;
@@ -113,12 +112,9 @@ public class SpeedDialManager {
     }
 
     public synchronized List<SpeedDial> getSpeedDialAllList() {
-        List<SpeedDial> SpeedDials = null;
+        List<SpeedDial> SpeedDials = new ArrayList<SpeedDial>();
         Cursor cursor = DbCommonUtil.getAll(dbHelper,ConfigConstant.TABLE_SPEEDDIAL);
         while(cursor.moveToNext()){
-            if(null == SpeedDials){
-                SpeedDials = new ArrayList<SpeedDial>();
-            }
             SpeedDial device = fillDefault(cursor);
             SpeedDials.add(device);
         }
@@ -140,9 +136,6 @@ public class SpeedDialManager {
 
     public void speeddialGet(JSONObject jsonObject) throws JSONException{
         List<SpeedDial>lists = getSpeedDialAllList();
-        if(null == lists){
-            return;
-        }
         JSONArray loopMapArray = new JSONArray();
         for (int i = 0; i < lists.size(); i++) {
             SpeedDial loop = lists.get(i);
@@ -183,6 +176,9 @@ public class SpeedDialManager {
             String uuid = loopMapObject.optString(CommonJson.JSON_UUID_KEY);
             String dongHo  = loopMapObject.optString(CommonData.JSON_DONGHO_KEY);
             SpeedDial loop = getByUuid(uuid);
+            if(null == loop){
+                continue;
+            }
             loop.mDongHo = dongHo;
             long num = updateByUuid(uuid,loop);
             DbCommonUtil.putErrorCodeFromOperate(num,loopMapObject);
