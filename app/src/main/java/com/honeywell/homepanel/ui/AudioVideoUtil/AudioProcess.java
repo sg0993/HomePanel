@@ -392,7 +392,7 @@ public class AudioProcess implements Runnable {
         return (byte) (aval ^ mask);
     }
 
-    private int alaw_to_s16(byte a_val) {
+    /*private int alaw_to_s16(byte a_val) {
         int t = 0;
         int seg = 0;
         a_val ^= 0x55;
@@ -405,7 +405,7 @@ public class AudioProcess implements Runnable {
             t <<= seg - 1;
         }
         return (((a_val & 0x80) > 0) ? t : -t);
-    }
+    }*/
 
     int val_seg(int val) {
         int r = 0;

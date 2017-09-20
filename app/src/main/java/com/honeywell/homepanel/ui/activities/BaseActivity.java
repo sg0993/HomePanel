@@ -64,7 +64,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     private TopViewBrusher mTopViewBrusher = new TopViewBrusher();
     private ImageView mMsgIndicator = null;
     private boolean isBound;
-    private BroadcastReceiver bindStateReceiver;
+    private BroadcastReceiver mBindStateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,17 +76,20 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         fragmentAdd(true, mLeftCurPage);
         setLeftNavifation(mLeftCurPage);
         updateNewMessageIndicator(0);
-        bindStateReceiver = new BroadcastReceiver() {
+        mBindStateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 isBound = intent.getBooleanExtra(Protocols.EXTRACT_BIND_STATE, false);
             }
         };
-        Intent intent = registerReceiver(bindStateReceiver, new IntentFilter(Protocols.INTENT_MQTT_BIND_STATE));
+        Intent intent = registerReceiver(mBindStateReceiver
+                , new IntentFilter(Protocols.INTENT_MQTT_BIND_STATE));
         if (intent != null) {
             isBound = intent.getBooleanExtra(Protocols.EXTRACT_BIND_STATE, false);
         } else {
-            isBound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(CommonData.MQTT_BIND_HOME_PANEL, false);
+            isBound = PreferenceManager
+                    .getDefaultSharedPreferences(this)
+                    .getBoolean(CommonData.MQTT_BIND_HOME_PANEL, false);
         }
     }
 
@@ -145,7 +148,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         EventBus.getDefault().unregister(this);
         super.onDestroy();
         mTopViewBrusher.destory();
-        unregisterReceiver(bindStateReceiver);
+        unregisterReceiver(mBindStateReceiver);
     }
 
     private void fragmentAdd(boolean bAdd, int position) {

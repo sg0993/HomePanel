@@ -40,7 +40,7 @@
 
     <application
         android:name=".ui.uicomponent.MyApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/homepanel"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -346,20 +346,20 @@
             android:name=".ui.activities.HoneywellHomeUnbinding"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:taskAffinity="@string/bindtask"
+            android:taskAffinity=":bindtask"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".ui.activities.HoneywellHomeBinding"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
-            android:taskAffinity="@string/bindtask"
+            android:taskAffinity=":bindtask"
             android:theme="@style/Theme.notAnimation" />
         <activity
             android:name=".ui.activities.DeviceBindActivity"
             android:label="@string/title_activity_device_bind"
             android:launchMode="singleInstance"
             android:process=":cloudservice"
-            android:taskAffinity="@string/bindtask"
+            android:taskAffinity=":bindtask"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity
             android:name=".ui.activities.HoneywellHomePasswordEnterActivity"
@@ -506,7 +506,7 @@
             <intent-filter>
                 <action
                     android:name="com.honeywell.homepanel.watchdog.WatchDogService"
-                    android:exported="true" />
+                    android:exported="false" />
             </intent-filter>
         </service>
         <service

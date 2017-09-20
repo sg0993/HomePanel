@@ -205,7 +205,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 RingFileCopy.getInstance().CopyRingFileFromCard();
-                LogoFileCopy.getInstance().CopyLogoFileFromCard();
+                LogoFileCopy.getInstance().copyLogoFileFromCard();
             }
         }).start();
         DisplayManagerGlobal.getInstance().requestScreenOff(false);
@@ -250,7 +250,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void run() {
                         RingFileCopy.getInstance().CopyRingFileFromCard();
-                        LogoFileCopy.getInstance().CopyLogoFileFromCard();
+                        LogoFileCopy.getInstance().copyLogoFileFromCard();
                     }
                 }).start();
                 return;
@@ -410,7 +410,6 @@ public class MainActivity extends BaseActivity {
             if (serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)) {
                 mIConfigService = IConfigService.Stub.asInterface(service);
                 if (mIConfigService != null) {
-                    clearDeviceConnectionStatusCB();
                     brushHomePanelConfig();
                     NotificationStatisticInfo temp = NotificationStatisticInfo.getInstance();
                     temp.getDataCountFromDB(mIConfigService);
@@ -431,19 +430,6 @@ public class MainActivity extends BaseActivity {
             if (serviceClassName.equals(CommonData.ACTION_CONFIG_SERVICE)) {
                 mIConfigService = null;
             }
-        }
-    }
-
-    private void clearDeviceConnectionStatusCB() {
-        JSONObject obj = new JSONObject();
-        try {
-            obj.put(CommonJson.JSON_ACTION_KEY, CommonJson.JSON_ACTION_VALUE_REQUEST);
-            obj.put(CommonJson.JSON_SUBACTION_KEY, CommonJson.JSON_SUBACTION_VALUE_CLEARCONNECTIONSTATUS);
-            mIConfigService.putToDBManager(obj.toString().getBytes());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 

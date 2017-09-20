@@ -90,15 +90,15 @@
     </string-array>
     <string name="incommingcall">InComing call...</string>
     <string name="frontdoor">Front Door</string>
-    <string name="backdoor">Back Door</string>
+    <string name="backdoor">Rear Door</string>
     <string name="neighbor">Neighbor</string>
 
-    <string name="end">End</string>
-    <string name="answer">Answer</string>
+    <string name="end">Decline</string>
+    <string name="answer">Accept</string>
     <string name="lift">Lift</string>
     <string name="audio">Audio</string>
     <string name="video">Video</string>
-    <string name="open_door">Open Door</string>
+    <string name="open_door">Open</string>
     <string name="cancel">Cancel</string>
 
     <string name="engin_top_title">Engineering Mode</string>
@@ -118,6 +118,7 @@
     <string name="engin_masterphone">IP Masterphone Setting</string>
     <string name="engin_camera">IP Camera Setting</string>
     <string name="engin_password_change">Engineering Mode Code</string>
+    <string name="engin_ipdc">IPDC</string>
     <string name="engin_cloud_environment">Cloud Environment</string>
     <string name="engin_antidismantle">Anti-Dismantle</string>
     <string name="engin_finaltest">Start Final Tester</string>
@@ -220,8 +221,9 @@
     <string name="door_lock_setting_top_front_door_value">IP Door Camera</string>
     <string name="door_lock_setting_top_back_door_value">
         Honeywell Momas Key</string>
-    <string name="door_lock_setting_momas_key">momas</string>
-    <string name="door_lock_setting_ipdcrelay">ipdcrelay</string>
+    <string name="door_lock_setting_momas_key">Momas</string>
+    <string name="door_lock_setting_ipdcrelay">IPDC Relay</string>
+    <string name="door_lock_setting_none">None</string>
 
     <string name="ip_camera_setting_top_title">IP Camera Setting</string>
     <string name="ip_camer1">IP Camera 1</string>
@@ -351,7 +353,7 @@
     <string name="pm2.5limit">PM2.5 limit!</string>
 
     <string name="bindtask">:bindtask</string>
-    <string name="save_speed">Save to speed dialing number</string>
+    <string name="save_speed">Add</string>
     <string name="Confirm">Confirm</string>
     <string name="Called_failed">Called failed</string>
     <string name="dong">20-1002</string>
@@ -399,6 +401,7 @@
     <string name="Set">Set</string>
     <string name="Kitchen">Kitchen Window</string>
     <string name="Open">Open</string>
+    <string name="Close">Close</string>
     <string name="Dialing">Dialing…20-1002</string>
     <string name="Dialing_">Dialing…</string>
     <string name="Connected_">Connected</string>
@@ -427,9 +430,9 @@
     <string name="Lobby">Lobby</string>
     <string name="Delete">Delete</string>
     <string name="Edit">Edit</string>
-    <string name="Indicator_Board">Indicator Board</string>
+    <string name="Indicator_Board">Lift</string>
     <string name="demofloor">01</string>
-    <string name="demofloor1">Tag to call lift</string>
+    <string name="demofloor1">Click to call lift</string>
     <string name="demofloor2">Lift is coming</string>
     <string name="demofloor3">Lift was reached</string>
 
@@ -504,10 +507,10 @@
     <string name="about_wifi_ip_address">WiFi IP Address</string>
     <string name="about_wifi_mac_address">WiFi MAC Address</string>
 
-    <string name="currently_scene_home">Home is currently scene</string>
-    <string name="currently_scene_away">Away is currently scene</string>
-    <string name="currently_scene_sleep">Sleep is currently scene</string>
-    <string name="currently_scene_wake_up">Wake up is currently scene</string>
+    <string name="currently_scene_home">current scene: Home</string>
+    <string name="currently_scene_away">current scene: Away</string>
+    <string name="currently_scene_sleep">current scene: Slepp</string>
+    <string name="currently_scene_wake_up">current scene: Wake Up</string>
 
 
     <string name="setting_system_language">System Language</string>
@@ -522,7 +525,7 @@
     <string name="setting_location">Location</string>
     <string name="setting_brightness_volume">Brightness\n Volume</string>
     <string name="setting_date_time">Date&amp;Time</string>
-    <string name="setting_remote_control">Remote\n Control</string>
+    <string name="setting_remote_control">User\n Binding</string>
     <string name="setting_advanced_settings">Advanced\n Settings</string>
     <string name="setting_cleaning">Cleaning</string>
     <string name="setting_about">About</string>
@@ -553,10 +556,18 @@
     <string name="open_back_door">Open Back Door</string>
     <string name="wifi_password_length">length at least 8</string>
 
+
     <string name="cloud_environment_production">Production</string>
     <string name="cloud_environment_devops_qa">Devops QA</string>
     <string name="cloud_environment_qa">QA</string>
     <string name="cloud_environment_dev">Dev</string>
+    <string name="add_speedDial">please input building no</string>
+    <string name="change_engineering_code">please set the password</string>
 
+    <string name="new_password_length_main">length at least 6</string>
+    <string name="new_password_length_main_stu">please input the same password</string>
+    <string name="new_password_length_stu">length at least 4</string>
 
+    <string name="change_engineering_password">two passwords are not same, please enter the passwords again.</string>
+    <string name="add_error_speedDial">input building no error</string>
 </resources>

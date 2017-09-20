@@ -2,16 +2,20 @@ package com.honeywell.homepanel.configcenter.databases;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.honeywell.homepanel.common.CommonData;
 import com.honeywell.homepanel.common.CommonJson;
 import com.honeywell.homepanel.common.utils.CommonUtils;
+import com.honeywell.homepanel.configcenter.ConfigService;
 import com.honeywell.homepanel.configcenter.databases.constant.ConfigConstant;
 import com.honeywell.homepanel.configcenter.databases.manager.ContentValuesFactory;
 import com.honeywell.homepanel.configcenter.databases.manager.DbCommonUtil;
+import com.honeywell.homepanel.nativeapi.DefPGen;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -407,11 +411,12 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
 
     private void addDefaultSystemSettings(SQLiteDatabase db) {
         if (DbCommonUtil.getCount(db, ConfigConstant.TABLE_SYSTEMSETTINGS) > 0) {
+            //judge the enginner mode pwd is or not bcrypt encrypted
+            judgeEnginnerModeBcrypt(db);
+            judgeRegisterBcrypt(db);
             return;
         }
-
         db.beginTransaction();
-
         try {
             addDefaultSystemSetting(db, CommonData.JSON_KEY_VERSION, "");
             addDefaultSystemSetting(db, CommonData.JSON_KEY_CITY, "");
@@ -421,20 +426,18 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
             addDefaultSystemSetting(db, CommonData.JSON_KEY_SETTIME, "");
 
             // scenario settings
-            /*addDefaultSystemSetting(db, CommonData.JSON_KEY_ALARM_PWD, "123456");*/
-            addDefaultSystemSetting(db, CommonData.JSON_KEY_ALARM_PWD, CommonUtils.getBcryptStr(genDefaultAlarmPwd()));
+            addDefaultSystemSetting(db, CommonData.JSON_KEY_ALARM_PWD,CommonUtils.getBcryptStr(DefPGen.get(CommonData.PWD_TYPE_ALARM)));
             addDefaultSystemSetting(db, CommonData.KEY_CURRENT_SCENARIO_ID, CommonData.SCENARIO_ID_HOME);
-            addDefaultSystemSetting(db, CommonData.KEY_ENGINEERPWD, "085213");
 
+            addDefaultSystemSetting(db, CommonData.KEY_ENGINEERPWD,CommonUtils.getBcryptStr(DefPGen.get(CommonData.PWD_TYPE_ENGINEER)));
             addDefaultSystemSetting(db, CommonData.KEY_AMSIP, "192.168.10.172");
-            addDefaultSystemSetting(db, CommonData.KEY_AMSPORT, "085213");
+            addDefaultSystemSetting(db, CommonData.KEY_AMSPORT,DefPGen.get(CommonData.PWD_TYPE_ENGINEER));
             addDefaultSystemSetting(db, CommonData.KEY_SUBPHONEID, "");
-            addDefaultSystemSetting(db, CommonData.KEY_REGISTERPWD, "0000");
+            addDefaultSystemSetting(db, CommonData.KEY_REGISTERPWD,CommonUtils.getBcryptStr(DefPGen.get(CommonData.PWD_TYPE_REGISTER)));
             addDefaultSystemSetting(db, CommonData.JSON_UNIT_KEY, "0602000601");
             addDefaultSystemSetting(db, CommonData.JSON_MAINIP_KEY, "");
             addDefaultSystemSetting(db, CommonData.JSON_SUBPHONENAME_KEY, "");
             addDefaultSystemSetting(db, CommonData.KEY_HOMEPANELTYPE, CommonData.HOMEPANEL_TYPE_MAIN + "");
-
             // elevator default info
             addDefaultSystemSetting(db, CommonJson.JSON_ELEVATORIP_KEY, "");
             addDefaultSystemSetting(db, CommonJson.JSON_ELEVATORPORT_KEY, "");
@@ -470,5 +473,74 @@ public class ConfigDatabaseHelper extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
+    }
+
+    private String getDefaultRegisterPwd() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 4; i++) {
+            sb.append( i - i );
+        }
+        String ret = sb.toString();
+        sb.delete(0,sb.length());
+        Log.d(ConfigService.TAG, "getDefaultRegisterPwd() ret:"+ret);
+        return  ret;
+    }
+
+
+    private void judgeRegisterBcrypt(SQLiteDatabase db) {
+        String registerPwd = getConfig(db,CommonData.KEY_REGISTERPWD);
+        if(null == db || TextUtils.isEmpty(registerPwd)){
+            return;
+        }
+        if(registerPwd.length() <= 4){
+            updateConfig(db,CommonData.KEY_REGISTERPWD,CommonUtils.getBcryptStr(registerPwd));
+        }
+    }
+
+    private void judgeEnginnerModeBcrypt(SQLiteDatabase db) {
+        String enginnerPwd = getConfig(db,CommonData.KEY_ENGINEERPWD);
+        if(null == db || TextUtils.isEmpty(enginnerPwd)){
+            return;
+        }
+        if(enginnerPwd.length() <= 6){
+            updateConfig(db,CommonData.KEY_ENGINEERPWD,CommonUtils.getBcryptStr(enginnerPwd));
+        }
+    }
+
+    private synchronized int updateConfig(SQLiteDatabase db,String key, String value) {
+        int num = -1;
+        ContentValues values = new ContentValuesFactory()
+                .put(ConfigConstant.COLUMN_KEY, key)
+                .put(ConfigConstant.COLUMN_VALUE, value)
+                .getValues();
+        try {
+            num =  db.update(ConfigConstant.TABLE_SYSTEMSETTINGS,values,ConfigConstant.COLUMN_KEY + "=?",new String[]{key});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.d(ConfigService.TAG, "updateConfig(): num:"+num+",1111111111");
+        return num;
+    }
+
+    private String getDefaultEngineerPwd() {
+        StringBuilder sb = new StringBuilder();
+        //085213
+        sb.append("0");
+        sb.append(80000+5000+200+10+3);
+        String ret = sb.toString();
+        sb.delete(0,sb.length());
+        Log.d(ConfigService.TAG, "getDefaultEngineerPwd() ret: "+ ret+",,1111111");
+        return ret;
+    }
+    private  String getConfig(SQLiteDatabase db,String key) {
+        Cursor cursor = db.query(ConfigConstant.TABLE_SYSTEMSETTINGS,null,ConfigConstant.COLUMN_KEY + "=?",
+                new String[] { key }, null, null, null, null);
+        String value = null;
+        while (cursor.moveToNext()) {
+            value = cursor.getString(cursor.getColumnIndex(ConfigConstant.COLUMN_VALUE));
+            break;
+        }
+        cursor.close();
+        return value;
     }
 }

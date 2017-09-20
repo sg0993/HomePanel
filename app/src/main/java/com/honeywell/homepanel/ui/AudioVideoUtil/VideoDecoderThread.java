@@ -118,6 +118,7 @@ public class VideoDecoderThread implements  Runnable{
             }
         }
         if (null != mDecoder) {
+            Log.d(TAG, "run() 1111111111111111111111111111111111111111111111111111");
             mDecoder.closeDecoder();
         }
     }

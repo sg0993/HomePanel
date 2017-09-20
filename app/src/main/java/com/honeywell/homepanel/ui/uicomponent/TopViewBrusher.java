@@ -198,13 +198,13 @@ public class TopViewBrusher {
 
     }
 
-    private void setTopViewBackground(int curScenario) {
+    /*private void setTopViewBackground(int curScenario) {
         if (curScenario == CommonData.SCENARIO_HOME || curScenario == CommonData.SCENARIO_WAKEUP) {
             mTopView.setBackgroundColor(mContext.getResources().getColor(R.color.topbackground_disarm));
         } else if (curScenario == CommonData.SCENARIO_AWAY || curScenario == CommonData.SCENARIO_SLEEP) {
             mTopView.setBackgroundColor(mContext.getResources().getColor(R.color.topbackground_arm));
         }
-    }
+    }*/
 
     private void updateTopStatusBar(Activity activity) {
         Log.d(TAG, "updateTopStatusBar: ");

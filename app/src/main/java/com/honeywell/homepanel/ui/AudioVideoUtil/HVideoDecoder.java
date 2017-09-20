@@ -163,7 +163,7 @@ public class HVideoDecoder {
         }
     }
 
-    private boolean judgeIFrame(byte[] stream_data) {
+    /*private boolean judgeIFrame(byte[] stream_data) {
         boolean bIFrame = false;
         if(null != stream_data && stream_data.length > 5){
 
@@ -172,7 +172,7 @@ public class HVideoDecoder {
             }
         }
         return  bIFrame;
-    }
+    }*/
 
     public void closeDecoder() {
         if (decoderHasStarted) {
@@ -180,6 +180,7 @@ public class HVideoDecoder {
             try {
                 decoder.stop();
                 decoder.release();
+                decoder = null;
             } catch (Exception e) {
                 Log.e(TAG, "closeDecoder Exception e " + e.getMessage());
             }

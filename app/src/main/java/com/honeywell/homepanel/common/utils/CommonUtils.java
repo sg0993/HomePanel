@@ -12,6 +12,7 @@ import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -1163,19 +1164,31 @@ public class CommonUtils {
 
 
     public  static  final boolean checkBcryptStr(String pwd,String dbPwd){
+        Log.d(TAG, "checkBcryptStr() pwd:"+pwd+",dbPwd:"+dbPwd+",,11111111111");
         if(TextUtils.isEmpty(pwd) || TextUtils.isEmpty(dbPwd)){
             return  false;
         }
-        if(pwd.equals(dbPwd)){
-            return  true;
+        try {
+            if (pwd.equals(dbPwd)) {
+                return true;
+            }
+            String pwd_sha256 = CommonUtils.getStringSHA256Str(pwd);
+            if (pwd_sha256.equals(dbPwd)) {
+                return true;
+            }
+            if (BCrypt.checkpw(pwd, dbPwd)) {
+                return true;
+            }
+            Log.d(TAG, "checkBcryptStr() pwd_sha256:" + pwd_sha256);
+            boolean bRet = BCrypt.checkpw(pwd_sha256, dbPwd);
+            Log.d(TAG, "checkBcryptStr() bRet:" + bRet);
+            return bRet;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "checkBcryptStr: faile ");
+            return false;
         }
-        String pwd_sha256 = CommonUtils.getStringSHA256Str(pwd);
-        Log.d(TAG, "checkBcryptStr() pwd_sha256:"+pwd_sha256);
-        boolean bRet = BCrypt.checkpw(pwd_sha256, dbPwd);
-        Log.d(TAG, "checkBcryptStr() bRet:"+bRet);
-        return bRet;
     }
-
     public static boolean checkBcryptStr_sha256(String cloudPwd, String dbPwd) {
         if(TextUtils.isEmpty(cloudPwd) || TextUtils.isEmpty(dbPwd)){
             return  false;
@@ -1204,6 +1217,7 @@ public class CommonUtils {
     public static void sendUIEventBusFinishCmd(int cmd) {
         UIEventBusActivityFinishCmd tmp = new UIEventBusActivityFinishCmd();
         if (tmp != null) {
+            Log.d(TAG, "sendUIEventBusFinishCmd: " + cmd);
             tmp.setCmd(cmd);
             EventBus.getDefault().post(tmp);
         }
@@ -1239,5 +1253,13 @@ public class CommonUtils {
             strHao =  String.format("%06d", hao);
         }
         return strDong+strHao;
+    }
+
+    /**
+     *
+     * @return system eplased time
+     */
+    public static long getSystemElapsedTime(){
+        return SystemClock.elapsedRealtime();
     }
 }

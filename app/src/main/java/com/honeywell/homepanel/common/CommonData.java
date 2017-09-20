@@ -247,6 +247,8 @@ public class CommonData {
     public static final String COMMONDEVICE_TYPE_THERMOSTAT = "thermostat";
     public static final String COMMONDEVICE_TYPE_IPC = "ipc";
     public static final String COMMONDEVICE_TYPE_ELEVATOR = "elevator";
+    public static final String COMMONDEVICE_TYPE_ELEVATOR_STATUS = "elevatorstatus";
+    public static final String COMMONDEVICE_TYPE_LOCK_STATUS = "lockstatus";
     public static final String COMMONDEVICE_TYPE_LOCK = "lock";
     public static final String COMMONDEVICE_TYPE_DOORBELL = "doorbell";
     public static final String COMMONDEVICE_TYPE_IPDC = "ipdoorcamera";
@@ -571,7 +573,9 @@ public class CommonData {
     public static final String KEY_FRONTLOCKTYPE = "frontlocktype";//str
     public static final String KEY_BACKLOCKTYPE = "backlocktype";//str
     public static final String KEY_TYPE_MOMAS = "momas";//str
+    public static final String KEY_TYPE_UNKNOWN = "unknown";//str
     public static final String KEY_TYPE_IPDCRELAY = "ipdcrelay";//str
+    public static final String KEY_TYPE_NONE = "none";//str
     public static final String KEY_REGISTERPWD = "registerpwd";//str
     public static final String KEY_AMSIP = JSON_AMSIP_KEY;//str
     public static final String KEY_AMSPORT = JSON_AMSPORT_KEY;//int
@@ -588,6 +592,9 @@ public class CommonData {
     public static final String KEY_IPDC_FRONT_VERSION = "ipdcfrontversion";
     public static final String KEY_IPDC_BACK_VERSION = "ipdcbackversion";
 
+    public static final String KEY_IPDC_FRONT_STATUS = "ipdcfrontstatus";
+    public static final String KEY_IPDC_BACK_STATUS = "ipdcbackstatus";
+
     //add by ellen on 20150525 for ring and call voulme config
 
     public static final String KEY_VOLUME_PREFIX = "volume";
@@ -600,12 +607,7 @@ public class CommonData {
     public static final String KEY_CURRENT_SCENARIO_ID = "currentscenarioid";
     public static final String KEY_CURRENT_SYS_ARMSTATE = "currsysarmstate";
     public static final String KEY_CARD_ACTION = "card_action";//str
-
-
-    public static final String DEFAULT_SUBPHONE_REGISTERPWD = "1111";
-
     public static final int VOLUME_VALUE_DEFAULT = 15;
-
     //PbxSerice task shecdule
     public static final String TICK_MINIUTE_EVENT = "tickminiuteevent";
     public static final String TICK_GET_WEATHER_EVENT = "getweatherevent";
@@ -737,14 +739,8 @@ public class CommonData {
 
     public static final int HOMEPANEL_TYPE_MAIN = 0;
     public static final int HOMEPANEL_TYPE_SUB = 1;
-
     public static final int CALL_HISTORY_MAX_COUNT = 32;
-
-    public static final String DEFAULT_ENGINEER_PWD = "-085213";
-    public static final String DEFAULT_ENGINEER_PWD_ = "085213";
-
     public static final int DEFAULT_IPC_COUNT = 11;
-
     public static final String CARD_ACTION_DOOROPEN = "dooropen";
     public static final String CARD_ACTION_ARM = "arm";
     public static final String CARD_ACTION_DOOROPEN_ARM = "dooropen & arm";
@@ -832,8 +828,20 @@ public class CommonData {
 
     public static final int CALLED_TIMEOUT = 3 * 60 * 1000;
 
-    public static String file_() {
 
+    public static final String DEF_PAAS_IP_KIP = "qa.iot1.acscloud.honeywell.com.cn:8883";
+    public static final String DEF_PAAS_ADDRESS = "iot1.homecloud.honeywell.com.cn:8883";
+    public static final String DEF_PAAS_IP_DEV = "tcp://115.159.152.188:1883";
+    public static final String DEF_PAAS_IP_QA = "tcp://115.159.95.88:1883";
+    public static final String KPI = "honeywell.homepanel.kpi";
+    public static final String PAAS_IP = "honeywell.paas.ip";
+
+
+    public  static  final  int PWD_TYPE_ALARM = 0;
+    public  static  final  int PWD_TYPE_ENGINEER = 1;
+    public  static  final  int PWD_TYPE_REGISTER = 2;
+
+    public static String file_() {
         StackTraceElement ste = new Throwable().getStackTrace()[1];
         return ste.getFileName();
     }

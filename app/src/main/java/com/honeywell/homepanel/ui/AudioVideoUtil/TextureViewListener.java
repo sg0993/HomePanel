@@ -67,7 +67,10 @@ public class TextureViewListener implements TextureView.SurfaceTextureListener {
     }
 
     public void stopDecoder() {
-        videoDecoder.closeDecoder();
+		if(null != videoDecoder){
+		  	videoDecoder.closeDecoder();
+		  	videoDecoder = null;
+		}
     }
 
     public HVideoDecoder getVideoDecoder() {

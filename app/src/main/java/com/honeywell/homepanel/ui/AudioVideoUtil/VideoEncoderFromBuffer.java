@@ -329,15 +329,15 @@ public class VideoEncoderFromBuffer {
     /**
      * Generates the presentation time for frame N, in microseconds.
      */
-    private static long computePresentationTime(int frameIndex) {
+    /*private static long computePresentationTime(int frameIndex) {
         return 132 + frameIndex * 1000000 / FRAME_RATE;
-    }
+    }*/
 
     /**
      * Returns true if the specified color format is semi-planar YUV. Throws an
      * exception if the color format is not recognized (e.g. not YUV).
      */
-    private static boolean isSemiPlanarYUV(int colorFormat) {
+    /*private static boolean isSemiPlanarYUV(int colorFormat) {
         switch (colorFormat) {
             case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar:
             case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedPlanar:
@@ -349,5 +349,5 @@ public class VideoEncoderFromBuffer {
             default:
                 throw new RuntimeException("unknown format " + colorFormat);
         }
-    }
+    }*/
 }
